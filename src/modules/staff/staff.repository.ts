@@ -139,6 +139,7 @@ export class StaffRepository implements OnModuleInit {
 	}
 
 	async updateOne(query: StaffGetOneRequest, body: StaffUpdateOneRequest) {
+		console.log(body)
 		const staff = await this.prisma.staffModel.update({
 			where: { id: query.id },
 			data: {
@@ -146,9 +147,10 @@ export class StaffRepository implements OnModuleInit {
 				fullname: body.fullname,
 				password: body.password,
 				deletedAt: body.deletedAt,
+				token: body.token,
 				roles: {
-					connect: body.rolesToConnect.map((r) => ({ id: r })),
-					disconnect: body.rolesToDisconnect.map((r) => ({ id: r })),
+					connect: body?.rolesToConnect?.map((r) => ({ id: r })),
+					disconnect: body?.rolesToDisconnect?.map((r) => ({ id: r })),
 				},
 			},
 		})

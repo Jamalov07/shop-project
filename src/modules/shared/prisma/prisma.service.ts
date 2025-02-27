@@ -60,12 +60,12 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 
 		const staff = await this.staffModel.findFirst({ where: { ...payload, password: undefined } })
 		if (!staff) {
-			const role = await this.roleModel.findFirst({ where: { name: this.config.get('STAFF_ROLE') } })
+			let role = await this.roleModel.findFirst({ where: { name: this.config.get('STAFF_ROLE') } })
 
 			if (role) {
 				await this.roleModel.update({ where: { id: role.id }, data: { permissions: { createMany: { data: actions.map((a) => ({ actionId: a.id })), skipDuplicates: true } } } })
 			} else {
-				await this.roleModel.create({
+				role = await this.roleModel.create({
 					data: { name: this.config.get('STAFF_ROLE'), permissions: { createMany: { data: actions.map((a) => ({ actionId: a.id })), skipDuplicates: true } } },
 				})
 			}
