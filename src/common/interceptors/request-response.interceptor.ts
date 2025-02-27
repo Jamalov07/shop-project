@@ -37,7 +37,7 @@ export class RequestResponseInterceptor implements NestInterceptor {
 						result: { success: false, warning: false, error: true },
 					}
 					this.logger.debug(colors.magenta({ ...requestInfo, ...responseInfo }))
-					this.logger.error(colors.magenta(error.response.message))
+					this.logger.error(colors.magenta(error?.response?.message))
 				},
 			}),
 		)

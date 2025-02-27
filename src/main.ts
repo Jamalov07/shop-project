@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core'
-import { json } from 'express'
+import { json, Request, Response } from 'express'
 import { INestApplication, ValidationPipe } from '@nestjs/common'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { appConfig } from '@config'
@@ -8,6 +8,8 @@ import { RequestResponseInterceptor, AuthGuard, AllExceptionFilter } from '@comm
 
 async function bootstrap() {
 	const app = await NestFactory.create<INestApplication>(AppModule)
+
+	app.use('/health', (req: Request, res: Response) => res.status(200).send('alive'))
 
 	app.use(json({ limit: '50mb' }))
 
