@@ -1,0 +1,29 @@
+import { NestFactory } from '@nestjs/core'
+import { json } from 'express'
+import { INestApplication, ValidationPipe } from '@nestjs/common'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { appConfig } from '@config'
+import { AppModule } from './app.module'
+import { RequestResponseInterceptor, AuthGuard, AllExceptionFilter } from '@common'
+
+async function bootstrap() {
+	const app = await NestFactory.create<INestApplication>(AppModule)
+
+	app.use(json({ limit: '50mb' }))
+
+	app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
+
+	app.useGlobalGuards(app.get(AuthGuard))
+	app.useGlobalInterceptors(new RequestResponseInterceptor())
+
+	app.useGlobalFilters(new AllExceptionFilter())
+
+	const swaggerConfig = new DocumentBuilder().build()
+	const document = SwaggerModule.createDocument(app, swaggerConfig)
+	SwaggerModule.setup('docs', app, document, {})
+
+	await app.listen(appConfig().port, appConfig().host, () => {
+		console.log('work!')
+	})
+}
+bootstrap()

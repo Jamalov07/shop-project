@@ -1,0 +1,144 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ActionMethodEnum {
+  get     @map("get")
+  put     @map("put")
+  post    @map("post")
+  patch   @map("patch")
+  delete  @map("delete")
+}
+
+
+model StaffModel {
+  id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  token      String     @map("token")       @db.VarChar()    @default("")  
+  phone      String     @map("phone")       @db.VarChar(12)  
+  password   String     @map("password")    @db.VarChar()   
+  fullname   String     @map("full_name")   @db.VarChar()    @default("")
+  createdAt  DateTime   @map("created_at")  @db.Timestamp    @default(now())
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamp    @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamp
+
+  roles    RoleModel[]
+
+  @@id([ id ])
+  @@index([ id ])
+  @@unique([ phone, fullname ])
+  @@map("staff")
+}
+
+model ClientModel {
+  id               String   @map("id")                 @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  phone            String   @map("phone")              @db.VarChar(12)  
+  fullname         String   @map("full_name")          @db.VarChar()    @default("")
+
+  createdAt  DateTime   @map("created_at")  @db.Timestamp  @default(now())
+
+  @@id([ id ])
+  @@index([ id ])
+  @@unique([ phone, fullname ])
+  @@map("client")
+}
+
+
+model RoleModel {
+  id         String    @map("id")          @db.Uuid        @default(dbgenerated("GEN_RANDOM_UUID()"))
+  name       String    @map("name")        @db.VarChar()
+  createdAt  DateTime  @map("created_at")  @db.Timestamp   @default(now())
+
+  staffs       StaffModel[]
+  permissions  PermissionModel[]
+
+  @@id([ id ])
+  @@index([ id ])
+  @@unique([ name ])
+  @@map("role")
+}
+
+model ActionModel {
+  id           String            @map("id")           @db.Uuid       @default(dbgenerated("GEN_RANDOM_UUID()"))
+  url          String            @map("url")          @db.VarChar()
+  name         String            @map("name")         @db.VarChar()
+  method       ActionMethodEnum  
+  description  String            @map("description")  @db.VarChar()  @default("")
+
+  permissions  PermissionModel[]
+
+  @@id([ id ])
+  @@index([ id ])
+  @@unique([ url, name, method ])
+  @@map("action")
+}
+
+model PermissionModel {
+  id         String    @map("id")          @db.Uuid       @default(dbgenerated("GEN_RANDOM_UUID()"))
+  roleId     String    @map("role_id")     @db.Uuid
+  actionId   String    @map("action_id")   @db.Uuid
+  createdAt  DateTime  @map("created_at")  @db.Timestamp  @default(now())
+
+  role    RoleModel    @relation(fields: [ roleId   ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  action  ActionModel  @relation(fields: [ actionId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([ id ])
+  @@index([ id ])
+  @@unique([ roleId, actionId ])
+  @@map("permission")
+}
+
+model StorehouseModel {
+  id         String    @map("id")          @db.Uuid        @default(dbgenerated("GEN_RANDOM_UUID()"))
+  name       String    @map("name")        @db.VarChar()
+  position   Int       @map("position")    @db.Integer     
+  hexColor   String    @map("hex_color")   @db.VarChar()   @default("0000000")
+  createdAt  DateTime  @map("created_at")  @db.Timestamp   @default(now())
+  updatedAt  DateTime  @map("updated_at")  @db.Timestamp   @updatedAt
+
+  products  ProductToStorehouseModel[]
+
+  @@id([ id ])
+  @@index([ id ])
+  @@unique([ name ])
+  @@map("storehouse")
+}
+
+model ProductModel {
+  id                String    @map("id")                 @db.Uuid        @default(dbgenerated("GEN_RANDOM_UUID()"))
+  name              String    @map("name")               @db.VarChar()
+  cost              String    @map("cost")               @db.VarChar()   @default("0")
+  price             String    @map("price")              @db.VarChar()   @default("0") 
+  quantity          Int       @map("quantity")           @db.Integer     @default(1)
+  warningThreshold  Int       @map("warning_threshold")  @db.Integer
+  createdAt         DateTime  @map("created_at")         @db.Timestamp   @default(now())
+  updatedAt         DateTime  @map("updated_at")         @db.Timestamp   @updatedAt
+
+  storehouses  ProductToStorehouseModel[]
+
+  @@id([ id ])
+  @@index([ id ])
+  @@unique([ name ])
+  @@map("product")
+}
+
+model ProductToStorehouseModel {
+  id            String    @map("id")             @db.Uuid        @default(dbgenerated("GEN_RANDOM_UUID()"))
+  quantity      Int       @map("quantity")       @db.Integer     @default(0)
+  productId     String    @map("product_id")     @db.Uuid
+  storehouseId  String    @map("storehouse_id")  @db.Uuid
+  createdAt     DateTime  @map("created_at")     @db.Timestamp   @default(now())
+
+  product     ProductModel     @relation(fields: [ productId    ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  storehouse  StorehouseModel  @relation(fields: [ storehouseId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([ id ])
+  @@index([ id ])
+  @@unique([ productId, storehouseId ])
+  @@map("product_storehouse")
+}
