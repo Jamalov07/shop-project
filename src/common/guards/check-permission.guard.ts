@@ -1,5 +1,4 @@
 import { BadRequestException, CanActivate, ExecutionContext, Injectable, NotFoundException, RequestMethod, UnauthorizedException } from '@nestjs/common'
-import { Reflector } from '@nestjs/core'
 import { PrismaService } from '../../modules/shared'
 import { ActionMethodEnum } from '@prisma/client'
 
@@ -39,9 +38,10 @@ export class CheckPermissionGuard implements CanActivate {
 			throw new NotFoundException(`Cannot ${methodType.toUpperCase()} /${fullRoute}`)
 		}
 		const staff = await this.prisma.staffModel.findFirst({
-			where: { id: request.staff.id, roles: { some: { permissions: { some: { actionId: action.id } } } } },
-			select: { roles: { select: { name: true, permissions: { select: { action: { select: { name: true, method: true, url: true } } } } } } },
+			// where: { id: request.staff.id, actions: { some: { id: action.id } } },
+			select: { actions: { select: { name: true, method: true, url: true } } },
 		})
+		console.log(staff)
 
 		if (!staff) {
 			throw new BadRequestException('Permission not granted')

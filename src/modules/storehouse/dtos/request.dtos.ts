@@ -1,15 +1,7 @@
 import { PickType, IntersectionType } from '@nestjs/swagger'
-import {
-	StorehouseCreateOneRequest,
-	StorehouseDeleteOneRequest,
-	StorehouseFindManyRequest,
-	StorehouseFindOneRequest,
-	StorehouseProductCreateOneRequest,
-	StorehouseProductDeleteOneRequest,
-	StorehouseUpdateOneRequest,
-} from '../interfaces'
+import { StorehouseCreateOneRequest, StorehouseDeleteOneRequest, StorehouseFindManyRequest, StorehouseFindOneRequest, StorehouseUpdateOneRequest } from '../interfaces'
 import { PaginationRequestDto } from '@common'
-import { StorehouseOptionalDto, StorehouseProductRequiredDto, StorehouseRequiredDto } from './fields.dtos'
+import { StorehouseOptionalDto, StorehouseRequiredDto } from './fields.dtos'
 
 export class StorehouseFindManyRequestDto
 	extends IntersectionType(PickType(StorehouseOptionalDto, ['name', 'hexColor']), PaginationRequestDto)
@@ -22,9 +14,3 @@ export class StorehouseCreateOneRequestDto extends IntersectionType(PickType(Sto
 export class StorehouseUpdateOneRequestDto extends IntersectionType(PickType(StorehouseOptionalDto, ['name', 'hexColor'])) implements StorehouseUpdateOneRequest {}
 
 export class StorehouseDeleteOneRequestDto extends IntersectionType(PickType(StorehouseRequiredDto, ['id'])) implements StorehouseDeleteOneRequest {}
-
-export class StorehouseProductCreateOneRequestDto
-	extends PickType(StorehouseProductRequiredDto, ['productId', 'storehouseId', 'quantity'])
-	implements StorehouseProductCreateOneRequest {}
-
-export class StorehouseProductDeleteOneRequestDto extends PickType(StorehouseProductRequiredDto, ['id']) implements StorehouseProductDeleteOneRequest {}

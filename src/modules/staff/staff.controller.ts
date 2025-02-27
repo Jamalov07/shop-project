@@ -17,7 +17,7 @@ import {
 } from './dtos'
 
 @ApiTags('Staff')
-// @UseGuards(CheckPermissionGuard)
+@UseGuards(CheckPermissionGuard)
 @Controller('staff')
 export class StaffController {
 	private readonly staffService: StaffService

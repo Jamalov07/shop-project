@@ -7,12 +7,6 @@ import {
 	StorehouseFindOneRequest,
 	StorehouseGetManyRequest,
 	StorehouseGetOneRequest,
-	StorehouseProductCreateManyRequest,
-	StorehouseProductCreateOneRequest,
-	StorehouseProductDeleteManyRequest,
-	StorehouseProductDeleteOneRequest,
-	StorehouseProductGetOneRequest,
-	StorehouseProductUpdateOneRequest,
 	StorehouseUpdateOneRequest,
 } from './interfaces'
 import { StorehouseController } from './storehouse.controller'
@@ -138,65 +132,6 @@ export class StorehouseRepository {
 		})
 
 		return storehouse
-	}
-
-	async getOneStorehouseProduct(body: StorehouseProductGetOneRequest) {
-		const productStorehouse = await this.prisma.productToStorehouseModel.findFirst({
-			where: { storehouseId: body.storehouseId, quantity: body.quantity, productId: body.productId },
-		})
-
-		return productStorehouse
-	}
-
-	async createOneStorehouseProduct(body: StorehouseProductCreateOneRequest) {
-		const productStorehouse = await this.prisma.productToStorehouseModel.create({
-			data: { storehouseId: body.storehouseId, quantity: body.quantity, productId: body.productId },
-		})
-
-		return productStorehouse
-	}
-
-	async updateOneStorehouseProduct(id: string, body: StorehouseProductUpdateOneRequest) {
-		const productStorehouse = await this.prisma.productToStorehouseModel.update({
-			where: { id: id },
-			data: { storehouseId: body.storehouseId, quantity: body.quantity, productId: body.productId },
-		})
-
-		return productStorehouse
-	}
-
-	async createManyStorehouseProduct(body: StorehouseProductCreateManyRequest) {
-		const productStorehouses = await this.prisma.productToStorehouseModel.createMany({
-			skipDuplicates: true,
-			data: body.products.map((p) => ({ storehouseId: body.storehouseId, quantity: p.quantity, productId: p.id })),
-		})
-
-		return productStorehouses
-	}
-
-	async updateManyStorehouseProduct(body: StorehouseProductCreateManyRequest) {
-		const productStorehouses = await this.prisma.productToStorehouseModel.createMany({
-			skipDuplicates: true,
-			data: body.products.map((p) => ({ storehouseId: body.storehouseId, quantity: p.quantity, productId: p.id })),
-		})
-
-		return productStorehouses
-	}
-
-	async deleteManyStorehouseProduct(body: StorehouseProductDeleteManyRequest) {
-		const productStorehouses = await this.prisma.productToStorehouseModel.deleteMany({
-			where: { id: { in: body.ids } },
-		})
-
-		return productStorehouses
-	}
-
-	async deleteOneStorehouseProduct(query: StorehouseProductDeleteOneRequest) {
-		const productStorehouse = await this.prisma.productToStorehouseModel.delete({
-			where: { id: query.id },
-		})
-
-		return productStorehouse
 	}
 
 	async onModuleInit() {

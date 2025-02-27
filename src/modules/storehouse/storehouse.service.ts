@@ -8,10 +8,6 @@ import {
 	StorehouseGetManyRequest,
 	StorehouseFindManyRequest,
 	StorehouseFindOneRequest,
-	StorehouseProductCreateManyRequest,
-	StorehouseProductDeleteManyRequest,
-	StorehouseProductCreateOneRequest,
-	StorehouseProductDeleteOneRequest,
 } from './interfaces'
 
 @Injectable()
@@ -90,32 +86,5 @@ export class StorehouseService {
 		await this.storehouseRepository.deleteOne(query)
 
 		return createResponse({ data: null, success: { messages: ['delete success'] } })
-	}
-
-	async createOneStorehouseProduct(body: StorehouseProductCreateOneRequest) {
-		const storehouseProduct = await this.storehouseRepository.getOneStorehouseProduct({ ...body, quantity: undefined })
-
-		if (storehouseProduct) {
-			const updated = await this.storehouseRepository.updateOneStorehouseProduct(storehouseProduct.id, {
-				...body,
-				quantity: storehouseProduct.quantity + body.quantity,
-			})
-		} else {
-			const created = await this.storehouseRepository.createOneStorehouseProduct(body)
-		}
-
-		return createResponse({ data: null, success: { messages: ['create one storehouse product success'] } })
-	}
-
-	async deleteOneStorehouseProduct(query: StorehouseProductDeleteOneRequest) {
-		const storehouseProduct = await this.storehouseRepository.getOneStorehouseProduct({ id: query.id })
-
-		if (!storehouseProduct) {
-			throw new BadRequestException('storehouse product not found')
-		}
-
-		const deleted = await this.storehouseRepository.deleteOneStorehouseProduct(query)
-
-		return createResponse({ data: null, success: { messages: ['delete one storehouse product success'] } })
 	}
 }

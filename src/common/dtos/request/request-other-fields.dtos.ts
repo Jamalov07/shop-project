@@ -42,12 +42,12 @@ export class RequestOtherFieldsDto implements RequestOtherFields {
 	@IsUUID('4', { each: true })
 	@ArrayNotEmpty({ message: 'UUIDs array should not be empty' })
 	@ArrayUnique({ message: 'UUIDs should be unique' })
-	actionsToCreate?: string[] = []
+	actionsToConnect?: string[] = []
 
 	@ApiProperty({ type: String, isArray: true })
 	@IsArray()
 	@IsUUID('4', { each: true })
 	@ArrayNotEmpty({ message: 'UUIDs array should not be empty' })
 	@ArrayUnique({ message: 'UUIDs should be unique' })
-	actionsToRemove?: string[] = []
+	actionsToDisconnect?: string[] = []
 }

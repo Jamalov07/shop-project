@@ -49,7 +49,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 		await this.actionModel.createMany({ data: otpMethods, skipDuplicates: true })
 	}
 
-	async signInStaff() {
+	async signUpStaff() {
 		const payload = {
 			phone: this.config.get('STAFF_PHONE'),
 			fullname: this.config.get('STAFF_FULLNAME'),
@@ -57,20 +57,29 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 		}
 
 		const actions = await this.actionModel.findMany({})
-
-		const staff = await this.staffModel.findFirst({ where: { ...payload, password: undefined } })
+		const staff = await this.staffModel.findFirst({ where: { ...payload, password: undefined }, select: { id: true, roles: true, password: true } })
 		if (!staff) {
 			let role = await this.roleModel.findFirst({ where: { name: this.config.get('STAFF_ROLE') } })
 
 			if (role) {
-				await this.roleModel.update({ where: { id: role.id }, data: { permissions: { createMany: { data: actions.map((a) => ({ actionId: a.id })), skipDuplicates: true } } } })
+				await this.roleModel.update({
+					where: { id: role.id },
+					data: { actions: { connect: actions.map((a) => ({ id: a.id })) } },
+				})
 			} else {
 				role = await this.roleModel.create({
-					data: { name: this.config.get('STAFF_ROLE'), permissions: { createMany: { data: actions.map((a) => ({ actionId: a.id })), skipDuplicates: true } } },
+					data: {
+						name: this.config.get('STAFF_ROLE'),
+						actions: { connect: actions.map((a) => ({ id: a.id })) },
+					},
 				})
 			}
 			const staff = await this.staffModel.create({
-				data: { ...payload, roles: { connect: [{ id: role.id }] } },
+				data: {
+					...payload,
+					roles: { connect: [{ id: role.id }] },
+					actions: { connect: actions.map((a) => ({ id: a.id })) },
+				},
 			})
 
 			console.log('created:', staff.id)
@@ -80,26 +89,46 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 				let role = await this.roleModel.findFirst({ where: { name: this.config.get('STAFF_ROLE') } })
 
 				if (role) {
-					await this.roleModel.update({ where: { id: role.id }, data: { permissions: { createMany: { data: actions.map((a) => ({ actionId: a.id })), skipDuplicates: true } } } })
+					await this.roleModel.update({
+						where: { id: role.id },
+						data: { actions: { connect: actions.map((a) => ({ id: a.id })) } },
+					})
 				} else {
 					role = await this.roleModel.create({
-						data: { name: this.config.get('STAFF_ROLE'), permissions: { createMany: { data: actions.map((a) => ({ actionId: a.id })), skipDuplicates: true } } },
+						data: {
+							name: this.config.get('STAFF_ROLE'),
+							actions: { connect: actions.map((a) => ({ id: a.id })) },
+						},
 					})
 				}
 				await this.staffModel.update({
 					where: { id: staff.id },
-					data: { password: payload.password, roles: { connect: [{ id: role.id }] } },
+					data: {
+						password: payload.password,
+						roles: { connect: [{ id: role.id }] },
+						actions: { connect: actions.map((a) => ({ id: a.id })) },
+					},
 				})
 				console.log('updated:', staff.id)
 			} else {
 				console.log('exists:', staff.id)
+				await this.staffModel.update({
+					where: { id: staff.id },
+					data: { actions: { connect: actions.map((a) => ({ id: a.id })) } },
+				})
+				if (staff.roles.length) {
+					await this.roleModel.update({
+						where: { id: staff.roles[0].id },
+						data: { actions: { connect: actions.map((a) => ({ id: a.id })) } },
+					})
+				}
 			}
 		}
 	}
 
 	async onModuleInit() {
+		await this.signUpStaff()
 		await this.$connect()
-		await this.signInStaff()
 	}
 
 	async onModuleDestroy() {

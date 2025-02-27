@@ -9,8 +9,8 @@ export declare interface RoleGetManyRequest extends Pick<RoleOptional, 'name'>, 
 
 export declare interface RoleGetOneRequest extends Pick<RoleOptional, 'id' | 'name'> {}
 
-export declare interface RoleCreateOneRequest extends Pick<RoleRequired, 'name'>, Pick<RequestOtherFields, 'actionsToCreate'> {}
+export declare interface RoleCreateOneRequest extends Pick<RoleRequired, 'name'>, Pick<RequestOtherFields, 'actionsToConnect'> {}
 
-export declare interface RoleUpdateOneRequest extends Pick<RoleOptional, 'name'>, Pick<RequestOtherFields, 'actionsToCreate' | 'actionsToRemove'> {}
+export declare interface RoleUpdateOneRequest extends Pick<RoleOptional, 'name'>, Pick<RequestOtherFields, 'actionsToConnect' | 'actionsToDisconnect'> {}
 
 export declare interface RoleDeleteOneRequest extends Pick<RoleOptional, 'id'> {}

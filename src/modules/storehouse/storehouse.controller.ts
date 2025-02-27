@@ -10,8 +10,6 @@ import {
 	StorehouseFindManyResponseDto,
 	StorehouseFindOneResponseDto,
 	StorehouseModifyResponseDto,
-	StorehouseProductCreateOneRequestDto,
-	StorehouseProductDeleteOneRequestDto,
 } from './dtos'
 
 @ApiTags('Storehouse')
@@ -57,20 +55,6 @@ export class StorehouseController {
 	@ApiOperation({ summary: 'update one storehouse' })
 	@ApiOkResponse({ type: StorehouseModifyResponseDto })
 	async deleteOne(@Query() query: StorehouseFindOneRequestDto): Promise<StorehouseModifyResponseDto> {
-		return this.storehouseService.deleteOne(query)
-	}
-
-	@Post('product/one')
-	@ApiOperation({ summary: 'crate one storehouse product' })
-	@ApiOkResponse({ type: StorehouseModifyResponseDto })
-	async createOneStorehouseProduct(@Body() body: StorehouseProductCreateOneRequestDto): Promise<StorehouseModifyResponseDto> {
-		return this.storehouseService.createOneStorehouseProduct(body)
-	}
-
-	@Delete('product/one')
-	@ApiOperation({ summary: 'delete one storehouse product' })
-	@ApiOkResponse({ type: StorehouseModifyResponseDto })
-	async deleteOneStorehouseProduct(@Query() query: StorehouseProductDeleteOneRequestDto): Promise<StorehouseModifyResponseDto> {
 		return this.storehouseService.deleteOne(query)
 	}
 }

@@ -7,8 +7,8 @@ export declare interface RequestOtherFields {
 	isDeleted?: boolean
 	rolesToConnect?: string[]
 	rolesToDisconnect?: string[]
-	actionsToCreate?: string[]
-	actionsToRemove?: string[]
+	actionsToConnect?: string[]
+	actionsToDisconnect?: string[]
 }
 
 export declare interface CRequest extends Request {

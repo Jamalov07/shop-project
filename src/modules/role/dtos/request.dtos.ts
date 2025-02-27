@@ -8,11 +8,11 @@ export class RoleFindManyRequestDto extends IntersectionType(PickType(RoleOption
 export class RoleFindOneRequestDto extends IntersectionType(PickType(RoleRequiredDto, ['id'])) implements RoleFindOneRequest {}
 
 export class RoleCreateOneRequestDto
-	extends IntersectionType(PickType(RoleRequiredDto, ['name']), PickType(RequestOtherFieldsDto, ['actionsToCreate']))
+	extends IntersectionType(PickType(RoleRequiredDto, ['name']), PickType(RequestOtherFieldsDto, ['actionsToConnect']))
 	implements RoleCreateOneRequest {}
 
 export class RoleUpdateOneRequestDto
-	extends IntersectionType(PickType(RoleOptionalDto, ['name']), PickType(RequestOtherFieldsDto, ['actionsToCreate', 'actionsToRemove']))
+	extends IntersectionType(PickType(RoleOptionalDto, ['name']), PickType(RequestOtherFieldsDto, ['actionsToConnect', 'actionsToDisconnect']))
 	implements RoleUpdateOneRequest {}
 
 export class RoleDeleteOneRequestDto extends IntersectionType(PickType(RoleRequiredDto, ['id'])) implements RoleDeleteOneRequest {}

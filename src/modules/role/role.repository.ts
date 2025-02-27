@@ -81,7 +81,7 @@ export class RoleRepository {
 
 	async createOne(body: RoleCreateOneRequest) {
 		const role = await this.prisma.roleModel.create({
-			data: { name: body.name, permissions: { createMany: { data: body.actionsToCreate.map((a) => ({ actionId: a })) } } },
+			data: { name: body.name, actions: { connect: body.actionsToConnect.map((a) => ({ id: a })) } },
 		})
 		return role
 	}
@@ -91,9 +91,9 @@ export class RoleRepository {
 			where: { id: query.id },
 			data: {
 				name: body.name,
-				permissions: {
-					createMany: { skipDuplicates: true, data: body.actionsToCreate.map((a) => ({ actionId: a })) },
-					deleteMany: body.actionsToRemove.map((a) => ({ actionId: a })),
+				actions: {
+					connect: body.actionsToConnect.map((a) => ({ id: a })),
+					disconnect: body.actionsToDisconnect.map((a) => ({ id: a })),
 				},
 			},
 		})

@@ -14,7 +14,10 @@ export declare interface StaffGetManyRequest extends Pick<StaffOptional, 'phone'
 export declare interface StaffGetOneRequest extends Pick<StaffOptional, 'id' | 'phone' | 'fullname' | 'token'>, Pick<RequestOtherFields, 'isDeleted'> {}
 
 //body
-export declare interface StaffCreateOneRequest extends Pick<StaffRequired, 'phone' | 'password'>, Pick<StaffOptional, 'fullname'>, Pick<RequestOtherFields, 'rolesToConnect'> {}
+export declare interface StaffCreateOneRequest
+	extends Pick<StaffRequired, 'phone' | 'password'>,
+		Pick<StaffOptional, 'fullname'>,
+		Pick<RequestOtherFields, 'rolesToConnect' | 'actionsToConnect'> {}
 
 //body
 export declare interface StaffCreateManyRequest {
@@ -24,7 +27,7 @@ export declare interface StaffCreateManyRequest {
 //body
 export declare interface StaffUpdateOneRequest
 	extends Pick<StaffOptional, 'phone' | 'fullname' | 'deletedAt' | 'password' | 'token'>,
-		Pick<RequestOtherFields, 'rolesToConnect' | 'rolesToDisconnect'> {}
+		Pick<RequestOtherFields, 'rolesToConnect' | 'rolesToDisconnect' | 'actionsToConnect' | 'actionsToDisconnect'> {}
 
 //body
 export declare interface StaffUpdateManyRequest extends Pick<StaffOptional, 'deletedAt'>, Pick<RequestOtherFields, 'ids'> {}
