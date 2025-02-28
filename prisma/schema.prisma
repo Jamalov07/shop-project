@@ -14,8 +14,18 @@ enum ActionMethodEnum {
   post    @map("post")
   patch   @map("patch")
   delete  @map("delete")
+
+  @@map("action_method")
 }
 
+enum SellingStatusEnum {
+  created    @map("created")
+  accepted   @map("accepted")
+  declined   @map("declined")
+  cancelled  @map("cancelled")
+
+  @@map("selling_status")
+}
 
 model StaffModel {
   id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
@@ -29,7 +39,7 @@ model StaffModel {
 
   roles    RoleModel[]
   actions  ActionModel[]
-
+  sellings SellingModel[]
 
   @@id([ id ])
   @@index([ id ])
@@ -43,6 +53,9 @@ model ClientModel {
   fullname         String   @map("full_name")          @db.VarChar()    @default("")
 
   createdAt  DateTime   @map("created_at")  @db.Timestamp  @default(now())
+
+  sellings  SellingModel[]
+  payments  PaymentModel[]
 
   @@id([ id ])
   @@index([ id ])
@@ -105,8 +118,10 @@ model ProductModel {
   warningThreshold  Int       @map("warning_threshold")  @db.Integer
   createdAt         DateTime  @map("created_at")         @db.Timestamp   @default(now())
   updatedAt         DateTime  @map("updated_at")         @db.Timestamp   @updatedAt
+  deletedAt         DateTime? @map("deleted_at")         @db.Timestamp
 
   storehouses  ProductToStorehouseModel[]
+  sellings     SellingModel[]
 
   @@id([ id ])
   @@index([ id ])
@@ -128,4 +143,59 @@ model ProductToStorehouseModel {
   @@index([ id ])
   @@unique([ productId, storehouseId ])
   @@map("product_storehouse")
+}
+
+model PaymentModel {
+  id           String    @map("id")           @db.Uuid       @default(dbgenerated("GEN_RANDOM_UUID()"))
+  cash         String    @map("cash")         @db.VarChar()  @default("0")
+  card         String    @map("card")         @db.VarChar()  @default("0")
+  other        String    @map("other")        @db.VarChar()  @default("0")
+  clientId     String    @map("client_id")    @db.Uuid  
+  description  String    @map("description")  @db.VarChar()  @default("")
+  createdAt    DateTime  @map("created_at")   @db.Timestamp  @default(now())
+
+  client  ClientModel  @relation(fields: [ clientId  ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+
+  paymentParts  PaymentPartModel[]
+
+  @@id([ id ])
+  @@index([ id ])
+  @@map("payment")
+}
+
+model PaymentPartModel {
+  id           String    @map("id")           @db.Uuid       @default(dbgenerated("GEN_RANDOM_UUID()"))
+  sum          String    @map("sum")          @db.VarChar()  @default("0")
+  paymentId    String    @map("payment_id")   @db.Uuid
+  sellingId    String    @map("selling_id")   @db.Uuid
+  description  String    @map("description")  @db.VarChar()  @default("")
+  createdAt    DateTime  @map("created_at")   @db.Timestamp  @default(now())
+
+  payment  PaymentModel  @relation(fields: [ paymentId  ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  selling  SellingModel  @relation(fields: [ sellingId  ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([ id ])
+  @@index([ id ])
+  @@map("payment_part")
+}
+
+
+model SellingModel {
+  id                String             @map("id")                 @db.Uuid           @default(dbgenerated("GEN_RANDOM_UUID()"))
+  status            SellingStatusEnum                             @default(created) 
+  staffId           String             @map("staff_id")           @db.Uuid
+  clientId          String             @map("client_id")          @db.Uuid
+  totalSum          String             @map("total_sum")          @db.VarChar()      @default("0")  
+  createdAt         DateTime           @map("created_at")         @db.Timestamp      @default(now())
+  paymentCompleted  Boolean            @map("payment_completed")  @db.Boolean        @default(false)          
+
+  staff   StaffModel   @relation(fields: [ staffId  ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  client  ClientModel  @relation(fields: [ clientId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+
+  products      ProductModel[]
+  paymentParts  PaymentPartModel[]
+
+  @@id([ id ])
+  @@index([ id ])
+  @@map("selling")
 }

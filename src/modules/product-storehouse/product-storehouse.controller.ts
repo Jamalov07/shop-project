@@ -5,7 +5,7 @@ import { ProductStorehouseCreateOneRequestDto, ProductStorehouseDeleteOneRequest
 
 @ApiTags('ProductStorehouse')
 // @UseGuards(CheckPermissionGuard)
-@Controller('preoduct-storehouse')
+@Controller('product-storehouse')
 export class ProductStorehouseController {
 	private readonly productStorehouseService: ProductStorehouseService
 
