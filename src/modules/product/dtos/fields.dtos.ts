@@ -3,7 +3,7 @@ import { DefaultOptionalFieldsDto, DefaultRequiredFieldsDto } from '@common'
 import { ProductOptional, ProductRequired } from '../interfaces'
 import { IsNotEmpty, IsNumber, IsNumberString, IsOptional, IsString } from 'class-validator'
 
-export class ProductRequiredDto extends PickType(DefaultRequiredFieldsDto, ['id', 'updatedAt', 'createdAt']) implements ProductRequired {
+export class ProductRequiredDto extends PickType(DefaultRequiredFieldsDto, ['id', 'updatedAt', 'createdAt', 'deletedAt']) implements ProductRequired {
 	@ApiProperty({ type: String })
 	@IsNotEmpty()
 	@IsString()
@@ -30,7 +30,7 @@ export class ProductRequiredDto extends PickType(DefaultRequiredFieldsDto, ['id'
 	warningThreshold: number
 }
 
-export class ProductOptionalDto extends PickType(DefaultOptionalFieldsDto, ['id', 'updatedAt', 'createdAt']) implements ProductOptional {
+export class ProductOptionalDto extends PickType(DefaultOptionalFieldsDto, ['id', 'updatedAt', 'createdAt', 'deletedAt']) implements ProductOptional {
 	@ApiPropertyOptional({ type: String })
 	@IsOptional()
 	@IsString()
