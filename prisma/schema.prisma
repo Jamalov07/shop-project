@@ -37,9 +37,10 @@ model StaffModel {
   updatedAt  DateTime   @map("updated_at")  @db.Timestamp    @updatedAt
   deletedAt  DateTime?  @map("deleted_at")  @db.Timestamp
 
-  roles    RoleModel[]
-  actions  ActionModel[]
-  sellings SellingModel[]
+  roles     RoleModel[]
+  actions   ActionModel[]
+  sellings  SellingModel[]
+  payments  PaymentModel[]
 
   @@id([ id ])
   @@index([ id ])
@@ -150,10 +151,12 @@ model PaymentModel {
   cash         String    @map("cash")         @db.VarChar()  @default("0")
   card         String    @map("card")         @db.VarChar()  @default("0")
   other        String    @map("other")        @db.VarChar()  @default("0")
+  staffId      String    @map("staff_id")     @db.Uuid  
   clientId     String    @map("client_id")    @db.Uuid  
   description  String    @map("description")  @db.VarChar()  @default("")
   createdAt    DateTime  @map("created_at")   @db.Timestamp  @default(now())
 
+  staff   StaffModel   @relation(fields: [ staffId   ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
   client  ClientModel  @relation(fields: [ clientId  ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
 
   paymentParts  PaymentPartModel[]
