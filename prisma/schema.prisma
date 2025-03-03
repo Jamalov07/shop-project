@@ -113,8 +113,8 @@ model StorehouseModel {
 model ProductModel {
   id                String    @map("id")                 @db.Uuid        @default(dbgenerated("GEN_RANDOM_UUID()"))
   name              String    @map("name")               @db.VarChar()
-  cost              String    @map("cost")               @db.VarChar()   @default("0")
-  price             String    @map("price")              @db.VarChar()   @default("0") 
+  cost              BigInt    @map("cost")               @db.BigInt      @default(0)
+  price             BigInt    @map("price")              @db.BigInt      @default(0) 
   quantity          Int       @map("quantity")           @db.Integer     @default(1)
   warningThreshold  Int       @map("warning_threshold")  @db.Integer
   createdAt         DateTime  @map("created_at")         @db.Timestamp   @default(now())
@@ -148,9 +148,9 @@ model ProductToStorehouseModel {
 
 model PaymentModel {
   id           String    @map("id")           @db.Uuid       @default(dbgenerated("GEN_RANDOM_UUID()"))
-  cash         String    @map("cash")         @db.VarChar()  @default("0")
-  card         String    @map("card")         @db.VarChar()  @default("0")
-  other        String    @map("other")        @db.VarChar()  @default("0")
+  cash         BigInt    @map("cash")         @db.BigInt     @default(0)
+  card         BigInt    @map("card")         @db.BigInt     @default(0)
+  other        BigInt    @map("other")        @db.BigInt     @default(0)
   staffId      String    @map("staff_id")     @db.Uuid  
   clientId     String    @map("client_id")    @db.Uuid  
   description  String    @map("description")  @db.VarChar()  @default("")
@@ -168,7 +168,7 @@ model PaymentModel {
 
 model PaymentPartModel {
   id           String    @map("id")           @db.Uuid       @default(dbgenerated("GEN_RANDOM_UUID()"))
-  sum          String    @map("sum")          @db.VarChar()  @default("0")
+  sum          BigInt    @map("sum")          @db.BigInt     @default(0)
   paymentId    String    @map("payment_id")   @db.Uuid
   sellingId    String    @map("selling_id")   @db.Uuid
   description  String    @map("description")  @db.VarChar()  @default("")
@@ -188,7 +188,7 @@ model SellingModel {
   status            SellingStatusEnum                             @default(created) 
   staffId           String             @map("staff_id")           @db.Uuid
   clientId          String             @map("client_id")          @db.Uuid
-  totalSum          String             @map("total_sum")          @db.VarChar()      @default("0")  
+  totalSum          BigInt             @map("total_sum")          @db.BigInt         @default(0)  
   createdAt         DateTime           @map("created_at")         @db.Timestamp      @default(now())
   paymentCompleted  Boolean            @map("payment_completed")  @db.Boolean        @default(false)          
 

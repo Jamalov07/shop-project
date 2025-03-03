@@ -11,6 +11,6 @@ export declare interface StorehouseGetOneRequest extends Pick<StorehouseOptional
 
 export declare interface StorehouseCreateOneRequest extends Pick<StorehouseRequired, 'name' | 'hexColor'> {}
 
-export declare interface StorehouseUpdateOneRequest extends Pick<StorehouseOptional, 'name' | 'hexColor'> {}
+export declare interface StorehouseUpdateOneRequest extends Pick<StorehouseOptional, 'name' | 'hexColor' | 'position'> {}
 
 export declare interface StorehouseDeleteOneRequest extends Pick<StorehouseOptional, 'id'> {}

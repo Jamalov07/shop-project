@@ -68,11 +68,18 @@ export class StorehouseService {
 	}
 
 	async updateOne(query: StorehouseGetOneRequest, body: StorehouseUpdateOneRequest) {
-		await this.getOne(query)
+		const storehouse = await this.getOne(query)
 
-		const candidate = await this.storehouseRepository.getOne({ name: body.name })
-		if (candidate && candidate.id !== query.id) {
-			throw new BadRequestException('name already exists')
+		if (body.position) {
+			if (storehouse.data.position === body.position) {
+				throw new BadRequestException('no changes needed')
+			}
+		}
+		if (body.name) {
+			const candidate = await this.storehouseRepository.getOne({ name: body.name })
+			if (candidate && candidate.id !== query.id) {
+				throw new BadRequestException('name already exists')
+			}
 		}
 
 		await this.storehouseRepository.updateOne(query, { ...body })

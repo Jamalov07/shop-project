@@ -1,6 +1,20 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
-import { ActionModule, AuthModule, ClientModule, CronModule, PrismaModule, ProductModule, ProductStorehouseModule, RoleModule, StaffModule, StorehouseModule } from '@module'
+import {
+	ActionModule,
+	AuthModule,
+	ClientModule,
+	CronModule,
+	ExcelModule,
+	PaymentModule,
+	PrismaModule,
+	ProductModule,
+	ProductStorehouseModule,
+	RoleModule,
+	SellingModule,
+	StaffModule,
+	StorehouseModule,
+} from '@module'
 import { appConfig, databaseConfig, jwtConfig } from '@config'
 import { AuthGuard, CheckPermissionGuard } from '@common'
 
@@ -19,7 +33,10 @@ import { AuthGuard, CheckPermissionGuard } from '@common'
 		StorehouseModule,
 		ProductModule,
 		ProductStorehouseModule,
+		PaymentModule,
+		SellingModule,
 		CronModule,
+		ExcelModule,
 	],
 	controllers: [],
 	providers: [AuthGuard, CheckPermissionGuard],

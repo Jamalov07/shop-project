@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional, PickType } from '@nestjs/swagger'
-import { DefaultOptionalFieldsDto, DefaultRequiredFieldsDto } from '@common'
+import { DefaultOptionalFieldsDto, DefaultRequiredFieldsDto, IsIntOrBigInt } from '@common'
 import { ProductOptional, ProductRequired } from '../interfaces'
 import { IsNotEmpty, IsNumber, IsNumberString, IsOptional, IsString } from 'class-validator'
 
@@ -9,15 +9,15 @@ export class ProductRequiredDto extends PickType(DefaultRequiredFieldsDto, ['id'
 	@IsString()
 	name: string
 
-	@ApiProperty({ type: String })
+	@ApiProperty({ type: Number })
 	@IsNotEmpty()
-	@IsNumberString()
-	cost: string
+	@IsIntOrBigInt()
+	cost: bigint = BigInt(0)
 
-	@ApiProperty({ type: String })
+	@ApiProperty({ type: Number })
 	@IsNotEmpty()
-	@IsNumberString()
-	price: string
+	@IsIntOrBigInt()
+	price: bigint = BigInt(0)
 
 	@ApiProperty({ type: Number })
 	@IsNotEmpty()
@@ -36,15 +36,15 @@ export class ProductOptionalDto extends PickType(DefaultOptionalFieldsDto, ['id'
 	@IsString()
 	name?: string
 
-	@ApiPropertyOptional({ type: String })
+	@ApiPropertyOptional({ type: Number })
 	@IsOptional()
-	@IsNumberString()
-	cost?: string
+	@IsIntOrBigInt()
+	cost?: bigint
 
-	@ApiPropertyOptional({ type: String })
+	@ApiPropertyOptional({ type: Number })
 	@IsOptional()
-	@IsNumberString()
-	price?: string
+	@IsIntOrBigInt()
+	price?: bigint
 
 	@ApiPropertyOptional({ type: Number })
 	@IsOptional()

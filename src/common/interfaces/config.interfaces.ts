@@ -11,4 +11,3 @@ export declare interface JwtConfigOptions {
 	accessToken: { key: string; time: string }
 	refreshToken: { key: string; time: string }
 }
-

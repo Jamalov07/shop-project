@@ -1,17 +1,19 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { PaginationRequest } from '../../interfaces'
-import { IsBoolean, IsNotEmpty, IsNumber, IsNumberString, IsOptional } from 'class-validator'
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional } from 'class-validator'
 import { PAGE_NUMBER, PAGE_SIZE, PAGINATION } from '../../constants'
-import { Transform } from 'class-transformer'
+import { Transform, Type } from 'class-transformer'
 
 export class PaginationRequestDto implements PaginationRequest {
 	@ApiPropertyOptional({ type: Number })
-	@IsNumberString()
+	@Type(() => Number)
+	@IsNumber()
 	@IsOptional()
 	pageNumber?: number = PAGE_NUMBER
 
 	@ApiPropertyOptional({ type: Number })
-	@IsNumberString()
+	@Type(() => Number)
+	@IsNumber()
 	@IsOptional()
 	pageSize?: number = PAGE_SIZE
 

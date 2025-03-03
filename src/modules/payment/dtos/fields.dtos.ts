@@ -1,18 +1,18 @@
 import { ApiProperty, ApiPropertyOptional, PickType } from '@nestjs/swagger'
-import { DefaultOptionalFieldsDto, DefaultRequiredFieldsDto } from '../../../common'
+import { DefaultOptionalFieldsDto, DefaultRequiredFieldsDto, IsIntOrBigInt } from '../../../common'
 import { PaymentOptional, PaymentRequired } from '../interfaces'
-import { IsNotEmpty, IsNumberString, IsOptional, IsString, IsUUID } from 'class-validator'
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator'
 
 export class PaymentRequiredDto extends PickType(DefaultRequiredFieldsDto, ['id', 'createdAt']) implements PaymentRequired {
 	@ApiProperty({ type: String })
 	@IsNotEmpty()
-	@IsNumberString()
-	card: string
+	@IsIntOrBigInt()
+	card: bigint = BigInt(0)
 
 	@ApiProperty({ type: String })
 	@IsNotEmpty()
-	@IsNumberString()
-	cash: string
+	@IsIntOrBigInt()
+	cash: bigint = BigInt(0)
 
 	@ApiProperty({ type: String })
 	@IsNotEmpty()
@@ -31,20 +31,20 @@ export class PaymentRequiredDto extends PickType(DefaultRequiredFieldsDto, ['id'
 
 	@ApiProperty({ type: String })
 	@IsNotEmpty()
-	@IsNumberString()
-	other: string
+	@IsIntOrBigInt()
+	other: bigint = BigInt(0)
 }
 
 export class PaymentOptionalDto extends PickType(DefaultOptionalFieldsDto, ['id', 'createdAt']) implements PaymentOptional {
 	@ApiPropertyOptional({ type: String })
 	@IsOptional()
-	@IsNumberString()
-	card?: string
+	@IsIntOrBigInt()
+	card?: bigint
 
 	@ApiPropertyOptional({ type: String })
 	@IsOptional()
-	@IsNumberString()
-	cash?: string
+	@IsIntOrBigInt()
+	cash?: bigint
 
 	@ApiPropertyOptional({ type: String })
 	@IsOptional()
@@ -63,6 +63,6 @@ export class PaymentOptionalDto extends PickType(DefaultOptionalFieldsDto, ['id'
 
 	@ApiPropertyOptional({ type: String })
 	@IsOptional()
-	@IsNumberString()
-	other?: string
+	@IsIntOrBigInt()
+	other?: bigint
 }

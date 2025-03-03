@@ -11,6 +11,6 @@ export class StorehouseFindOneRequestDto extends IntersectionType(PickType(Store
 
 export class StorehouseCreateOneRequestDto extends IntersectionType(PickType(StorehouseRequiredDto, ['name', 'hexColor'])) implements StorehouseCreateOneRequest {}
 
-export class StorehouseUpdateOneRequestDto extends IntersectionType(PickType(StorehouseOptionalDto, ['name', 'hexColor'])) implements StorehouseUpdateOneRequest {}
+export class StorehouseUpdateOneRequestDto extends IntersectionType(PickType(StorehouseOptionalDto, ['name', 'hexColor', 'position'])) implements StorehouseUpdateOneRequest {}
 
 export class StorehouseDeleteOneRequestDto extends IntersectionType(PickType(StorehouseRequiredDto, ['id'])) implements StorehouseDeleteOneRequest {}

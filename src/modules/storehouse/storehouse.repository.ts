@@ -103,27 +103,48 @@ export class StorehouseRepository {
 	}
 
 	async createOne(body: StorehouseCreateOneRequest) {
+		const lastStorehouse = await this.prisma.storehouseModel.findFirst({ orderBy: [{ position: 'desc' }] })
+
 		const storehouse = await this.prisma.storehouseModel.create({
 			data: {
 				name: body.name,
 				hexColor: body.hexColor,
-				position: 0,
+				position: (lastStorehouse?.position ?? 0) + 1,
 			},
 		})
 		return storehouse
 	}
 
 	async updateOne(query: StorehouseGetOneRequest, body: StorehouseUpdateOneRequest) {
+		const store = await this.getOne(query)
+
+		if (body.position) {
+			await this.changeManyStorehousesPosition(store.position, body.position)
+		}
 		const storehouse = await this.prisma.storehouseModel.update({
 			where: { id: query.id },
 			data: {
 				name: body.name,
 				hexColor: body.hexColor,
-				position: 0,
+				position: body.position,
 			},
 		})
 
 		return storehouse
+	}
+
+	async changeManyStorehousesPosition(oldPosition: number, newPosition: number) {
+		if (oldPosition > newPosition) {
+			await this.prisma.storehouseModel.updateMany({
+				where: { position: { gte: newPosition, lt: oldPosition } },
+				data: { position: { increment: 1 } },
+			})
+		} else {
+			await this.prisma.storehouseModel.updateMany({
+				where: { position: { gt: oldPosition, lte: newPosition } },
+				data: { position: { decrement: 1 } },
+			})
+		}
 	}
 
 	async deleteOne(query: StorehouseDeleteOneRequest) {
