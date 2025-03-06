@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, Patch, Post, Query, UseGuards } from '@nestjs/common'
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { Body, Controller, Delete, Get, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
+import { ApiConsumes, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { FileInterceptor } from '@nestjs/platform-express'
 import { ProductService } from './product.service'
 import { AuthOptions, CheckPermissionGuard } from '@common'
 import {
@@ -38,17 +39,25 @@ export class ProductController {
 	}
 
 	@Post('one')
+	@ApiConsumes('multipart/form-data')
+	@UseInterceptors(FileInterceptor('image'))
 	@ApiOperation({ summary: 'add one product' })
 	@ApiOkResponse({ type: ProductModifyResponseDto })
-	async create(@Body() body: ProductCreateOneRequestDto): Promise<ProductModifyResponseDto> {
-		return this.productService.createOne(body)
+	async create(@Body() body: ProductCreateOneRequestDto, @UploadedFile() image?: Express.Multer.File): Promise<ProductModifyResponseDto> {
+		return this.productService.createOne({ ...body, image: image?.filename })
 	}
 
 	@Patch('one')
+	@ApiConsumes('multipart/form-data')
+	@UseInterceptors(FileInterceptor('image'))
 	@ApiOperation({ summary: 'update one product' })
 	@ApiOkResponse({ type: ProductModifyResponseDto })
-	async updateOne(@Query() query: ProductFindOneRequestDto, @Body() body: ProductUpdateOneRequestDto): Promise<ProductModifyResponseDto> {
-		return this.productService.updateOne(query, body)
+	async updateOne(
+		@Query() query: ProductFindOneRequestDto,
+		@Body() body: ProductUpdateOneRequestDto,
+		@UploadedFile() image?: Express.Multer.File,
+	): Promise<ProductModifyResponseDto> {
+		return this.productService.updateOne(query, { ...body, image: image?.filename })
 	}
 
 	@Delete('one')

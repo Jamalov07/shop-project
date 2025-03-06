@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { ServeStaticModule } from '@nestjs/serve-static'
 import {
 	ActionModule,
 	AuthModule,
@@ -17,9 +18,15 @@ import {
 } from '@module'
 import { appConfig, databaseConfig, jwtConfig } from '@config'
 import { AuthGuard, CheckPermissionGuard } from '@common'
+import { join } from 'path'
 
 @Module({
 	imports: [
+		ServeStaticModule.forRoot(
+			{ rootPath: join(__dirname, '..', 'uploads', 'images'), serveRoot: '/' },
+			{ rootPath: join(__dirname, '..', 'uploads', 'videos'), serveRoot: '/' },
+			{ rootPath: join(__dirname, '..', 'uploads', 'files'), serveRoot: '/' },
+		),
 		ConfigModule.forRoot({
 			isGlobal: true,
 			load: [appConfig, databaseConfig, jwtConfig],

@@ -4,7 +4,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { appConfig } from '@config'
 import { AppModule } from './app.module'
-import { RequestResponseInterceptor, AuthGuard, AllExceptionFilter } from '@common'
+import { RequestResponseInterceptor, AuthGuard, AllExceptionFilter, BigIntInterceptor } from '@common'
 
 async function bootstrap() {
 	const app = await NestFactory.create<INestApplication>(AppModule)
@@ -16,6 +16,7 @@ async function bootstrap() {
 	app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
 
 	app.useGlobalGuards(app.get(AuthGuard))
+	app.useGlobalInterceptors(new BigIntInterceptor())
 	app.useGlobalInterceptors(new RequestResponseInterceptor())
 
 	app.useGlobalFilters(new AllExceptionFilter())

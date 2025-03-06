@@ -9,8 +9,8 @@ export declare interface ProductGetManyRequest extends Pick<ProductOptional, 'na
 
 export declare interface ProductGetOneRequest extends Pick<ProductOptional, 'id' | 'name' | 'cost' | 'price' | 'quantity' | 'warningThreshold'> {}
 
-export declare interface ProductCreateOneRequest extends Pick<ProductRequired, 'name' | 'cost' | 'price' | 'quantity' | 'warningThreshold'> {}
+export declare interface ProductCreateOneRequest extends Pick<ProductRequired, 'name' | 'cost' | 'price' | 'quantity' | 'warningThreshold'>, Pick<ProductOptional, 'image'> {}
 
-export declare interface ProductUpdateOneRequest extends Pick<ProductOptional, 'name' | 'cost' | 'price' | 'quantity' | 'warningThreshold'> {}
+export declare interface ProductUpdateOneRequest extends Pick<ProductOptional, 'name' | 'cost' | 'price' | 'quantity' | 'warningThreshold'>, Pick<ProductOptional, 'image'> {}
 
 export declare interface ProductDeleteOneRequest extends Pick<ProductOptional, 'id'> {}

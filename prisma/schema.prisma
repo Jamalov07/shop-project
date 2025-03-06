@@ -111,15 +111,16 @@ model StorehouseModel {
 }
 
 model ProductModel {
-  id                String    @map("id")                 @db.Uuid        @default(dbgenerated("GEN_RANDOM_UUID()"))
-  name              String    @map("name")               @db.VarChar()
-  cost              BigInt    @map("cost")               @db.BigInt      @default(0)
-  price             BigInt    @map("price")              @db.BigInt      @default(0) 
-  quantity          Int       @map("quantity")           @db.Integer     @default(1)
-  warningThreshold  Int       @map("warning_threshold")  @db.Integer
-  createdAt         DateTime  @map("created_at")         @db.Timestamp   @default(now())
-  updatedAt         DateTime  @map("updated_at")         @db.Timestamp   @updatedAt
-  deletedAt         DateTime? @map("deleted_at")         @db.Timestamp
+  id                String     @map("id")                 @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
+  name              String     @map("name")               @db.VarChar()     
+  cost              BigInt     @map("cost")               @db.BigInt        @default(0)
+  price             BigInt     @map("price")              @db.BigInt        @default(0) 
+  quantity          Int        @map("quantity")           @db.Integer       @default(1)
+  image             String     @map("image")              @db.VarChar(255)  @default("")
+  warningThreshold  Int        @map("warning_threshold")  @db.Integer       
+  createdAt         DateTime   @map("created_at")         @db.Timestamp     @default(now())
+  updatedAt         DateTime   @map("updated_at")         @db.Timestamp     @updatedAt
+  deletedAt         DateTime?  @map("deleted_at")         @db.Timestamp
 
   storehouses  ProductToStorehouseModel[]
   sellings     SellingModel[]

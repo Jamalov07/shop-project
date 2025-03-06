@@ -7,7 +7,7 @@ class IsIntOrBigIntConstraint implements ValidatorConstraintInterface {
 	}
 
 	defaultMessage() {
-		return 'Value must be an integer (Int or BigInt)'
+		return `Value must be an integer (Int or BigInt)`
 	}
 }
 

@@ -4,12 +4,12 @@ import { PaymentOptional, PaymentRequired } from '../interfaces'
 import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator'
 
 export class PaymentRequiredDto extends PickType(DefaultRequiredFieldsDto, ['id', 'createdAt']) implements PaymentRequired {
-	@ApiProperty({ type: String })
+	@ApiProperty({ type: BigInt })
 	@IsNotEmpty()
 	@IsIntOrBigInt()
 	card: bigint = BigInt(0)
 
-	@ApiProperty({ type: String })
+	@ApiProperty({ type: BigInt })
 	@IsNotEmpty()
 	@IsIntOrBigInt()
 	cash: bigint = BigInt(0)
@@ -29,19 +29,19 @@ export class PaymentRequiredDto extends PickType(DefaultRequiredFieldsDto, ['id'
 	@IsString()
 	description: string
 
-	@ApiProperty({ type: String })
+	@ApiProperty({ type: BigInt })
 	@IsNotEmpty()
 	@IsIntOrBigInt()
 	other: bigint = BigInt(0)
 }
 
 export class PaymentOptionalDto extends PickType(DefaultOptionalFieldsDto, ['id', 'createdAt']) implements PaymentOptional {
-	@ApiPropertyOptional({ type: String })
+	@ApiPropertyOptional({ type: BigInt })
 	@IsOptional()
 	@IsIntOrBigInt()
 	card?: bigint
 
-	@ApiPropertyOptional({ type: String })
+	@ApiPropertyOptional({ type: BigInt })
 	@IsOptional()
 	@IsIntOrBigInt()
 	cash?: bigint
@@ -61,7 +61,7 @@ export class PaymentOptionalDto extends PickType(DefaultOptionalFieldsDto, ['id'
 	@IsString()
 	description?: string
 
-	@ApiPropertyOptional({ type: String })
+	@ApiPropertyOptional({ type: BigInt })
 	@IsOptional()
 	@IsIntOrBigInt()
 	other?: bigint

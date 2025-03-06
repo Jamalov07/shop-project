@@ -113,6 +113,7 @@ export class ProductRepository {
 				cost: body.cost,
 				price: body.price,
 				quantity: body.quantity,
+				image: body.image,
 			},
 		})
 		return product
@@ -127,6 +128,7 @@ export class ProductRepository {
 				cost: body.cost,
 				price: body.price,
 				quantity: body.quantity,
+				image: body.image,
 			},
 		})
 
