@@ -12,10 +12,15 @@ export class ClientService {
 	}
 
 	async findMany(query: ClientFindManyRequest) {
-		const clients = await this.clientRepository.findMany(query)
+		const clients = (await this.clientRepository.findMany(query)).map((c) => {
+			const sellings = c.sellings.filter((c) => !c.paymentCompleted)
+			const totalSums = sellings.reduce((a, b) => a + b.totalSum, BigInt(0))
+			const payedSums = sellings.reduce((a, b) => a + b.paymentParts.reduce((c, d) => c + d.sum, BigInt(0)), BigInt(0))
+			return { ...c, debt: totalSums - payedSums, lastSellingDate: c.sellings[0].createdAt ?? null }
+		})
 		const clientsCount = await this.clientRepository.countFindMany(query)
 
-		const result = query.pagination ? { pagesCount: Math.ceil(clientsCount / query.pageSize), pageSize: clients.length, data: clients } : clients
+		const result = query.pagination ? { totalCount: clientsCount, pagesCount: Math.ceil(clientsCount / query.pageSize), pageSize: clients.length, data: clients } : clients
 
 		return createResponse({ data: result, success: { messages: ['find many success'] } })
 	}
@@ -26,8 +31,14 @@ export class ClientService {
 		if (!client) {
 			throw new BadRequestException('client not found')
 		}
+		const sellings = client.sellings.filter((c) => !c.paymentCompleted)
+		const totalSums = sellings.reduce((a, b) => a + b.totalSum, BigInt(0))
+		const payedSums = sellings.reduce((a, b) => a + b.paymentParts.reduce((c, d) => c + d.sum, BigInt(0)), BigInt(0))
 
-		return createResponse({ data: client, success: { messages: ['find one success'] } })
+		return createResponse({
+			data: { ...client, debt: totalSums - payedSums, lastSellingDate: client.sellings[0].createdAt ?? null },
+			success: { messages: ['find one success'] },
+		})
 	}
 
 	async getMany(query: ClientGetManyRequest) {

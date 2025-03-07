@@ -1,5 +1,10 @@
-import { RequestOtherFields } from '../../../common'
+import { PaginationRequest, RequestOtherFields } from '../../../common'
 import { ProductStorehouseOptional, ProductStorehouseRequired } from './fields.interfaces'
+
+export declare interface ProductStorehouseFindManyRequest
+	extends Pick<ProductStorehouseOptional, 'productId' | 'storehouseId'>,
+		PaginationRequest,
+		Pick<RequestOtherFields, 'ids'> {}
 
 export declare interface ProductStorehouseGetOneRequest extends Pick<ProductStorehouseOptional, 'id' | 'productId' | 'storehouseId' | 'quantity'> {}
 

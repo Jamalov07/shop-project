@@ -19,8 +19,22 @@ export class ClientRepository {
 		const clients = await this.prisma.clientModel.findMany({
 			where: {
 				id: { in: query.ids },
-				phone: { contains: query.phone, mode: 'insensitive' },
-				fullname: { contains: query.fullname, mode: 'insensitive' },
+				OR: [
+					{ phone: { contains: query.phone, mode: 'insensitive' } },
+					{ fullname: { contains: query.fullname, mode: 'insensitive' } },
+					{ phone: { contains: query.search, mode: 'insensitive' } },
+					{ fullname: { contains: query.search, mode: 'insensitive' } },
+				],
+			},
+			select: {
+				id: true,
+				fullname: true,
+				phone: true,
+				createdAt: true,
+				sellings: {
+					select: { totalSum: true, createdAt: true, paymentCompleted: true, paymentParts: { select: { sum: true } } },
+					orderBy: [{ createdAt: 'desc' }],
+				},
 			},
 			...paginationOptions,
 		})
@@ -35,6 +49,16 @@ export class ClientRepository {
 				phone: { contains: query.phone, mode: 'insensitive' },
 				fullname: { contains: query.fullname, mode: 'insensitive' },
 			},
+			select: {
+				id: true,
+				fullname: true,
+				phone: true,
+				createdAt: true,
+				sellings: {
+					select: { totalSum: true, createdAt: true, paymentCompleted: true, paymentParts: { select: { sum: true } } },
+					orderBy: [{ createdAt: 'desc' }],
+				},
+			},
 		})
 
 		return client
@@ -44,8 +68,12 @@ export class ClientRepository {
 		const clientsCount = await this.prisma.clientModel.count({
 			where: {
 				id: { in: query.ids },
-				phone: { contains: query.phone, mode: 'insensitive' },
-				fullname: { contains: query.fullname, mode: 'insensitive' },
+				OR: [
+					{ phone: { contains: query.phone, mode: 'insensitive' } },
+					{ fullname: { contains: query.fullname, mode: 'insensitive' } },
+					{ phone: { contains: query.search, mode: 'insensitive' } },
+					{ fullname: { contains: query.search, mode: 'insensitive' } },
+				],
 			},
 		})
 

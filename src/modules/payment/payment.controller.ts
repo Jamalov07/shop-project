@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, Patch, Post, Query, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Patch, Post, Query, Req, UseGuards } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { PaymentService } from './payment.service'
-import { AuthOptions, CheckPermissionGuard } from '@common'
+import { AuthOptions, CheckPermissionGuard, CRequest } from '@common'
 import {
 	PaymentFindManyRequestDto,
 	PaymentCreateOneRequestDto,
@@ -38,13 +38,15 @@ export class PaymentController {
 	}
 
 	@Post('one')
+	@AuthOptions(true, true)
 	@ApiOperation({ summary: 'add one payment' })
 	@ApiOkResponse({ type: PaymentModifyResponseDto })
-	async create(@Body() body: PaymentCreateOneRequestDto): Promise<PaymentModifyResponseDto> {
-		return this.paymentService.createOnePro(body)
+	async create(@Body() body: PaymentCreateOneRequestDto, @Req() req: CRequest): Promise<PaymentModifyResponseDto> {
+		return this.paymentService.createOnePro({ ...body, staffId: req.staff.id })
 	}
 
 	@Patch('one')
+	@AuthOptions(true, true)
 	@ApiOperation({ summary: 'update one payment' })
 	@ApiOkResponse({ type: PaymentModifyResponseDto })
 	async updateOne(@Query() query: PaymentFindOneRequestDto, @Body() body: PaymentUpdateOneRequestDto): Promise<PaymentModifyResponseDto> {

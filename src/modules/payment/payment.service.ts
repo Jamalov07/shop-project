@@ -15,7 +15,7 @@ export class PaymentService {
 		const payments = await this.paymentRepository.findMany(query)
 		const paymentsCount = await this.paymentRepository.countFindMany(query)
 
-		const result = query.pagination ? { pagesCount: Math.ceil(paymentsCount / query.pageSize), pageSize: payments.length, data: payments } : payments
+		const result = query.pagination ? { totalCount: paymentsCount, pagesCount: Math.ceil(paymentsCount / query.pageSize), pageSize: payments.length, data: payments } : payments
 
 		return createResponse({ data: result, success: { messages: ['find many success'] } })
 	}

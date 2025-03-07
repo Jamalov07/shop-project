@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { RequestOtherFields } from '../../interfaces'
-import { ArrayNotEmpty, ArrayUnique, IsArray, IsBoolean, IsEnum, IsOptional, IsUUID } from 'class-validator'
+import { ArrayNotEmpty, ArrayUnique, IsArray, IsBoolean, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator'
 import { Transform } from 'class-transformer'
 import { DeleteMethodEnum } from '../../enums'
 
@@ -11,6 +11,11 @@ export class RequestOtherFieldsDto implements RequestOtherFields {
 	@ArrayNotEmpty({ message: 'UUIDs array should not be empty' })
 	@ArrayUnique({ message: 'UUIDs should be unique' })
 	ids: string[] = []
+
+	@ApiPropertyOptional({ type: String })
+	@IsOptional()
+	@IsString()
+	search?: string
 
 	@ApiPropertyOptional({ type: Boolean })
 	@Transform(({ value }) => ([false, 'false'].includes(value) ? false : [true, 'true'].includes(value) ? true : undefined))

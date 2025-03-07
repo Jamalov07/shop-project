@@ -1,9 +1,11 @@
 import { PickType, IntersectionType } from '@nestjs/swagger'
 import { ClientCreateOneRequest, ClientFindManyRequest, ClientFindOneRequest, ClientUpdateOneRequest } from '../interfaces'
-import { PaginationRequestDto } from '@common'
+import { PaginationRequestDto, RequestOtherFieldsDto } from '@common'
 import { ClientOptionalDto, ClientRequiredDto } from './fields.dtos'
 
-export class ClientFindManyRequestDto extends IntersectionType(PickType(ClientOptionalDto, ['fullname', 'phone']), PaginationRequestDto) implements ClientFindManyRequest {}
+export class ClientFindManyRequestDto
+	extends IntersectionType(PickType(ClientOptionalDto, ['fullname', 'phone']), PaginationRequestDto, PickType(RequestOtherFieldsDto, ['search']))
+	implements ClientFindManyRequest {}
 
 export class ClientFindOneRequestDto extends IntersectionType(PickType(ClientRequiredDto, ['id'])) implements ClientFindOneRequest {}
 

@@ -1,5 +1,11 @@
-import { PickType } from '@nestjs/swagger'
-import { ProductStorehouseRequiredDto } from './fields.dtos'
+import { IntersectionType, PickType } from '@nestjs/swagger'
+import { ProductStorehouseOptionalDto, ProductStorehouseRequiredDto } from './fields.dtos'
+import { ProductStorehouseFindManyRequest } from '../interfaces'
+import { PaginationRequestDto } from '../../../common'
+
+export class ProductStorehouseFindManyRequestDto
+	extends IntersectionType(PickType(ProductStorehouseOptionalDto, ['productId', 'storehouseId']), PaginationRequestDto)
+	implements ProductStorehouseFindManyRequest {}
 
 export class ProductStorehouseCreateOneRequestDto
 	extends PickType(ProductStorehouseRequiredDto, ['productId', 'storehouseId', 'quantity'])

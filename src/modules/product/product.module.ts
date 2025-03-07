@@ -16,7 +16,7 @@ import { extname } from 'path'
 					if (file.mimetype.startsWith('image/')) {
 						cb(null, `${process.cwd()}/uploads/images`)
 					} else {
-						cb(new BadRequestException('Unsupported file type'),'')
+						cb(new BadRequestException('Unsupported file type'), '')
 					}
 				},
 				filename: (req, file, cb) => {

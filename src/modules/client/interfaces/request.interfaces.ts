@@ -1,7 +1,7 @@
 import { PaginationRequest, RequestOtherFields } from '../../../common'
 import { ClientOptional, ClientRequired } from './fields.interfaces'
 
-export declare interface ClientFindManyRequest extends Pick<ClientOptional, 'phone' | 'fullname'>, PaginationRequest, Pick<RequestOtherFields, 'ids'> {}
+export declare interface ClientFindManyRequest extends Pick<ClientOptional, 'phone' | 'fullname'>, PaginationRequest, Pick<RequestOtherFields, 'ids' | 'search'> {}
 
 export declare interface ClientFindOneRequest extends Pick<ClientOptional, 'id' | 'phone' | 'fullname'> {}
 

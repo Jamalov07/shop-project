@@ -12,10 +12,12 @@ export class ProductService {
 	}
 
 	async findMany(query: ProductFindManyRequest) {
-		const products = await this.productRepository.findMany(query)
+		const products = (await this.productRepository.findMany(query)).map((p) => {
+			return { ...p, countInStorehouses: p.storehouses.reduce((a, b) => a + b.quantity, 0) }
+		})
 		const productsCount = await this.productRepository.countFindMany(query)
 
-		const result = query.pagination ? { pagesCount: Math.ceil(productsCount / query.pageSize), pageSize: products.length, data: products } : products
+		const result = query.pagination ? { totalCount: productsCount, pagesCount: Math.ceil(productsCount / query.pageSize), pageSize: products.length, data: products } : products
 
 		return createResponse({ data: result, success: { messages: ['find many success'] } })
 	}
@@ -27,7 +29,10 @@ export class ProductService {
 			throw new BadRequestException('product not found')
 		}
 
-		return createResponse({ data: product, success: { messages: ['find one success'] } })
+		return createResponse({
+			data: { ...product, countInStorehouses: product.storehouses.reduce((a, b) => a + b.quantity, 0) },
+			success: { messages: ['find one success'] },
+		})
 	}
 
 	async getMany(query: ProductGetManyRequest) {

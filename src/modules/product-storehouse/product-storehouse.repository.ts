@@ -5,6 +5,7 @@ import {
 	ProductStorehouseCreateOneRequest,
 	ProductStorehouseDeleteManyRequest,
 	ProductStorehouseDeleteOneRequest,
+	ProductStorehouseFindManyRequest,
 	ProductStorehouseGetOneRequest,
 	ProductStorehouseUpdateOneRequest,
 } from './interfaces'
@@ -17,12 +18,49 @@ export class ProductStorehouseRepository {
 		this.prisma = prisma
 	}
 
+	async findMany(query: ProductStorehouseFindManyRequest) {
+		let paginationOptions = {}
+		if (query.pagination) {
+			paginationOptions = { take: query.pageSize, skip: (query.pageNumber - 1) * query.pageSize }
+		}
+
+		const productStorehouse = await this.prisma.productToStorehouseModel.findMany({
+			where: {
+				id: { in: query.ids },
+				productId: query.productId,
+				storehouseId: query.storehouseId,
+			},
+			select: {
+				id: true,
+				createdAt: true,
+				quantity: true,
+				product: { select: { id: true, cost: true, createdAt: true, image: true, name: true, price: true, quantity: true, warningThreshold: true } },
+				storehouse: { select: { id: true, createdAt: true, name: true, hexColor: true, position: true } },
+			},
+			...paginationOptions,
+		})
+
+		return productStorehouse
+	}
+
 	async getOne(body: ProductStorehouseGetOneRequest) {
 		const productStorehouse = await this.prisma.productToStorehouseModel.findFirst({
 			where: { storehouseId: body.storehouseId, quantity: body.quantity, productId: body.productId },
 		})
 
 		return productStorehouse
+	}
+
+	async countFindMany(query: ProductStorehouseFindManyRequest) {
+		const productStorehouseCount = await this.prisma.productToStorehouseModel.count({
+			where: {
+				id: { in: query.ids },
+				productId: query.productId,
+				storehouseId: query.storehouseId,
+			},
+		})
+
+		return productStorehouseCount
 	}
 
 	async createOne(body: ProductStorehouseCreateOneRequest) {

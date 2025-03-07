@@ -14,7 +14,7 @@ export class ActionService {
 		const actions = await this.actionRepository.findMany(query)
 		const actionsCount = await this.actionRepository.countFindMany(query)
 
-		const result = query.pagination ? { pagesCount: Math.ceil(actionsCount / query.pageSize), pageSize: actions.length, data: actions } : actions
+		const result = query.pagination ? { totalCount: actionsCount, pagesCount: Math.ceil(actionsCount / query.pageSize), pageSize: actions.length, data: actions } : actions
 
 		return createResponse({ data: result, success: { messages: ['find many success'] } })
 	}

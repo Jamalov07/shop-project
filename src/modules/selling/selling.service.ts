@@ -18,7 +18,7 @@ export class SellingService {
 		const sellings = await this.sellingRepository.findMany(query)
 		const sellingsCount = await this.sellingRepository.countFindMany(query)
 
-		const result = query.pagination ? { pagesCount: Math.ceil(sellingsCount / query.pageSize), pageSize: sellings.length, data: sellings } : sellings
+		const result = query.pagination ? { totalCount: sellingsCount, pagesCount: Math.ceil(sellingsCount / query.pageSize), pageSize: sellings.length, data: sellings } : sellings
 
 		return createResponse({ data: result, success: { messages: ['find many success'] } })
 	}

@@ -30,6 +30,17 @@ export class ProductRepository {
 				name: { contains: query.name, mode: 'insensitive' },
 			},
 			...paginationOptions,
+			select: {
+				id: true,
+				cost: true,
+				image: true,
+				name: true,
+				price: true,
+				quantity: true,
+				createdAt: true,
+				warningThreshold: true,
+				storehouses: { select: { quantity: true } },
+			},
 		})
 
 		return products
@@ -40,6 +51,17 @@ export class ProductRepository {
 			where: {
 				id: query.id,
 				name: { contains: query.name, mode: 'insensitive' },
+			},
+			select: {
+				id: true,
+				cost: true,
+				image: true,
+				name: true,
+				price: true,
+				quantity: true,
+				createdAt: true,
+				warningThreshold: true,
+				storehouses: { select: { quantity: true } },
 			},
 		})
 

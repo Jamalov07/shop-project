@@ -3,6 +3,7 @@ import { DeleteMethodEnum } from '../enums'
 
 export declare interface RequestOtherFields {
 	ids?: string[]
+	search?: string
 	method?: DeleteMethodEnum
 	isDeleted?: boolean
 	rolesToConnect?: string[]

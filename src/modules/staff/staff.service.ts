@@ -27,7 +27,7 @@ export class StaffService {
 		const staffs = await this.staffRepository.findMany(query)
 		const staffsCount = await this.staffRepository.countFindMany(query)
 
-		const result = query.pagination ? { pagesCount: Math.ceil(staffsCount / query.pageSize), pageSize: staffs.length, data: staffs } : staffs
+		const result = query.pagination ? { totalCount: staffsCount, pagesCount: Math.ceil(staffsCount / query.pageSize), pageSize: staffs.length, data: staffs } : staffs
 
 		return createResponse({ data: result, success: { messages: ['find many success'] } })
 	}

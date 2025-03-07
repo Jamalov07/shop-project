@@ -3,7 +3,9 @@ import { ProductRequired } from './fields.interfaces'
 
 export declare interface ProductFindManyData extends PaginationResponse<ProductFindOneData> {}
 
-export declare interface ProductFindOneData extends Pick<ProductRequired, 'id' | 'name' | 'cost' | 'price' | 'quantity' | 'warningThreshold' | 'createdAt' | 'image'> {}
+export declare interface ProductFindOneData extends Pick<ProductRequired, 'id' | 'name' | 'cost' | 'price' | 'quantity' | 'warningThreshold' | 'createdAt' | 'image'> {
+	countInStorehouses?: number
+}
 
 export declare interface ProductFindManyResponse extends GlobalResponse {
 	data: ProductFindManyData | ProductFindOneData[]

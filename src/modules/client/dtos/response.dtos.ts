@@ -3,7 +3,13 @@ import { ClientFindManyData, ClientFindOneData, ClientFindOneResponse, ClientMod
 import { GlobalModifyResponseDto, GlobalResponseDto, PaginationResponseDto } from '@common'
 import { ClientRequiredDto } from './fields.dtos'
 
-export class ClientFindOneDataDto extends PickType(ClientRequiredDto, ['id', 'phone', 'fullname', 'createdAt']) implements ClientFindOneData {}
+export class ClientFindOneDataDto extends PickType(ClientRequiredDto, ['id', 'phone', 'fullname', 'createdAt']) implements ClientFindOneData {
+	@ApiProperty({ type: BigInt })
+	debt: bigint
+
+	@ApiProperty({ type: Date })
+	lastSellingDate: Date
+}
 
 export class ClientFindManyDataDto extends PaginationResponseDto implements ClientFindManyData {
 	@ApiProperty({ type: ClientFindOneDataDto, isArray: true })

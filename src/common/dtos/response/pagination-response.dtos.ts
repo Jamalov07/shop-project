@@ -30,6 +30,11 @@ export class PaginationResponseDto {
 	@IsNotEmpty()
 	pagesCount: number
 
+	@ApiProperty({ example: 200 })
+	@IsNumber()
+	@IsNotEmpty()
+	totalCount: number
+
 	@ApiProperty({ example: 10 })
 	@IsNumber()
 	@IsNotEmpty()

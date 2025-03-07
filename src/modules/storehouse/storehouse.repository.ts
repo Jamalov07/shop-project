@@ -43,6 +43,20 @@ export class StorehouseRepository {
 				name: { contains: query.name, mode: 'insensitive' },
 				hexColor: { contains: query.hexColor, mode: 'insensitive' },
 			},
+			select: {
+				id: true,
+				hexColor: true,
+				name: true,
+				position: true,
+				createdAt: true,
+				products: {
+					select: {
+						id: true,
+						quantity: true,
+						product: { select: { id: true, cost: true, createdAt: true, image: true, name: true, price: true, quantity: true, warningThreshold: true } },
+					},
+				},
+			},
 		})
 
 		return storehouse
