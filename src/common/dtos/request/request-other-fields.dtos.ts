@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { RequestOtherFields } from '../../interfaces'
-import { ArrayNotEmpty, ArrayUnique, IsArray, IsBoolean, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator'
+import { ArrayNotEmpty, ArrayUnique, IsArray, IsBoolean, IsDateString, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator'
 import { Transform } from 'class-transformer'
 import { DeleteMethodEnum } from '../../enums'
 
@@ -15,7 +15,7 @@ export class RequestOtherFieldsDto implements RequestOtherFields {
 	@ApiPropertyOptional({ type: String })
 	@IsOptional()
 	@IsString()
-	search?: string
+	search?: string = ''
 
 	@ApiPropertyOptional({ type: Boolean })
 	@Transform(({ value }) => ([false, 'false'].includes(value) ? false : [true, 'true'].includes(value) ? true : undefined))
@@ -55,4 +55,14 @@ export class RequestOtherFieldsDto implements RequestOtherFields {
 	@ArrayNotEmpty({ message: 'UUIDs array should not be empty' })
 	@ArrayUnique({ message: 'UUIDs should be unique' })
 	actionsToDisconnect?: string[] = []
+
+	@ApiPropertyOptional({ description: 'Start date in ISO format (YYYY-MM-DD)' })
+	@IsOptional()
+	@IsDateString()
+	startDate?: Date = undefined
+
+	@ApiPropertyOptional({ description: 'End date in ISO format (YYYY-MM-DD)' })
+	@IsOptional()
+	@IsDateString()
+	endDate?: Date = undefined
 }

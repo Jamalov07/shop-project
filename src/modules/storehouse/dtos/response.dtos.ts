@@ -13,6 +13,15 @@ export class StorehouseProductDto extends PickType(ProductStorehouseRequiredDto,
 export class StorehouseFindOneDataDto extends PickType(StorehouseRequiredDto, ['id', 'name', 'hexColor', 'position', 'createdAt']) implements StorehouseFindOneData {
 	@ApiProperty({ type: StorehouseProductDto })
 	products?: StorehouseProduct[]
+
+	@ApiProperty({ type: Number })
+	totalPackagesCount?: number
+
+	@ApiProperty({ type: BigInt })
+	totalPackagesCost?: bigint
+
+	@ApiProperty({ type: BigInt })
+	totalPackagesPrice?: bigint
 }
 
 export class StorehouseFindManyDataDto extends PaginationResponseDto implements StorehouseFindManyData {

@@ -21,7 +21,12 @@ export class PaymentRepository {
 				id: { in: query.ids },
 				description: { contains: query.description, mode: 'insensitive' },
 				clientId: query.clientId,
+				client: { fullname: query.clientFullName },
 				staffId: query.staffId,
+				createdAt: {
+					gte: query.startDate ? new Date(query.startDate) : undefined,
+					lte: query.endDate ? new Date(query.endDate) : undefined,
+				},
 			},
 			...paginationOptions,
 		})
@@ -44,7 +49,12 @@ export class PaymentRepository {
 				id: { in: query.ids },
 				description: { contains: query.description, mode: 'insensitive' },
 				clientId: query.clientId,
+				client: { fullname: query.clientFullName },
 				staffId: query.staffId,
+				createdAt: {
+					gte: query.startDate ? new Date(query.startDate) : undefined,
+					lte: query.endDate ? new Date(query.endDate) : undefined,
+				},
 			},
 		})
 

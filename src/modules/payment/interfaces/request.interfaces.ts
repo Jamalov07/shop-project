@@ -5,7 +5,9 @@ export declare interface PaymentFindManyRequest
 	extends Pick<PaymentOptional, 'clientId' | 'description' | 'staffId'>,
 		Pick<RequestOtherFields, 'ids'>,
 		PaginationRequest,
-		Pick<RequestOtherFields, 'ids'> {}
+		Pick<RequestOtherFields, 'ids' | 'startDate' | 'endDate'> {
+	clientFullName?: string
+}
 
 export declare interface PaymentFindOneRequest extends Pick<PaymentRequired, 'id'> {}
 

@@ -1,5 +1,5 @@
 import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger'
-import { ProductFindManyData, ProductFindManyResponse, ProductFindOneData, ProductFindOneResponse, ProductModifyResposne } from '../interfaces'
+import { PCalc, ProductCalc, ProductFindManyData, ProductFindManyResponse, ProductFindOneData, ProductFindOneResponse, ProductModifyResposne } from '../interfaces'
 import { GlobalModifyResponseDto, GlobalResponseDto, PaginationResponseDto } from '@common'
 import { ProductRequiredDto } from './fields.dtos'
 
@@ -11,9 +11,34 @@ export class ProductFindOneDataDto
 	countInStorehouses: number
 }
 
+export class PCalcDto implements PCalc {
+	@ApiProperty({ type: BigInt })
+	totalCost: bigint
+
+	@ApiProperty({ type: BigInt })
+	totalPrice: bigint
+
+	@ApiProperty({ type: Number })
+	totalPackages: number
+
+	@ApiProperty({ type: Number })
+	totalQuantityInPackages: number
+}
+
+export class ProductCalcDto implements ProductCalc {
+	@ApiProperty({ type: PCalcDto })
+	inPage: PCalc
+
+	@ApiProperty({ type: PCalcDto })
+	inTotal: PCalc
+}
+
 export class ProductFindManyDataDto extends PaginationResponseDto implements ProductFindManyData {
 	@ApiProperty({ type: ProductFindOneDataDto, isArray: true })
 	data: ProductFindOneData[]
+
+	@ApiProperty({ type: ProductCalcDto })
+	calc: ProductCalc
 }
 
 export class ProductFindManyResponseDto extends GlobalResponseDto implements ProductFindManyResponse {

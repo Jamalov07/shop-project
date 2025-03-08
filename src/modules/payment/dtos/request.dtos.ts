@@ -1,11 +1,15 @@
-import { PickType, IntersectionType } from '@nestjs/swagger'
+import { PickType, IntersectionType, ApiPropertyOptional } from '@nestjs/swagger'
 import { PaymentCreateOneRequest, PaymentFindManyRequest, PaymentFindOneRequest, PaymentUpdateOneRequest } from '../interfaces'
-import { PaginationRequestDto } from '@common'
+import { PaginationRequestDto, RequestOtherFieldsDto } from '@common'
 import { PaymentOptionalDto, PaymentRequiredDto } from './fields.dtos'
 
 export class PaymentFindManyRequestDto
-	extends IntersectionType(PickType(PaymentOptionalDto, ['clientId', 'description']), PaginationRequestDto)
-	implements PaymentFindManyRequest {}
+	extends IntersectionType(PickType(PaymentOptionalDto, ['clientId', 'description']), PaginationRequestDto, PickType(RequestOtherFieldsDto, ['startDate', 'endDate']))
+	implements PaymentFindManyRequest
+{
+	@ApiPropertyOptional({ type: String })
+	clientFullName?: string
+}
 
 export class PaymentFindOneRequestDto extends IntersectionType(PickType(PaymentRequiredDto, ['id'])) implements PaymentFindOneRequest {}
 

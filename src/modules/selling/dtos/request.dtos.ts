@@ -5,7 +5,11 @@ import { SellingOptionalDto, SellingRequiredDto } from './fields.dtos'
 import { PaymentCreateOneRequest, PaymentCreateOneRequestDto } from '../../payment'
 
 export class SellingFindManyRequestDto
-	extends IntersectionType(PickType(SellingOptionalDto, ['clientId', 'staffId', 'paymentCompleted', 'status']), PaginationRequestDto)
+	extends IntersectionType(
+		PickType(SellingOptionalDto, ['clientId', 'staffId', 'paymentCompleted', 'status']),
+		PaginationRequestDto,
+		PickType(RequestOtherFieldsDto, ['endDate', 'startDate']),
+	)
 	implements SellingFindManyRequest {}
 
 export class SellingFindOneRequestDto extends IntersectionType(PickType(SellingRequiredDto, ['id'])) implements SellingFindOneRequest {}

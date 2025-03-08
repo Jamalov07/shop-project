@@ -14,8 +14,37 @@ export class PaymentService {
 	async findMany(query: PaymentFindManyRequest) {
 		const payments = await this.paymentRepository.findMany(query)
 		const paymentsCount = await this.paymentRepository.countFindMany(query)
+		let pageCash = BigInt(0)
+		let pageCard = BigInt(0)
+		let pageOther = BigInt(0)
+		for (const payment of payments) {
+			pageCash += payment.cash
+			pageCard += payment.card
+			pageOther += payment.other
+		}
 
-		const result = query.pagination ? { totalCount: paymentsCount, pagesCount: Math.ceil(paymentsCount / query.pageSize), pageSize: payments.length, data: payments } : payments
+		const fullPayments = await this.paymentRepository.findMany({ pagination: false })
+		let totalCash = BigInt(0)
+		let totalCard = BigInt(0)
+		let totalOther = BigInt(0)
+		for (const payment of fullPayments) {
+			totalCash += payment.cash
+			totalCard += payment.card
+			totalOther += payment.other
+		}
+
+		const result = query.pagination
+			? {
+					calc: {
+						inPage: { card: pageCard, cash: pageCash, other: pageOther },
+						inTotal: { card: totalCard, cash: totalCash, other: totalOther },
+					},
+					totalCount: paymentsCount,
+					pagesCount: Math.ceil(paymentsCount / query.pageSize),
+					pageSize: payments.length,
+					data: payments,
+				}
+			: payments
 
 		return createResponse({ data: result, success: { messages: ['find many success'] } })
 	}

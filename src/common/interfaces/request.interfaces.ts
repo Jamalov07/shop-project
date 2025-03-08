@@ -10,6 +10,8 @@ export declare interface RequestOtherFields {
 	rolesToDisconnect?: string[]
 	actionsToConnect?: string[]
 	actionsToDisconnect?: string[]
+	startDate?: Date
+	endDate?: Date
 }
 
 export declare interface CRequest extends Request {

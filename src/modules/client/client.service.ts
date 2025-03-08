@@ -16,7 +16,7 @@ export class ClientService {
 			const sellings = c.sellings.filter((c) => !c.paymentCompleted)
 			const totalSums = sellings.reduce((a, b) => a + b.totalSum, BigInt(0))
 			const payedSums = sellings.reduce((a, b) => a + b.paymentParts.reduce((c, d) => c + d.sum, BigInt(0)), BigInt(0))
-			return { ...c, debt: totalSums - payedSums, lastSellingDate: c.sellings[0].createdAt ?? null }
+			return { ...c, debt: totalSums - payedSums, lastSellingDate: c.sellings[0]?.createdAt ?? null }
 		})
 		const clientsCount = await this.clientRepository.countFindMany(query)
 

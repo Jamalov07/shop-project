@@ -19,10 +19,10 @@ export class ClientOptionalDto extends PickType(DefaultOptionalFieldsDto, ['id',
 	@ApiPropertyOptional({ type: String })
 	@IsOptional()
 	@IsPhoneNumber('UZ')
-	phone?: string
+	phone?: string = undefined
 
 	@ApiPropertyOptional({ type: String })
 	@IsOptional()
 	@IsString()
-	fullname?: string
+	fullname?: string = ''
 }

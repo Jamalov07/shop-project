@@ -1,7 +1,19 @@
 import { GlobalResponse, PaginationResponse } from '@common'
 import { PaymentRequired } from './fields.interfaces'
 
-export declare interface PaymentFindManyData extends PaginationResponse<PaymentFindOneData> {}
+export declare interface Calc {
+	cash: bigint
+	card: bigint
+	other: bigint
+}
+export declare interface PaymentCalc {
+	inPage: Calc
+	inTotal: Calc
+}
+
+export declare interface PaymentFindManyData extends PaginationResponse<PaymentFindOneData> {
+	calc: PaymentCalc
+}
 
 export declare interface PaymentFindOneData extends Pick<PaymentRequired, 'id' | 'createdAt' | 'card' | 'cash' | 'clientId' | 'description' | 'other'> {}
 

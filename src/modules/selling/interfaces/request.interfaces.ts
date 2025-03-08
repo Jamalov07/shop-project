@@ -5,7 +5,7 @@ import { PaymentCreateOneRequest } from '../../payment'
 export declare interface SellingFindManyRequest
 	extends Pick<SellingOptional, 'clientId' | 'paymentCompleted' | 'staffId' | 'status'>,
 		PaginationRequest,
-		Pick<RequestOtherFields, 'ids'> {}
+		Pick<RequestOtherFields, 'ids' | 'endDate' | 'startDate'> {}
 
 export declare interface SellingFindOneRequest extends Pick<SellingOptional, 'id'> {}
 

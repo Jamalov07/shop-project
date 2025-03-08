@@ -19,7 +19,15 @@ export class StorehouseService {
 	}
 
 	async findMany(query: StorehouseFindManyRequest) {
-		const storehouses = await this.storehouseRepository.findMany(query)
+		const storehouses = (await this.storehouseRepository.findMany(query)).map((s) => {
+			return {
+				...s,
+				totalPackagesCount: s.products.reduce((a, b) => a + b.quantity, 0),
+				totalCostCount: s.products.reduce((a, b) => a + b.product.cost * BigInt(b.product.quantity), BigInt(0)),
+				totalPriceCount: s.products.reduce((a, b) => a + b.product.price * BigInt(b.product.quantity), BigInt(0)),
+				products: undefined,
+			}
+		})
 		const storehousesCount = await this.storehouseRepository.countFindMany(query)
 
 		const result = query.pagination
@@ -36,7 +44,15 @@ export class StorehouseService {
 			throw new BadRequestException('storehouse not found')
 		}
 
-		return createResponse({ data: storehouse, success: { messages: ['find one success'] } })
+		return createResponse({
+			data: {
+				...storehouse,
+				totalPackagesCount: storehouse.products.reduce((a, b) => a + b.quantity, 0),
+				totalCostCount: storehouse.products.reduce((a, b) => a + b.product.cost * BigInt(b.product.quantity), BigInt(0)),
+				totalPriceCount: storehouse.products.reduce((a, b) => a + b.product.price * BigInt(b.product.quantity), BigInt(0)),
+			},
+			success: { messages: ['find one success'] },
+		})
 	}
 
 	async getMany(query: StorehouseGetManyRequest) {

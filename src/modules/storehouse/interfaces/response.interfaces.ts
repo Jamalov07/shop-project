@@ -10,6 +10,9 @@ export declare interface StorehouseProduct extends ProductStorehouse {
 }
 export declare interface StorehouseFindOneData extends Pick<StorehouseRequired, 'id' | 'name' | 'hexColor' | 'position' | 'createdAt'> {
 	products?: StorehouseProduct[]
+	totalPackagesCount?: number
+	totalPackagesCost?: bigint
+	totalPackagesPrice?: bigint
 }
 
 export declare interface StorehouseFindManyResponse extends GlobalResponse {

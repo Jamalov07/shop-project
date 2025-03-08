@@ -15,9 +15,50 @@ export class ProductService {
 		const products = (await this.productRepository.findMany(query)).map((p) => {
 			return { ...p, countInStorehouses: p.storehouses.reduce((a, b) => a + b.quantity, 0) }
 		})
+		let pageCost = BigInt(0)
+		let pagePrice = BigInt(0)
+		let pagePackages = 0
+		let pageQuantityInPackages = 0
+		for (const product of products) {
+			const productCount = product.storehouses.reduce((a, b) => a + b.quantity, 0)
+			const productQuantityCount = productCount * product.quantity
+
+			pagePackages += productCount
+			pageQuantityInPackages += productQuantityCount
+			pageCost += BigInt(productQuantityCount) * product.cost
+			pagePrice += BigInt(productQuantityCount) * product.price
+		}
+
+		const fullProducts = await this.productRepository.findMany({ pagination: false })
+
+		let totalCost = BigInt(0)
+		let totalPrice = BigInt(0)
+		let totalPackages = 0
+		let totalQuantityInPackages = 0
+		for (const product of fullProducts) {
+			const productCount = product.storehouses.reduce((a, b) => a + b.quantity, 0)
+			const productQuantityCount = productCount * product.quantity
+
+			totalPackages += productCount
+			totalQuantityInPackages += productQuantityCount
+			totalCost += BigInt(productQuantityCount) * product.cost
+			totalPrice += BigInt(productQuantityCount) * product.price
+		}
+
 		const productsCount = await this.productRepository.countFindMany(query)
 
-		const result = query.pagination ? { totalCount: productsCount, pagesCount: Math.ceil(productsCount / query.pageSize), pageSize: products.length, data: products } : products
+		const result = query.pagination
+			? {
+					calc: {
+						inPage: { totalPackages: pagePackages, totalQuantityInPackages: pageQuantityInPackages, totalCost: pageCost, totalPrice: pagePrice },
+						inTotal: { totalPackages: totalPackages, totalQuantityInPackages: totalQuantityInPackages, totalCost: totalCost, totalPrice: totalPrice },
+					},
+					totalCount: productsCount,
+					pagesCount: Math.ceil(productsCount / query.pageSize),
+					pageSize: products.length,
+					data: products,
+				}
+			: products
 
 		return createResponse({ data: result, success: { messages: ['find many success'] } })
 	}
