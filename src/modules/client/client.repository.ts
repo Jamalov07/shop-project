@@ -1,7 +1,16 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../shared'
-import { ClientCreateOneRequest, ClientFindManyRequest, ClientFindOneRequest, ClientGetManyRequest, ClientGetOneRequest, ClientUpdateOneRequest } from './interfaces'
+import {
+	ClientCreateOneRequest,
+	ClientDeleteOneRequest,
+	ClientFindManyRequest,
+	ClientFindOneRequest,
+	ClientGetManyRequest,
+	ClientGetOneRequest,
+	ClientUpdateOneRequest,
+} from './interfaces'
 import { ClientController } from './client.controller'
+import { deletedAtConverter } from '../../common'
 
 @Injectable()
 export class ClientRepository {
@@ -19,6 +28,7 @@ export class ClientRepository {
 		const clients = await this.prisma.clientModel.findMany({
 			where: {
 				id: { in: query.ids },
+				deletedAt: deletedAtConverter(query.isDeleted),
 				OR: [
 					{ phone: { contains: query.phone, mode: 'insensitive' } },
 					{ fullname: { contains: query.fullname, mode: 'insensitive' } },
@@ -32,7 +42,7 @@ export class ClientRepository {
 				phone: true,
 				createdAt: true,
 				sellings: {
-					select: { totalSum: true, createdAt: true, paymentCompleted: true, paymentParts: { select: { sum: true } } },
+					select: { totalSum: true, createdAt: true, payments: { select: { card: true, cash: true, other: true } } },
 					orderBy: [{ createdAt: 'desc' }],
 				},
 			},
@@ -46,6 +56,7 @@ export class ClientRepository {
 		const client = await this.prisma.clientModel.findFirst({
 			where: {
 				id: query.id,
+				deletedAt: deletedAtConverter(query.isDeleted),
 				phone: { contains: query.phone, mode: 'insensitive' },
 				fullname: { contains: query.fullname, mode: 'insensitive' },
 			},
@@ -55,7 +66,7 @@ export class ClientRepository {
 				phone: true,
 				createdAt: true,
 				sellings: {
-					select: { totalSum: true, createdAt: true, paymentCompleted: true, paymentParts: { select: { sum: true } } },
+					select: { totalSum: true, createdAt: true, payments: { select: { card: true, cash: true, other: true } } },
 					orderBy: [{ createdAt: 'desc' }],
 				},
 			},
@@ -68,6 +79,7 @@ export class ClientRepository {
 		const clientsCount = await this.prisma.clientModel.count({
 			where: {
 				id: { in: query.ids },
+				deletedAt: deletedAtConverter(query.isDeleted),
 				OR: [
 					{ phone: { contains: query.phone, mode: 'insensitive' } },
 					{ fullname: { contains: query.fullname, mode: 'insensitive' } },
@@ -91,6 +103,7 @@ export class ClientRepository {
 				id: { in: query.ids },
 				phone: query.phone,
 				fullname: query.fullname,
+				deletedAt: deletedAtConverter(query.isDeleted),
 			},
 			...paginationOptions,
 		})
@@ -104,6 +117,7 @@ export class ClientRepository {
 				id: query.id,
 				phone: query.phone,
 				fullname: query.fullname,
+				deletedAt: deletedAtConverter(query.isDeleted),
 			},
 		})
 
@@ -116,6 +130,7 @@ export class ClientRepository {
 				id: { in: query.ids },
 				phone: query.phone,
 				fullname: query.fullname,
+				deletedAt: deletedAtConverter(query.isDeleted),
 			},
 		})
 
@@ -138,9 +153,17 @@ export class ClientRepository {
 			data: {
 				phone: body.phone,
 				fullname: body.fullname,
+				deletedAt: body.deletedAt,
 			},
 		})
 
+		return client
+	}
+
+	async deleteOne(query: ClientDeleteOneRequest) {
+		const client = await this.prisma.clientModel.delete({
+			where: { id: query.id },
+		})
 		return client
 	}
 

@@ -104,7 +104,6 @@ export class StaffService {
 
 	async deleteOne(query: StaffDeleteOneRequest) {
 		await this.getOne(query)
-		console.log(query.method)
 		if (query.method === 'hard') {
 			await this.staffRepository.deleteOne(query)
 		} else {

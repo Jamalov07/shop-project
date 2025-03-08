@@ -1,5 +1,5 @@
 import { BadRequestException, Module } from '@nestjs/common'
-import { PrismaModule } from '../shared'
+import { ExcelModule, PrismaModule } from '../shared'
 import { ProductController } from './product.controller'
 import { ProductService } from './product.service'
 import { ProductRepository } from './product.repository'
@@ -34,6 +34,7 @@ import { extname } from 'path'
 				}
 			},
 		}),
+		ExcelModule,
 	],
 	controllers: [ProductController],
 	providers: [ProductService, ProductRepository],

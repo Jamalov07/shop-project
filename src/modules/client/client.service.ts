@@ -1,7 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { ClientRepository } from './client.repository'
 import { createResponse } from '@common'
-import { ClientGetOneRequest, ClientCreateOneRequest, ClientUpdateOneRequest, ClientGetManyRequest, ClientFindManyRequest, ClientFindOneRequest } from './interfaces'
+import {
+	ClientGetOneRequest,
+	ClientCreateOneRequest,
+	ClientUpdateOneRequest,
+	ClientGetManyRequest,
+	ClientFindManyRequest,
+	ClientFindOneRequest,
+	ClientDeleteOneRequest,
+} from './interfaces'
 
 @Injectable()
 export class ClientService {
@@ -13,9 +21,8 @@ export class ClientService {
 
 	async findMany(query: ClientFindManyRequest) {
 		const clients = (await this.clientRepository.findMany(query)).map((c) => {
-			const sellings = c.sellings.filter((c) => !c.paymentCompleted)
-			const totalSums = sellings.reduce((a, b) => a + b.totalSum, BigInt(0))
-			const payedSums = sellings.reduce((a, b) => a + b.paymentParts.reduce((c, d) => c + d.sum, BigInt(0)), BigInt(0))
+			const totalSums = c.sellings.reduce((a, b) => a + b.totalSum, BigInt(0))
+			const payedSums = c.sellings.reduce((a, b) => a + b.payments.reduce((c, d) => c + d.cash + d.card + d.other, BigInt(0)), BigInt(0))
 			return { ...c, debt: totalSums - payedSums, lastSellingDate: c.sellings[0]?.createdAt ?? null }
 		})
 		const clientsCount = await this.clientRepository.countFindMany(query)
@@ -31,9 +38,8 @@ export class ClientService {
 		if (!client) {
 			throw new BadRequestException('client not found')
 		}
-		const sellings = client.sellings.filter((c) => !c.paymentCompleted)
-		const totalSums = sellings.reduce((a, b) => a + b.totalSum, BigInt(0))
-		const payedSums = sellings.reduce((a, b) => a + b.paymentParts.reduce((c, d) => c + d.sum, BigInt(0)), BigInt(0))
+		const totalSums = client.sellings.reduce((a, b) => a + b.totalSum, BigInt(0))
+		const payedSums = client.sellings.reduce((a, b) => a + b.payments.reduce((c, d) => c + d.cash + d.card + d.other, BigInt(0)), BigInt(0))
 
 		return createResponse({
 			data: { ...client, debt: totalSums - payedSums, lastSellingDate: client.sellings[0].createdAt ?? null },
@@ -72,5 +78,15 @@ export class ClientService {
 		await this.clientRepository.updateOne(query, { ...body })
 
 		return createResponse({ data: null, success: { messages: ['update success'] } })
+	}
+
+	async deleteOne(query: ClientDeleteOneRequest) {
+		await this.getOne(query)
+		if (query.method === 'hard') {
+			await this.clientRepository.deleteOne(query)
+		} else {
+			await this.clientRepository.updateOne(query, { deletedAt: new Date() })
+		}
+		return createResponse({ data: null, success: { messages: ['delete success'] } })
 	}
 }

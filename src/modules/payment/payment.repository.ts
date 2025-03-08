@@ -110,53 +110,54 @@ export class PaymentRepository {
 				clientId: body.clientId,
 				other: body.other,
 				staffId: body.staffId,
+				sellingId: body.sellingId,
 			},
 		})
 		return payment
 	}
 
-	async createOnePro(body: PaymentCreateOneRequest, sellingId?: string) {
-		const payment = await this.createOne(body)
+	// async createOnePro(body: PaymentCreateOneRequest, sellingId?: string) {
+	// 	const payment = await this.createOne(body)
 
-		let notPayedsellings = await this.prisma.sellingModel.findMany({
-			where: { clientId: body.clientId, paymentCompleted: false, status: 'accepted' },
-			orderBy: [{ createdAt: 'asc' }],
-			select: { id: true, totalSum: true, paymentParts: true },
-		})
-		if (sellingId) {
-			const selling = await this.prisma.sellingModel.findFirst({
-				where: { id: sellingId },
-				select: { id: true, totalSum: true, paymentParts: true },
-			})
-			notPayedsellings = [selling, ...notPayedsellings]
-		}
+	// 	let notPayedsellings = await this.prisma.sellingModel.findMany({
+	// 		where: { clientId: body.clientId, paymentCompleted: false, status: 'accepted' },
+	// 		orderBy: [{ createdAt: 'asc' }],
+	// 		select: { id: true, totalSum: true, paymentParts: true },
+	// 	})
+	// 	if (sellingId) {
+	// 		const selling = await this.prisma.sellingModel.findFirst({
+	// 			where: { id: sellingId },
+	// 			select: { id: true, totalSum: true, paymentParts: true },
+	// 		})
+	// 		notPayedsellings = [selling, ...notPayedsellings]
+	// 	}
 
-		if (notPayedsellings.length) {
-			let totalMoney = body.card + body.cash + body.other
+	// 	if (notPayedsellings.length) {
+	// 		let totalMoney = body.card + body.cash + body.other
 
-			for (const selling of notPayedsellings) {
-				if (totalMoney) {
-					const qoldiq = selling.totalSum - selling.paymentParts.reduce((a, b) => a + b.sum, BigInt(0))
+	// 		for (const selling of notPayedsellings) {
+	// 			if (totalMoney) {
+	// 				const qoldiq = selling.totalSum - selling.paymentParts.reduce((a, b) => a + b.sum, BigInt(0))
 
-					if (qoldiq > totalMoney) {
-						await this.prisma.paymentPartModel.create({ data: { paymentId: payment.id, sellingId: selling.id, sum: totalMoney } })
-						totalMoney = totalMoney - totalMoney
-					} else if (qoldiq === totalMoney) {
-						await this.prisma.paymentPartModel.create({ data: { paymentId: payment.id, sellingId: selling.id, sum: totalMoney } })
-						await this.prisma.sellingModel.update({ where: { id: selling.id }, data: { paymentCompleted: true } })
-						totalMoney = totalMoney - totalMoney
-					} else if (qoldiq < totalMoney) {
-						await this.prisma.paymentPartModel.create({ data: { paymentId: payment.id, sellingId: selling.id, sum: qoldiq } })
-						await this.prisma.sellingModel.update({ where: { id: selling.id }, data: { paymentCompleted: true } })
-						totalMoney = totalMoney - qoldiq
-					}
-				} else {
-					break
-				}
-			}
-		}
-		return payment
-	}
+	// 				if (qoldiq > totalMoney) {
+	// 					await this.prisma.paymentPartModel.create({ data: { paymentId: payment.id, sellingId: selling.id, sum: totalMoney } })
+	// 					totalMoney = totalMoney - totalMoney
+	// 				} else if (qoldiq === totalMoney) {
+	// 					await this.prisma.paymentPartModel.create({ data: { paymentId: payment.id, sellingId: selling.id, sum: totalMoney } })
+	// 					await this.prisma.sellingModel.update({ where: { id: selling.id }, data: { paymentCompleted: true } })
+	// 					totalMoney = totalMoney - totalMoney
+	// 				} else if (qoldiq < totalMoney) {
+	// 					await this.prisma.paymentPartModel.create({ data: { paymentId: payment.id, sellingId: selling.id, sum: qoldiq } })
+	// 					await this.prisma.sellingModel.update({ where: { id: selling.id }, data: { paymentCompleted: true } })
+	// 					totalMoney = totalMoney - qoldiq
+	// 				}
+	// 			} else {
+	// 				break
+	// 			}
+	// 		}
+	// 	}
+	// 	return payment
+	// }
 
 	async updateOne(query: PaymentGetOneRequest, body: PaymentUpdateOneRequest) {
 		const payment = await this.prisma.paymentModel.update({

@@ -45,12 +45,12 @@ export class SellingController {
 		return this.sellingService.createOne(body)
 	}
 
-	@Post('one-with-payment')
-	@ApiOperation({ summary: 'add one selling' })
-	@ApiOkResponse({ type: SellingModifyResponseDto })
-	async createOneWithPayment(@Body() body: SellingCreateOneWithPaymentRequestDto): Promise<SellingModifyResponseDto> {
-		return this.sellingService.createOneWithPayment(body)
-	}
+	// @Post('one-with-payment')
+	// @ApiOperation({ summary: 'add one selling' })
+	// @ApiOkResponse({ type: SellingModifyResponseDto })
+	// async createOneWithPayment(@Body() body: SellingCreateOneWithPaymentRequestDto): Promise<SellingModifyResponseDto> {
+	// 	return this.sellingService.createOneWithPayment(body)
+	// }
 
 	@Patch('one')
 	@ApiOperation({ summary: 'update one selling' })

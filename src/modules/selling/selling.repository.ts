@@ -29,7 +29,6 @@ export class SellingRepository {
 				id: { in: query.ids },
 				clientId: query.clientId,
 				staffId: query.staffId,
-				paymentCompleted: query.paymentCompleted,
 				status: query.status,
 				createdAt: {
 					gte: query.startDate ? new Date(query.startDate) : undefined,
@@ -58,7 +57,6 @@ export class SellingRepository {
 				id: { in: query.ids },
 				clientId: query.clientId,
 				staffId: query.staffId,
-				paymentCompleted: query.paymentCompleted,
 				status: query.status,
 				createdAt: {
 					gte: query.startDate ? new Date(query.startDate) : undefined,
@@ -81,7 +79,6 @@ export class SellingRepository {
 				id: { in: query.ids },
 				clientId: query.clientId,
 				staffId: query.staffId,
-				paymentCompleted: query.paymentCompleted,
 				status: query.status,
 			},
 			...paginationOptions,
@@ -104,7 +101,6 @@ export class SellingRepository {
 				id: { in: query.ids },
 				clientId: query.clientId,
 				staffId: query.staffId,
-				paymentCompleted: query.paymentCompleted,
 				status: query.status,
 			},
 		})
@@ -127,7 +123,6 @@ export class SellingRepository {
 		const selling = await this.prisma.sellingModel.update({
 			where: { id: query.id },
 			data: {
-				paymentCompleted: body.paymentCompleted,
 				status: body.status,
 				totalSum: body.totalSum,
 				createdAt: body.status === 'accepted' ? new Date() : undefined,

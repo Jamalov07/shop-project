@@ -84,11 +84,11 @@ export class PaymentService {
 		return createResponse({ data: null, success: { messages: ['create success'] } })
 	}
 
-	async createOnePro(body: PaymentCreateOneRequest, sellingId?: string) {
-		await this.paymentRepository.createOnePro({ ...body }, sellingId)
+	// async createOnePro(body: PaymentCreateOneRequest, sellingId?: string) {
+	// 	await this.paymentRepository.createOnePro({ ...body }, sellingId)
 
-		return createResponse({ data: null, success: { messages: ['create one pro success'] } })
-	}
+	// 	return createResponse({ data: null, success: { messages: ['create one pro success'] } })
+	// }
 
 	async updateOne(query: PaymentGetOneRequest, body: PaymentUpdateOneRequest) {
 		await this.paymentRepository.updateOne(query, { ...body })

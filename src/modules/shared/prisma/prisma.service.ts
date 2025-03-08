@@ -16,7 +16,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 		this.$use(async (params, next) => {
 			// console.log(params)
 			if (['findMany', 'findFirst'].includes(params.action) && !['ActionModel'].includes(params.model)) {
-				if (!params.args.orderBy) {
+				if (!params.args) params.args = {}
+				if (!params?.args?.orderBy) {
 					params.args.orderBy = [{ createdAt: 'desc' }]
 				} else {
 					params.args.orderBy.push({ createdAt: 'desc' })

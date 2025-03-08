@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Patch, Post, Query, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Patch, Post, Query, Res, UseGuards } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ClientService } from './client.service'
 import { AuthOptions, CheckPermissionGuard } from '@common'
@@ -10,16 +10,21 @@ import {
 	ClientFindManyResponseDto,
 	ClientFindOneResponseDto,
 	ClientModifyResponseDto,
+	ClientDeleteOneRequestDto,
 } from './dtos'
+import { ExcelService } from '../shared'
+import { Response } from 'express'
 
 @ApiTags('Client')
 // @UseGuards(CheckPermissionGuard)
 @Controller('client')
 export class ClientController {
 	private readonly clientService: ClientService
+	private readonly excelService: ExcelService
 
-	constructor(clientService: ClientService) {
+	constructor(clientService: ClientService, excelService: ExcelService) {
 		this.clientService = clientService
+		this.excelService = excelService
 	}
 
 	@Get('many')
@@ -28,6 +33,13 @@ export class ClientController {
 	@AuthOptions(false, false)
 	async findAll(@Query() query: ClientFindManyRequestDto): Promise<ClientFindManyResponseDto> {
 		return this.clientService.findMany(query)
+	}
+
+	@Get('excel')
+	@ApiOkResponse({ type: File })
+	@ApiOperation({ summary: 'get all clients in excel' })
+	async downloanExcel(@Res() response: Response) {
+		return this.excelService.exportClientsToExcel(response)
 	}
 
 	@Get('one')
@@ -49,5 +61,12 @@ export class ClientController {
 	@ApiOkResponse({ type: ClientModifyResponseDto })
 	async update(@Query() query: ClientFindOneRequestDto, @Body() body: ClientUpdateOneRequestDto): Promise<ClientModifyResponseDto> {
 		return this.clientService.updateOne(query, body)
+	}
+
+	@Delete('one')
+	@ApiOperation({ summary: 'delete one staff' })
+	@ApiOkResponse({ type: ClientModifyResponseDto })
+	async delete(@Query() query: ClientDeleteOneRequestDto): Promise<ClientModifyResponseDto> {
+		return this.clientService.deleteOne(query)
 	}
 }

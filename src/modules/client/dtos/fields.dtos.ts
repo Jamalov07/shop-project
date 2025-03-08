@@ -3,7 +3,7 @@ import { DefaultOptionalFieldsDto, DefaultRequiredFieldsDto } from '../../../com
 import { ClientOptional, ClientRequired } from '../interfaces'
 import { IsNotEmpty, IsOptional, IsPhoneNumber, IsString } from 'class-validator'
 
-export class ClientRequiredDto extends PickType(DefaultRequiredFieldsDto, ['id', 'createdAt']) implements ClientRequired {
+export class ClientRequiredDto extends PickType(DefaultRequiredFieldsDto, ['id', 'createdAt', 'updatedAt', 'deletedAt']) implements ClientRequired {
 	@ApiProperty({ type: String })
 	@IsNotEmpty()
 	@IsPhoneNumber('UZ')
@@ -15,7 +15,7 @@ export class ClientRequiredDto extends PickType(DefaultRequiredFieldsDto, ['id',
 	fullname: string
 }
 
-export class ClientOptionalDto extends PickType(DefaultOptionalFieldsDto, ['id', 'createdAt']) implements ClientOptional {
+export class ClientOptionalDto extends PickType(DefaultOptionalFieldsDto, ['id', 'createdAt', 'updatedAt', 'deletedAt']) implements ClientOptional {
 	@ApiPropertyOptional({ type: String })
 	@IsOptional()
 	@IsPhoneNumber('UZ')

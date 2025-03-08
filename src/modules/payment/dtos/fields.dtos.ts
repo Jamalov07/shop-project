@@ -33,6 +33,11 @@ export class PaymentRequiredDto extends PickType(DefaultRequiredFieldsDto, ['id'
 	@IsNotEmpty()
 	@IsIntOrBigInt()
 	other: bigint = BigInt(0)
+
+	@ApiProperty({ type: String })
+	@IsNotEmpty()
+	@IsUUID('4')
+	sellingId: string
 }
 
 export class PaymentOptionalDto extends PickType(DefaultOptionalFieldsDto, ['id', 'createdAt']) implements PaymentOptional {
@@ -55,6 +60,11 @@ export class PaymentOptionalDto extends PickType(DefaultOptionalFieldsDto, ['id'
 	@IsOptional()
 	@IsUUID('4')
 	staffId?: string
+
+	@ApiPropertyOptional({ type: String })
+	@IsOptional()
+	@IsUUID('4')
+	sellingId?: string
 
 	@ApiPropertyOptional({ type: String })
 	@IsOptional()

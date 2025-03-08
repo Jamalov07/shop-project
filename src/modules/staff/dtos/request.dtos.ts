@@ -38,7 +38,7 @@ export class StaffCreateManyRequestDto implements StaffCreateManyRequest {
 
 export class StaffUpdateOneRequestDto
 	extends IntersectionType(
-		PickType(StaffOptionalDto, ['fullname', 'password', 'phone']),
+		PickType(StaffOptionalDto, ['fullname', 'password', 'phone', 'deletedAt']),
 		PickType(RequestOtherFieldsDto, ['rolesToConnect', 'rolesToDisconnect', 'actionsToConnect', 'actionsToDisconnect']),
 	)
 	implements StaffUpdateOneRequest {}

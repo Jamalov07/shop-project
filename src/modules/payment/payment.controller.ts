@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Patch, Post, Query, Req, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Patch, Post, Query, Req, Res, UseGuards } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { PaymentService } from './payment.service'
 import { AuthOptions, CheckPermissionGuard, CRequest } from '@common'
@@ -11,15 +11,19 @@ import {
 	PaymentFindOneResponseDto,
 	PaymentModifyResponseDto,
 } from './dtos'
+import { ExcelService } from '../shared'
+import { Response } from 'express'
 
 @ApiTags('Payment')
 // @UseGuards(CheckPermissionGuard)
 @Controller('payment')
 export class PaymentController {
 	private readonly paymentService: PaymentService
+	private readonly excelService: ExcelService
 
-	constructor(paymentService: PaymentService) {
+	constructor(paymentService: PaymentService, excelService: ExcelService) {
 		this.paymentService = paymentService
+		this.excelService = excelService
 	}
 
 	@Get('many')
@@ -28,6 +32,13 @@ export class PaymentController {
 	@AuthOptions(false, false)
 	async findAll(@Query() query: PaymentFindManyRequestDto): Promise<PaymentFindManyResponseDto> {
 		return this.paymentService.findMany(query)
+	}
+
+	@Get('excel')
+	@ApiOkResponse({ type: File })
+	@ApiOperation({ summary: 'get all payments in excel' })
+	async downloanExcel(@Query() query: PaymentFindManyRequestDto, @Res() response: Response) {
+		return this.excelService.exportPaymentsToExcel(query, response)
 	}
 
 	@Get('one')
@@ -42,7 +53,7 @@ export class PaymentController {
 	@ApiOperation({ summary: 'add one payment' })
 	@ApiOkResponse({ type: PaymentModifyResponseDto })
 	async create(@Body() body: PaymentCreateOneRequestDto, @Req() req: CRequest): Promise<PaymentModifyResponseDto> {
-		return this.paymentService.createOnePro({ ...body, staffId: req.staff.id })
+		return this.paymentService.createOne({ ...body, staffId: req.staff.id })
 	}
 
 	@Patch('one')

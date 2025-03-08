@@ -4,7 +4,11 @@ import { PaginationRequestDto, RequestOtherFieldsDto } from '@common'
 import { PaymentOptionalDto, PaymentRequiredDto } from './fields.dtos'
 
 export class PaymentFindManyRequestDto
-	extends IntersectionType(PickType(PaymentOptionalDto, ['clientId', 'description']), PaginationRequestDto, PickType(RequestOtherFieldsDto, ['startDate', 'endDate']))
+	extends IntersectionType(
+		PickType(PaymentOptionalDto, ['clientId', 'description', 'sellingId', 'staffId']),
+		PaginationRequestDto,
+		PickType(RequestOtherFieldsDto, ['startDate', 'endDate']),
+	)
 	implements PaymentFindManyRequest
 {
 	@ApiPropertyOptional({ type: String })
@@ -14,7 +18,7 @@ export class PaymentFindManyRequestDto
 export class PaymentFindOneRequestDto extends IntersectionType(PickType(PaymentRequiredDto, ['id'])) implements PaymentFindOneRequest {}
 
 export class PaymentCreateOneRequestDto
-	extends IntersectionType(PickType(PaymentRequiredDto, ['clientId']), PickType(PaymentOptionalDto, ['card', 'cash', 'description', 'other']))
+	extends IntersectionType(PickType(PaymentRequiredDto, ['clientId']), PickType(PaymentOptionalDto, ['card', 'cash', 'description', 'other', 'sellingId']))
 	implements PaymentCreateOneRequest {}
 
 export class PaymentUpdateOneRequestDto extends IntersectionType(PickType(PaymentOptionalDto, ['description'])) implements PaymentUpdateOneRequest {}

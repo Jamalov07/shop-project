@@ -53,19 +53,23 @@ export class SellingService {
 	}
 
 	async createOne(body: SellingCreateOneRequest) {
-		await this.sellingRepository.createOne({ ...body })
+		const selling = await this.sellingRepository.createOne({ ...body })
+
+		if (body.payment) {
+			await this.paymentRepository.createOne({ ...body.payment, staffId: body.staffId, clientId: body.clientId, sellingId: selling.id })
+		}
 
 		return createResponse({ data: null, success: { messages: ['create success'] } })
 	}
 
-	async createOneWithPayment(body: SellingCreateOneRequest) {
-		const selling = await this.sellingRepository.createOne({ ...body })
-		if (body.payment) {
-			await this.paymentRepository.createOnePro({ ...body.payment, staffId: body.staffId, clientId: body.clientId }, selling.id)
-		}
+	// async createOneWithPayment(body: SellingCreateOneRequest) {
+	// 	const selling = await this.sellingRepository.createOne({ ...body })
+	// 	if (body.payment) {
+	// 		await this.paymentRepository.createOne({ ...body.payment, staffId: body.staffId, clientId: body.clientId, sellingId: selling.id })
+	// 	}
 
-		return createResponse({ data: null, success: { messages: ['create one with payment success'] } })
-	}
+	// 	return createResponse({ data: null, success: { messages: ['create one with payment success'] } })
+	// }
 
 	async updateOne(query: SellingGetOneRequest, body: SellingUpdateOneRequest) {
 		await this.getOne(query)

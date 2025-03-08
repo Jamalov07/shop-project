@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Patch, Post, Query, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
 import { ApiConsumes, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { ProductService } from './product.service'
@@ -12,15 +12,19 @@ import {
 	ProductFindOneResponseDto,
 	ProductModifyResponseDto,
 } from './dtos'
+import { ExcelService } from '../shared'
+import { Response } from 'express'
 
 @ApiTags('Product')
 // @UseGuards(CheckPermissionGuard)
 @Controller('product')
 export class ProductController {
 	private readonly productService: ProductService
+	private readonly excelService: ExcelService
 
-	constructor(productService: ProductService) {
+	constructor(productService: ProductService,excelService: ExcelService) {
 		this.productService = productService
+		this.excelService = excelService
 	}
 
 	@Get('many')
@@ -29,6 +33,13 @@ export class ProductController {
 	@AuthOptions(false, false)
 	async findAll(@Query() query: ProductFindManyRequestDto): Promise<ProductFindManyResponseDto> {
 		return this.productService.findMany(query)
+	}
+
+	@Get('excel')
+	@ApiOkResponse({ type: File })
+	@ApiOperation({ summary: 'get all products in excel' })
+	async downloanExcel(@Res() response: Response) {
+		return this.excelService.exportProductsToExcel(response)
 	}
 
 	@Get('one')
