@@ -34,7 +34,7 @@ export class PaymentFindManyDataDto extends PaginationResponseDto implements Pay
 
 export class PaymentFindManyResponseDto extends GlobalResponseDto implements PaymentFindManyResponseDto {
 	@ApiProperty({ type: PaymentFindManyDataDto })
-	data: PaymentFindManyData | PaymentFindOneData[]
+	data: PaymentFindManyData | { data: PaymentFindOneData[] }
 }
 
 export class PaymentFindOneResponseDto extends GlobalResponseDto implements PaymentFindOneResponse {

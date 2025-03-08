@@ -5,6 +5,7 @@ import { Response } from 'express'
 import * as fs from 'fs'
 import * as path from 'path'
 import { PaymentFindManyRequest } from '../../payment'
+import { SellingFindManyRequest } from '../../selling'
 
 @Injectable()
 export class ExcelService {
@@ -182,7 +183,70 @@ export class ExcelService {
 				console.error('File download error:', err)
 			}
 			// Faylni o‘chirib tashlash (agar kerak bo‘lsa)
-			fs.unlinkSync(filePath)
+			setTimeout(() => fs.unlinkSync(filePath), 5000)
+		})
+	}
+
+	async exportSellingsToExcel(query: SellingFindManyRequest, res: Response) {
+		const sellings = await this.prisma.sellingModel.findMany({
+			where: {
+				id: { in: query.ids },
+				clientId: query.clientId,
+				staffId: query.staffId,
+				status: query.status,
+				createdAt: {
+					gte: query.startDate ? new Date(query.startDate) : undefined,
+					lte: query.endDate ? new Date(query.endDate) : undefined,
+				},
+			},
+			include: {
+				staff: true,
+				client: true,
+				payments: true,
+				products: true,
+			},
+		})
+
+		const workbook = new ExcelJS.Workbook()
+		const worksheet = workbook.addWorksheet('Sellings')
+
+		// Sarlavha qo‘shish
+		worksheet.columns = [
+			{ header: 'ID', key: 'id', width: 42 },
+			{ header: 'Status', key: 'status', width: 15 },
+			{ header: 'Staff ID', key: 'staffId', width: 42 },
+			{ header: 'Client ID', key: 'clientId', width: 42 },
+			{ header: 'Total Sum', key: 'totalSum', width: 20 },
+			{ header: 'Created At', key: 'createdAt', width: 40 },
+		]
+
+		// Ma'lumotlarni qo‘shish
+		sellings.forEach((selling) => {
+			worksheet.addRow({
+				id: selling.id,
+				status: selling.status,
+				staffId: selling.staffId,
+				clientId: selling.clientId,
+				totalSum: selling.totalSum.toString(), // BigInt ni stringga o‘tkazamiz
+				createdAt: selling.createdAt.toISOString(),
+			})
+		})
+
+		// 🔹 5. Fayl nomini yaratish
+		const fileName = `sellings_${Date.now()}.xlsx`
+		const uploadDir = path.join(process.cwd(), 'uploads', 'files')
+		const filePath = path.join(uploadDir, fileName)
+
+		// 🔹 6. Faylni saqlash
+		await workbook.xlsx.writeFile(filePath)
+
+		// 🔹 7. Faylni foydalanuvchiga yuborish
+		res.download(filePath, fileName, (err) => {
+			if (err) {
+				console.error('File download error:', err)
+			}
+			// Faylni o‘chirib tashlash (agar kerak bo‘lsa)
+			setTimeout(() => fs.unlinkSync(filePath), 5000)
 		})
 	}
 }

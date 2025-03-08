@@ -43,7 +43,7 @@ export class ProductFindManyDataDto extends PaginationResponseDto implements Pro
 
 export class ProductFindManyResponseDto extends GlobalResponseDto implements ProductFindManyResponse {
 	@ApiProperty({ type: ProductFindManyDataDto })
-	data: ProductFindManyData | ProductFindOneData[]
+	data: ProductFindManyData | { data: ProductFindOneData[] }
 }
 
 export class ProductFindOneResponseDto extends GlobalResponseDto implements ProductFindOneResponse {

@@ -1,5 +1,5 @@
 import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger'
-import { StaffFindManyData, StaffFindOneData, StaffFindOneResponse, StaffModifyResposne } from '../interfaces'
+import { StaffFindManyData, StaffFindManyResponse, StaffFindOneData, StaffFindOneResponse, StaffModifyResposne } from '../interfaces'
 import { GlobalModifyResponseDto, GlobalResponseDto, PaginationResponseDto } from '@common'
 import { StaffRequiredDto } from './fields.dtos'
 
@@ -10,9 +10,9 @@ export class StaffFindManyDataDto extends PaginationResponseDto implements Staff
 	data: StaffFindOneData[]
 }
 
-export class StaffFindManyResponseDto extends GlobalResponseDto implements StaffFindManyResponseDto {
+export class StaffFindManyResponseDto extends GlobalResponseDto implements StaffFindManyResponse {
 	@ApiProperty({ type: StaffFindManyDataDto })
-	data: StaffFindManyData | StaffFindOneData[]
+	data: StaffFindManyData | { data: StaffFindOneData[] }
 }
 
 export class StaffFindOneResponseDto extends GlobalResponseDto implements StaffFindOneResponse {

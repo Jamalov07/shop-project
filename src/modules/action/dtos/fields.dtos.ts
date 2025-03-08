@@ -30,20 +30,20 @@ export class ActionOptionalDto extends PickType(DefaultOptionalFieldsDto, ['id']
 	@ApiPropertyOptional({ type: String })
 	@IsOptional()
 	@IsString()
-	name?: string
+	name?: string = ''
 
 	@ApiPropertyOptional({ enum: ActionMethodEnum })
 	@IsOptional()
 	@IsEnum(ActionMethodEnum)
-	method?: $Enums.ActionMethodEnum
+	method?: $Enums.ActionMethodEnum = undefined
 
 	@ApiPropertyOptional({ type: String })
 	@IsOptional()
 	@IsString()
-	url?: string
+	url?: string = ''
 
 	@ApiPropertyOptional({ type: String })
 	@IsOptional()
 	@IsString()
-	description?: string
+	description?: string = ''
 }

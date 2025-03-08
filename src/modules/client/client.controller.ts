@@ -31,7 +31,7 @@ export class ClientController {
 	@ApiOkResponse({ type: ClientFindManyResponseDto })
 	@ApiOperation({ summary: 'get all clients' })
 	@AuthOptions(false, false)
-	async findAll(@Query() query: ClientFindManyRequestDto): Promise<ClientFindManyResponseDto> {
+	async findMany(@Query() query: ClientFindManyRequestDto): Promise<ClientFindManyResponseDto> {
 		return this.clientService.findMany(query)
 	}
 
@@ -59,14 +59,14 @@ export class ClientController {
 	@Patch('one')
 	@ApiOperation({ summary: 'update one client' })
 	@ApiOkResponse({ type: ClientModifyResponseDto })
-	async update(@Query() query: ClientFindOneRequestDto, @Body() body: ClientUpdateOneRequestDto): Promise<ClientModifyResponseDto> {
+	async updateOne(@Query() query: ClientFindOneRequestDto, @Body() body: ClientUpdateOneRequestDto): Promise<ClientModifyResponseDto> {
 		return this.clientService.updateOne(query, body)
 	}
 
 	@Delete('one')
 	@ApiOperation({ summary: 'delete one staff' })
 	@ApiOkResponse({ type: ClientModifyResponseDto })
-	async delete(@Query() query: ClientDeleteOneRequestDto): Promise<ClientModifyResponseDto> {
+	async deleteOne(@Query() query: ClientDeleteOneRequestDto): Promise<ClientModifyResponseDto> {
 		return this.clientService.deleteOne(query)
 	}
 }

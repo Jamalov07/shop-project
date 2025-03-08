@@ -13,7 +13,7 @@ export class ActionController {
 	@Get('many')
 	@ApiOkResponse({ type: ActionFindManyResponseDto })
 	@ApiOperation({ summary: 'get all staffs' })
-	async findAll(@Query() query: ActionFindManyRequestDto): Promise<ActionFindManyResponseDto> {
+	async findMany(@Query() query: ActionFindManyRequestDto): Promise<ActionFindManyResponseDto> {
 		return this.actionService.findMany(query)
 	}
 
@@ -27,7 +27,7 @@ export class ActionController {
 	@Patch('one')
 	@ApiOperation({ summary: 'update one action' })
 	@ApiOkResponse({ type: ActionModifyResponseDto })
-	async update(@Query() query: ActionFindOneRequestDto, @Body() body: ActionUpdateOneRequestDto): Promise<ActionModifyResponseDto> {
+	async updateOne(@Query() query: ActionFindOneRequestDto, @Body() body: ActionUpdateOneRequestDto): Promise<ActionModifyResponseDto> {
 		return this.actionService.updateOne(query, body)
 	}
 }

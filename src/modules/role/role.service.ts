@@ -15,7 +15,14 @@ export class RoleService {
 		const roles = await this.roleRepository.findMany(query)
 		const rolesCount = await this.roleRepository.countFindMany(query)
 
-		const result = query.pagination ? { totalCount: rolesCount, pagesCount: Math.ceil(rolesCount / query.pageSize), pageSize: roles.length, data: roles } : roles
+		const result = query.pagination
+			? {
+					totalCount: rolesCount,
+					pagesCount: Math.ceil(rolesCount / query.pageSize),
+					pageSize: roles.length,
+					data: roles,
+				}
+			: { data: roles }
 
 		return createResponse({ data: result, success: { messages: ['find many success'] } })
 	}
@@ -34,7 +41,13 @@ export class RoleService {
 		const roles = await this.roleRepository.getMany(query)
 		const rolesCount = await this.roleRepository.countGetMany(query)
 
-		const result = query.pagination ? { pagesCount: Math.ceil(rolesCount / query.pageSize), pageSize: roles.length, data: roles } : roles
+		const result = query.pagination
+			? {
+					pagesCount: Math.ceil(rolesCount / query.pageSize),
+					pageSize: roles.length,
+					data: roles,
+				}
+			: { data: roles }
 
 		return createResponse({ data: result, success: { messages: ['get many success'] } })
 	}

@@ -27,7 +27,14 @@ export class StaffService {
 		const staffs = await this.staffRepository.findMany(query)
 		const staffsCount = await this.staffRepository.countFindMany(query)
 
-		const result = query.pagination ? { totalCount: staffsCount, pagesCount: Math.ceil(staffsCount / query.pageSize), pageSize: staffs.length, data: staffs } : staffs
+		const result = query.pagination
+			? {
+					totalCount: staffsCount,
+					pagesCount: Math.ceil(staffsCount / query.pageSize),
+					pageSize: staffs.length,
+					data: staffs,
+				}
+			: { data: staffs }
 
 		return createResponse({ data: result, success: { messages: ['find many success'] } })
 	}
@@ -46,7 +53,13 @@ export class StaffService {
 		const staffs = await this.staffRepository.getMany(query)
 		const staffsCount = await this.staffRepository.countGetMany(query)
 
-		const result = query.pagination ? { pagesCount: Math.ceil(staffsCount / query.pageSize), pageSize: staffs.length, data: staffs } : staffs
+		const result = query.pagination
+			? {
+					pagesCount: Math.ceil(staffsCount / query.pageSize),
+					pageSize: staffs.length,
+					data: staffs,
+				}
+			: { data: staffs }
 
 		return createResponse({ data: result, success: { messages: ['get many success'] } })
 	}

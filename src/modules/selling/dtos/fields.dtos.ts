@@ -10,10 +10,6 @@ export class SellingRequiredDto extends PickType(DefaultRequiredFieldsDto, ['id'
 	@IsUUID('4')
 	clientId: string
 
-	@ApiProperty({ type: Boolean })
-	@IsNotEmpty()
-	@IsBoolean()
-	paymentCompleted: boolean
 
 	@ApiProperty({ type: String })
 	@IsNotEmpty()
@@ -37,11 +33,7 @@ export class SellingOptionalDto extends PickType(DefaultOptionalFieldsDto, ['id'
 	@IsUUID('4')
 	clientId?: string
 
-	@ApiPropertyOptional({ type: Boolean })
-	@IsOptional()
-	@IsBoolean()
-	paymentCompleted?: boolean
-
+	
 	@ApiPropertyOptional({ type: String })
 	@IsOptional()
 	@IsUUID('4')

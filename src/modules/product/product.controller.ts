@@ -22,7 +22,7 @@ export class ProductController {
 	private readonly productService: ProductService
 	private readonly excelService: ExcelService
 
-	constructor(productService: ProductService,excelService: ExcelService) {
+	constructor(productService: ProductService, excelService: ExcelService) {
 		this.productService = productService
 		this.excelService = excelService
 	}
@@ -31,7 +31,7 @@ export class ProductController {
 	@ApiOkResponse({ type: ProductFindManyResponseDto })
 	@ApiOperation({ summary: 'get all products' })
 	@AuthOptions(false, false)
-	async findAll(@Query() query: ProductFindManyRequestDto): Promise<ProductFindManyResponseDto> {
+	async findMany(@Query() query: ProductFindManyRequestDto): Promise<ProductFindManyResponseDto> {
 		return this.productService.findMany(query)
 	}
 
@@ -54,7 +54,7 @@ export class ProductController {
 	@UseInterceptors(FileInterceptor('image'))
 	@ApiOperation({ summary: 'add one product' })
 	@ApiOkResponse({ type: ProductModifyResponseDto })
-	async create(@Body() body: ProductCreateOneRequestDto, @UploadedFile() image?: Express.Multer.File): Promise<ProductModifyResponseDto> {
+	async createOne(@Body() body: ProductCreateOneRequestDto, @UploadedFile() image?: Express.Multer.File): Promise<ProductModifyResponseDto> {
 		return this.productService.createOne({ ...body, image: image?.filename })
 	}
 

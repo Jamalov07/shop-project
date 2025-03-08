@@ -44,7 +44,7 @@ export class PaymentService {
 					pageSize: payments.length,
 					data: payments,
 				}
-			: payments
+			: { data: payments }
 
 		return createResponse({ data: result, success: { messages: ['find many success'] } })
 	}
@@ -63,7 +63,13 @@ export class PaymentService {
 		const payments = await this.paymentRepository.getMany(query)
 		const paymentsCount = await this.paymentRepository.countGetMany(query)
 
-		const result = query.pagination ? { pagesCount: Math.ceil(paymentsCount / query.pageSize), pageSize: payments.length, data: payments } : payments
+		const result = query.pagination
+			? {
+					pagesCount: Math.ceil(paymentsCount / query.pageSize),
+					pageSize: payments.length,
+					data: payments,
+				}
+			: { data: payments }
 
 		return createResponse({ data: result, success: { messages: ['get many success'] } })
 	}

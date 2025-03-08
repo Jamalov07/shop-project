@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../shared'
 import { ActionFindManyRequest, ActionFindOneRequest, ActionGetManyRequest, ActionGetOneRequest, ActionUpdateOneRequest } from './interfaces'
+import { ActionController } from './action.controller'
 
 @Injectable()
 export class ActionRepository {
@@ -114,5 +115,9 @@ export class ActionRepository {
 		const action = await this.prisma.actionModel.update({ where: { id: query.id }, data: { description: body.description } })
 
 		return action
+	}
+
+	async onModuleInit() {
+		await this.prisma.createActionMethods(ActionController)
 	}
 }

@@ -18,7 +18,7 @@ export declare interface PaymentFindManyData extends PaginationResponse<PaymentF
 export declare interface PaymentFindOneData extends Pick<PaymentRequired, 'id' | 'createdAt' | 'card' | 'cash' | 'clientId' | 'description' | 'other'> {}
 
 export declare interface PaymentFindManyResponse extends GlobalResponse {
-	data: PaymentFindManyData | PaymentFindOneData[]
+	data: PaymentFindManyData | { data: PaymentFindOneData[] }
 }
 
 export declare interface PaymentFindOneResponse extends GlobalResponse {

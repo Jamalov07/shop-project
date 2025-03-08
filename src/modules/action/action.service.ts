@@ -13,8 +13,15 @@ export class ActionService {
 	async findMany(query: ActionFindManyRequest) {
 		const actions = await this.actionRepository.findMany(query)
 		const actionsCount = await this.actionRepository.countFindMany(query)
-
-		const result = query.pagination ? { totalCount: actionsCount, pagesCount: Math.ceil(actionsCount / query.pageSize), pageSize: actions.length, data: actions } : actions
+		console.log(actions)
+		const result = query.pagination
+			? {
+					totalCount: actionsCount,
+					pagesCount: Math.ceil(actionsCount / query.pageSize),
+					pageSize: actions.length,
+					data: actions,
+				}
+			: { data: actions }
 
 		return createResponse({ data: result, success: { messages: ['find many success'] } })
 	}
@@ -33,7 +40,13 @@ export class ActionService {
 		const actions = await this.actionRepository.getMany(query)
 		const actionsCount = await this.actionRepository.countGetMany(query)
 
-		const result = query.pagination ? { pagesCount: Math.ceil(actionsCount / query.pageSize), pageSize: actions.length, data: actions } : actions
+		const result = query.pagination
+			? {
+					pagesCount: Math.ceil(actionsCount / query.pageSize),
+					pageSize: actions.length,
+					data: actions,
+				}
+			: { data: actions }
 
 		return createResponse({ data: result, success: { messages: ['get many success'] } })
 	}

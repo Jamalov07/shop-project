@@ -22,21 +22,21 @@ export class ProductStorehouseController {
 	@Get('many')
 	@ApiOkResponse({ type: ProductStorehouseFindManyResponseDto })
 	@ApiOperation({ summary: 'get all product storehouse' })
-	async findAll(@Query() query: ProductStorehouseFindManyRequestDto): Promise<ProductStorehouseFindManyResponseDto> {
+	async findMany(@Query() query: ProductStorehouseFindManyRequestDto): Promise<ProductStorehouseFindManyResponseDto> {
 		return this.productStorehouseService.findMany(query)
 	}
 
 	@Post('one')
 	@ApiOperation({ summary: 'crate one product storehouse' })
 	@ApiOkResponse({ type: ProductStorehouseModifyResponseDto })
-	async createOneProductStorehouse(@Body() body: ProductStorehouseCreateOneRequestDto): Promise<ProductStorehouseModifyResponseDto> {
+	async createOne(@Body() body: ProductStorehouseCreateOneRequestDto): Promise<ProductStorehouseModifyResponseDto> {
 		return this.productStorehouseService.createOne(body)
 	}
 
 	@Delete('one')
 	@ApiOperation({ summary: 'delete one product storehouse' })
 	@ApiOkResponse({ type: ProductStorehouseModifyResponseDto })
-	async deleteOneProductStorehouse(@Query() query: ProductStorehouseDeleteOneRequestDto): Promise<ProductStorehouseModifyResponseDto> {
+	async deleteOne(@Query() query: ProductStorehouseDeleteOneRequestDto): Promise<ProductStorehouseModifyResponseDto> {
 		return this.productStorehouseService.deleteOne(query)
 	}
 }

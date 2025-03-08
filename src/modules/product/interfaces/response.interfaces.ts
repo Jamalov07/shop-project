@@ -20,7 +20,7 @@ export declare interface ProductFindOneData extends Pick<ProductRequired, 'id' |
 }
 
 export declare interface ProductFindManyResponse extends GlobalResponse {
-	data: ProductFindManyData | ProductFindOneData[]
+	data: ProductFindManyData | { data: ProductFindOneData[] }
 }
 
 export declare interface ProductFindOneResponse extends GlobalResponse {

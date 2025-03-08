@@ -21,11 +21,7 @@ export class StaffFindManyRequestDto
 export class StaffFindOneRequestDto extends IntersectionType(PickType(StaffRequiredDto, ['id'])) implements StaffFindOneRequest {}
 
 export class StaffCreateOneRequestDto
-	extends IntersectionType(
-		PickType(StaffRequiredDto, ['phone', 'password']),
-		PickType(StaffOptionalDto, ['fullname']),
-		PickType(RequestOtherFieldsDto, ['rolesToConnect', 'actionsToConnect']),
-	)
+	extends IntersectionType(PickType(StaffRequiredDto, ['phone', 'password']), PickType(StaffOptionalDto, ['fullname']), PickType(RequestOtherFieldsDto, ['actionsToConnect']))
 	implements StaffCreateOneRequest {}
 
 export class StaffCreateManyRequestDto implements StaffCreateManyRequest {

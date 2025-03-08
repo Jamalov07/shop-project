@@ -6,7 +6,7 @@ export declare interface RoleFindManyData extends PaginationResponse<RoleFindOne
 export declare interface RoleFindOneData extends Pick<RoleRequired, 'id' | 'name' | 'createdAt'> {}
 
 export declare interface RoleFindManyResponse extends GlobalResponse {
-	data: RoleFindManyData | RoleFindOneData[]
+	data: RoleFindManyData | { data: RoleFindOneData[] }
 }
 
 export declare interface RoleFindOneResponse extends GlobalResponse {

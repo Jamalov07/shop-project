@@ -58,7 +58,7 @@ export class ProductService {
 					pageSize: products.length,
 					data: products,
 				}
-			: products
+			: { data: products }
 
 		return createResponse({ data: result, success: { messages: ['find many success'] } })
 	}
@@ -80,7 +80,13 @@ export class ProductService {
 		const products = await this.productRepository.getMany(query)
 		const productsCount = await this.productRepository.countGetMany(query)
 
-		const result = query.pagination ? { pagesCount: Math.ceil(productsCount / query.pageSize), pageSize: products.length, data: products } : products
+		const result = query.pagination
+			? {
+					pagesCount: Math.ceil(productsCount / query.pageSize),
+					pageSize: products.length,
+					data: products,
+				}
+			: { data: products }
 
 		return createResponse({ data: result, success: { messages: ['get many success'] } })
 	}

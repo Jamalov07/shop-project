@@ -6,7 +6,7 @@ export declare interface SellingFindManyData extends PaginationResponse<SellingF
 export declare interface SellingFindOneData extends Pick<SellingRequired, 'id' | 'createdAt' | 'clientId' | 'staffId' | 'status' | 'totalSum'> {}
 
 export declare interface SellingFindManyResponse extends GlobalResponse {
-	data: SellingFindManyData | SellingFindOneData[]
+	data: SellingFindManyData | { data: SellingFindOneData[] }
 }
 
 export declare interface SellingFindOneResponse extends GlobalResponse {

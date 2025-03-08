@@ -30,7 +30,7 @@ export class StaffController {
 	@ApiOkResponse({ type: StaffFindManyResponseDto })
 	@ApiOperation({ summary: 'get all staffs' })
 	@AuthOptions(false, false)
-	async findAll(@Query() query: StaffFindManyRequestDto): Promise<StaffFindManyResponseDto> {
+	async findMany(@Query() query: StaffFindManyRequestDto): Promise<StaffFindManyResponseDto> {
 		return this.staffService.findMany(query)
 	}
 
@@ -67,21 +67,21 @@ export class StaffController {
 	@Post('one')
 	@ApiOperation({ summary: 'add one staff' })
 	@ApiOkResponse({ type: StaffModifyResponseDto })
-	async create(@Body() body: StaffCreateOneRequestDto): Promise<StaffModifyResponseDto> {
+	async createOne(@Body() body: StaffCreateOneRequestDto): Promise<StaffModifyResponseDto> {
 		return this.staffService.createOne(body)
 	}
 
 	@Patch('one')
 	@ApiOperation({ summary: 'update one staff' })
 	@ApiOkResponse({ type: StaffModifyResponseDto })
-	async update(@Query() query: StaffFindOneRequestDto, @Body() body: StaffUpdateOneRequestDto): Promise<StaffModifyResponseDto> {
+	async updateOne(@Query() query: StaffFindOneRequestDto, @Body() body: StaffUpdateOneRequestDto): Promise<StaffModifyResponseDto> {
 		return this.staffService.updateOne(query, body)
 	}
 
 	@Delete('one')
 	@ApiOperation({ summary: 'delete one staff' })
 	@ApiOkResponse({ type: StaffModifyResponseDto })
-	async delete(@Query() query: StaffDeleteOneRequestDto): Promise<StaffModifyResponseDto> {
+	async deleteOne(@Query() query: StaffDeleteOneRequestDto): Promise<StaffModifyResponseDto> {
 		return this.staffService.deleteOne(query)
 	}
 }

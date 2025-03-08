@@ -18,7 +18,7 @@ export class ClientFindManyDataDto extends PaginationResponseDto implements Clie
 
 export class ClientFindManyResponseDto extends GlobalResponseDto implements ClientFindManyResponseDto {
 	@ApiProperty({ type: ClientFindManyDataDto })
-	data: ClientFindManyData | ClientFindOneData[]
+	data: ClientFindManyData | { data: ClientFindOneData[] }
 }
 
 export class ClientFindOneResponseDto extends GlobalResponseDto implements ClientFindOneResponse {

@@ -7,6 +7,7 @@ import {
 	ProductStorehouseDeleteOneRequest,
 	ProductStorehouseFindManyRequest,
 	ProductStorehouseGetOneRequest,
+	ProductStorehouseTransferManyRequest,
 	ProductStorehouseUpdateOneRequest,
 } from './interfaces'
 import { ProductStorehouseController } from './product-storehouse.controller'
@@ -24,11 +25,16 @@ export class ProductStorehouseRepository {
 			paginationOptions = { take: query.pageSize, skip: (query.pageNumber - 1) * query.pageSize }
 		}
 
-		const productStorehouse = await this.prisma.productToStorehouseModel.findMany({
+		const productStorehouses = await this.prisma.productToStorehouseModel.findMany({
 			where: {
 				id: { in: query.ids },
 				productId: query.productId,
 				storehouseId: query.storehouseId,
+				quantity: {
+					equals: query.quantity,
+					gte: query.minQuantity,
+					lte: query.maxQuantity,
+				},
 			},
 			select: {
 				id: true,
@@ -40,12 +46,12 @@ export class ProductStorehouseRepository {
 			...paginationOptions,
 		})
 
-		return productStorehouse
+		return productStorehouses
 	}
 
-	async getOne(body: ProductStorehouseGetOneRequest) {
+	async getOne(query: ProductStorehouseGetOneRequest) {
 		const productStorehouse = await this.prisma.productToStorehouseModel.findFirst({
-			where: { storehouseId: body.storehouseId, quantity: body.quantity, productId: body.productId },
+			where: { id: query.id, storehouseId: query.storehouseId, quantity: query.quantity, productId: query.productId },
 		})
 
 		return productStorehouse
@@ -57,6 +63,11 @@ export class ProductStorehouseRepository {
 				id: { in: query.ids },
 				productId: query.productId,
 				storehouseId: query.storehouseId,
+				quantity: {
+					equals: query.quantity,
+					gte: query.minQuantity,
+					lte: query.maxQuantity,
+				},
 			},
 		})
 
@@ -71,9 +82,9 @@ export class ProductStorehouseRepository {
 		return productStorehouse
 	}
 
-	async updateOne(id: string, body: ProductStorehouseUpdateOneRequest) {
+	async updateOne(query: ProductStorehouseGetOneRequest, body: ProductStorehouseUpdateOneRequest) {
 		const productStorehouse = await this.prisma.productToStorehouseModel.update({
-			where: { id: id },
+			where: { id: query.id },
 			data: { storehouseId: body.storehouseId, quantity: body.quantity, productId: body.productId },
 		})
 
@@ -112,6 +123,31 @@ export class ProductStorehouseRepository {
 		})
 
 		return productStorehouse
+	}
+
+	async transferManyProductToAnotherStorehouse(body: ProductStorehouseTransferManyRequest) {
+		const promises = []
+		for (const product of body.products) {
+			promises.push(
+				this.prisma.productToStorehouseModel.updateMany({
+					where: { storehouseId: body.fromStorehouseId, productId: product.id },
+					data: { quantity: { decrement: product.quantity } },
+				}),
+			)
+			promises.push(
+				this.prisma.productToStorehouseModel.upsert({
+					where: { productId_storehouseId: { productId: product.id, storehouseId: body.toStorehouseId } },
+					update: { quantity: { increment: product.quantity } },
+					create: {
+						productId: product.id,
+						storehouseId: body.toStorehouseId,
+						quantity: product.quantity,
+					},
+				}),
+			)
+		}
+
+		return body.toStorehouseId
 	}
 
 	async onModuleInit() {

@@ -30,7 +30,7 @@ export class PaymentController {
 	@ApiOkResponse({ type: PaymentFindManyResponseDto })
 	@ApiOperation({ summary: 'get all payments' })
 	@AuthOptions(false, false)
-	async findAll(@Query() query: PaymentFindManyRequestDto): Promise<PaymentFindManyResponseDto> {
+	async findMany(@Query() query: PaymentFindManyRequestDto): Promise<PaymentFindManyResponseDto> {
 		return this.paymentService.findMany(query)
 	}
 
@@ -52,7 +52,7 @@ export class PaymentController {
 	@AuthOptions(true, true)
 	@ApiOperation({ summary: 'add one payment' })
 	@ApiOkResponse({ type: PaymentModifyResponseDto })
-	async create(@Body() body: PaymentCreateOneRequestDto, @Req() req: CRequest): Promise<PaymentModifyResponseDto> {
+	async createOne(@Body() body: PaymentCreateOneRequestDto, @Req() req: CRequest): Promise<PaymentModifyResponseDto> {
 		return this.paymentService.createOne({ ...body, staffId: req.staff.id })
 	}
 

@@ -9,7 +9,7 @@ export declare interface ClientFindOneData extends Pick<ClientRequired, 'id' | '
 }
 
 export declare interface ClientFindManyResponse extends GlobalResponse {
-	data: ClientFindManyData | ClientFindOneData[]
+	data: ClientFindManyData | { data: ClientFindOneData[] }
 }
 
 export declare interface ClientFindOneResponse extends GlobalResponse {

@@ -26,7 +26,7 @@ export class StorehouseController {
 	@ApiOkResponse({ type: StorehouseFindManyResponseDto })
 	@ApiOperation({ summary: 'get all storehouses' })
 	@AuthOptions(false, false)
-	async findAll(@Query() query: StorehouseFindManyRequestDto): Promise<StorehouseFindManyResponseDto> {
+	async findMany(@Query() query: StorehouseFindManyRequestDto): Promise<StorehouseFindManyResponseDto> {
 		return this.storehouseService.findMany(query)
 	}
 
@@ -40,7 +40,7 @@ export class StorehouseController {
 	@Post('one')
 	@ApiOperation({ summary: 'add one storehouse' })
 	@ApiOkResponse({ type: StorehouseModifyResponseDto })
-	async create(@Body() body: StorehouseCreateOneRequestDto): Promise<StorehouseModifyResponseDto> {
+	async createOne(@Body() body: StorehouseCreateOneRequestDto): Promise<StorehouseModifyResponseDto> {
 		return this.storehouseService.createOne(body)
 	}
 

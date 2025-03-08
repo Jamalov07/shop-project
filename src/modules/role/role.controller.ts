@@ -26,7 +26,7 @@ export class RoleController {
 	@ApiOkResponse({ type: RoleFindManyResponseDto })
 	@ApiOperation({ summary: 'get all roles' })
 	@AuthOptions(false, false)
-	async findAll(@Query() query: RoleFindManyRequestDto): Promise<RoleFindManyResponseDto> {
+	async findMany(@Query() query: RoleFindManyRequestDto): Promise<RoleFindManyResponseDto> {
 		return this.roleService.findMany(query)
 	}
 
@@ -40,7 +40,7 @@ export class RoleController {
 	@Post('one')
 	@ApiOperation({ summary: 'add one role' })
 	@ApiOkResponse({ type: RoleModifyResponseDto })
-	async create(@Body() body: RoleCreateOneRequestDto): Promise<RoleModifyResponseDto> {
+	async createOne(@Body() body: RoleCreateOneRequestDto): Promise<RoleModifyResponseDto> {
 		return this.roleService.createOne(body)
 	}
 

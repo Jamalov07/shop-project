@@ -31,7 +31,7 @@ export class StorehouseFindManyDataDto extends PaginationResponseDto implements 
 
 export class StorehouseFindManyResponseDto extends GlobalResponseDto implements StorehouseFindManyResponse {
 	@ApiProperty({ type: StorehouseFindManyDataDto })
-	data: StorehouseFindManyData | StorehouseFindOneData[]
+	data: StorehouseFindManyData | { data: StorehouseFindOneData[] }
 }
 
 export class StorehouseFindOneResponseDto extends GlobalResponseDto implements StorehouseFindOneResponse {

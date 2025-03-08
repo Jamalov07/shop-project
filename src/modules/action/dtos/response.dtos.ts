@@ -12,7 +12,7 @@ export class ActionFindManyDataDto extends PaginationResponseDto implements Acti
 
 export class ActionFindManyResponseDto extends GlobalResponseDto implements ActionFindManyResponseDto {
 	@ApiProperty({ type: ActionFindManyDataDto })
-	data: ActionFindManyData | ActionFindOneData[]
+	data: ActionFindManyData | { data: ActionFindOneData[] }
 }
 
 export class ActionFindOneResponseDto extends GlobalResponseDto implements ActionFindOneResponse {

@@ -4,6 +4,7 @@ import { Controller } from '@nestjs/common/interfaces'
 import { ConfigService } from '@nestjs/config'
 import { ActionMethodEnum, PrismaClient } from '@prisma/client'
 import * as bcrypt from 'bcrypt'
+import { actionDescriptionConverter } from '../../../common'
 
 @Global()
 @Injectable()
@@ -35,7 +36,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 		const controllerPrototype = controller.prototype
 
 		const baseRoute = Reflect.getMetadata('path', controller) || ''
-		const otpMethods = Object.getOwnPropertyNames(controllerPrototype)
+		const actions = Object.getOwnPropertyNames(controllerPrototype)
 			.filter((method) => method !== 'constructor')
 			.map((method) => {
 				const route = Reflect.getMetadata('path', controllerPrototype[method])
@@ -45,9 +46,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 					method: RequestMethod[methodType].toLowerCase(),
 					url: fullRoute,
 					name: method,
+					description: actionDescriptionConverter(`${fullRoute}-${method}-${RequestMethod[methodType].toLowerCase()}`),
 				}
 			})
-		await this.actionModel.createMany({ data: otpMethods, skipDuplicates: true })
+		await this.actionModel.createMany({ data: actions, skipDuplicates: true })
 	}
 
 	async signUpStaff() {
@@ -58,7 +60,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 		}
 
 		const actions = await this.actionModel.findMany({})
-		const staff = await this.staffModel.findFirst({ where: { ...payload, password: undefined }, select: { id: true, roles: true, password: true } })
+		const staff = await this.staffModel.findFirst({
+			where: { ...payload, password: undefined },
+			select: { id: true, actions: true, password: true },
+		})
 		if (!staff) {
 			let role = await this.roleModel.findFirst({ where: { name: this.config.get('STAFF_ROLE') } })
 
@@ -78,7 +83,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 			const staff = await this.staffModel.create({
 				data: {
 					...payload,
-					roles: { connect: [{ id: role.id }] },
 					actions: { connect: actions.map((a) => ({ id: a.id })) },
 				},
 			})
@@ -106,7 +110,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 					where: { id: staff.id },
 					data: {
 						password: payload.password,
-						roles: { connect: [{ id: role.id }] },
 						actions: { connect: actions.map((a) => ({ id: a.id })) },
 					},
 				})
@@ -117,9 +120,14 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 					where: { id: staff.id },
 					data: { actions: { connect: actions.map((a) => ({ id: a.id })) } },
 				})
-				if (staff.roles.length) {
+				if (staff.actions.length !== actions.length) {
 					await this.roleModel.update({
-						where: { id: staff.roles[0].id },
+						where: { name: this.config.get('STAFF_ROLE') },
+						data: { actions: { connect: actions.map((a) => ({ id: a.id })) } },
+					})
+
+					await this.staffModel.update({
+						where: { id: staff.id },
 						data: { actions: { connect: actions.map((a) => ({ id: a.id })) } },
 					})
 				}

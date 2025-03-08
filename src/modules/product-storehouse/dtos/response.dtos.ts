@@ -21,7 +21,7 @@ export class ProductStorehouseFindManyDataDto extends PaginationResponseDto impl
 
 export class ProductStorehouseFindManyResponseDto extends GlobalResponseDto implements ProductStorehouseFindManyResponseDto {
 	@ApiProperty({ type: ProductStorehouseFindManyDataDto })
-	data: ProductStorehouseFindManyData | ProductStorehouseFindOneData[]
+	data: ProductStorehouseFindManyData | { data: ProductStorehouseFindOneData[] }
 }
 
 export class ProductStorehouseFindOneResponseDto extends GlobalResponseDto implements ProductStorehouseFindOneResponse {

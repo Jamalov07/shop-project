@@ -11,7 +11,7 @@ export declare interface ProductStorehouseFindOneData extends Pick<ProductStoreh
 }
 
 export declare interface ProductStorehouseFindManyResponse extends GlobalResponse {
-	data: ProductStorehouseFindManyData | ProductStorehouseFindOneData[]
+	data: ProductStorehouseFindManyData | { data: ProductStorehouseFindOneData[] }
 }
 
 export declare interface ProductStorehouseFindOneResponse extends GlobalResponse {

@@ -3,22 +3,32 @@ import { SellingRepository } from './selling.repository'
 import { createResponse } from '@common'
 import { SellingGetOneRequest, SellingCreateOneRequest, SellingUpdateOneRequest, SellingGetManyRequest, SellingFindManyRequest, SellingFindOneRequest } from './interfaces'
 import { PaymentRepository } from '../payment'
+import { ProductStorehouseService } from '../product-storehouse'
 
 @Injectable()
 export class SellingService {
 	private readonly sellingRepository: SellingRepository
 	private readonly paymentRepository: PaymentRepository
+	private readonly productStorehouseService: ProductStorehouseService
 
-	constructor(sellingRepository: SellingRepository, paymentRepository: PaymentRepository) {
+	constructor(sellingRepository: SellingRepository, paymentRepository: PaymentRepository, productStorehouseService: ProductStorehouseService) {
 		this.sellingRepository = sellingRepository
 		this.paymentRepository = paymentRepository
+		this.productStorehouseService = productStorehouseService
 	}
 
 	async findMany(query: SellingFindManyRequest) {
 		const sellings = await this.sellingRepository.findMany(query)
 		const sellingsCount = await this.sellingRepository.countFindMany(query)
 
-		const result = query.pagination ? { totalCount: sellingsCount, pagesCount: Math.ceil(sellingsCount / query.pageSize), pageSize: sellings.length, data: sellings } : sellings
+		const result = query.pagination
+			? {
+					totalCount: sellingsCount,
+					pagesCount: Math.ceil(sellingsCount / query.pageSize),
+					pageSize: sellings.length,
+					data: sellings,
+				}
+			: { data: sellings }
 
 		return createResponse({ data: result, success: { messages: ['find many success'] } })
 	}
@@ -37,7 +47,13 @@ export class SellingService {
 		const sellings = await this.sellingRepository.getMany(query)
 		const sellingsCount = await this.sellingRepository.countGetMany(query)
 
-		const result = query.pagination ? { pagesCount: Math.ceil(sellingsCount / query.pageSize), pageSize: sellings.length, data: sellings } : sellings
+		const result = query.pagination
+			? {
+					pagesCount: Math.ceil(sellingsCount / query.pageSize),
+					pageSize: sellings.length,
+					data: sellings,
+				}
+			: { data: sellings }
 
 		return createResponse({ data: result, success: { messages: ['get many success'] } })
 	}
@@ -54,10 +70,22 @@ export class SellingService {
 
 	async createOne(body: SellingCreateOneRequest) {
 		const selling = await this.sellingRepository.createOne({ ...body })
+		const promises = []
+		for (const product of body.products) {
+			const productStorehouse = await this.productStorehouseService.getOne({ id: product.id })
+			if (!productStorehouse || productStorehouse.data.quantity < product.quantity) {
+				throw new BadRequestException('product quanity not enough for selling')
+			} else {
+				promises.push(this.productStorehouseService.updateOne({ id: product.id }, { quantity: productStorehouse.data.quantity - product.quantity }))
+			}
+		}
 
 		if (body.payment) {
-			await this.paymentRepository.createOne({ ...body.payment, staffId: body.staffId, clientId: body.clientId, sellingId: selling.id })
+			promises.push(this.paymentRepository.createOne({ ...body.payment, staffId: body.staffId, clientId: body.clientId, sellingId: selling.id }))
 		}
+
+		await this.sellingRepository.createOne(body)
+		await Promise.all(promises)
 
 		return createResponse({ data: null, success: { messages: ['create success'] } })
 	}

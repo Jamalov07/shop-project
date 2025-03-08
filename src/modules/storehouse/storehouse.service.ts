@@ -32,7 +32,7 @@ export class StorehouseService {
 
 		const result = query.pagination
 			? { totalCount: storehousesCount, pagesCount: Math.ceil(storehousesCount / query.pageSize), pageSize: storehouses.length, data: storehouses }
-			: storehouses
+			: { data: storehouses }
 
 		return createResponse({ data: result, success: { messages: ['find many success'] } })
 	}
@@ -59,7 +59,13 @@ export class StorehouseService {
 		const storehouses = await this.storehouseRepository.getMany(query)
 		const storehousesCount = await this.storehouseRepository.countGetMany(query)
 
-		const result = query.pagination ? { pagesCount: Math.ceil(storehousesCount / query.pageSize), pageSize: storehouses.length, data: storehouses } : storehouses
+		const result = query.pagination
+			? {
+					pagesCount: Math.ceil(storehousesCount / query.pageSize),
+					pageSize: storehouses.length,
+					data: storehouses,
+				}
+			: { data: storehouses }
 
 		return createResponse({ data: result, success: { messages: ['get many success'] } })
 	}

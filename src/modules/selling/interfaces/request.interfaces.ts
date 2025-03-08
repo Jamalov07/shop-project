@@ -1,6 +1,7 @@
 import { PaginationRequest, RequestOtherFields } from '@common'
 import { SellingOptional, SellingRequired } from './fields.interfaces'
 import { PaymentCreateOneRequest } from '../../payment'
+import { ProductStorehouse } from '../../product-storehouse'
 
 export declare interface SellingFindManyRequest
 	extends Pick<SellingOptional, 'clientId' | 'staffId' | 'status'>,
@@ -13,8 +14,9 @@ export declare interface SellingGetManyRequest extends Pick<SellingOptional, 'cl
 
 export declare interface SellingGetOneRequest extends Pick<SellingOptional, 'id'> {}
 
-export declare interface SellingCreateOneRequest extends Pick<SellingRequired, 'clientId' | 'staffId' | 'totalSum'> {
+export declare interface SellingCreateOneRequest extends Pick<SellingRequired, 'clientId' | 'totalSum'>, Pick<SellingOptional, 'staffId'> {
 	payment?: Pick<PaymentCreateOneRequest, 'card' | 'cash' | 'description' | 'other'>
+	products: ProductStorehouse[]
 }
 
 export declare interface SellingUpdateOneRequest extends Pick<SellingOptional, 'status' | 'totalSum'> {}

@@ -10,6 +10,7 @@ import {
 	SellingUpdateOneRequest,
 } from './interfaces'
 import { SellingController } from './selling.controller'
+import { SellingStatusEnum } from '@prisma/client'
 
 @Injectable()
 export class SellingRepository {
@@ -114,6 +115,8 @@ export class SellingRepository {
 				clientId: body.clientId,
 				staffId: body.staffId,
 				totalSum: body.totalSum,
+				status: SellingStatusEnum.accepted,
+				products: { createMany: { data: body.products.map((p) => ({ quantity: p.quantity, productStorehouseId: p.id })) } },
 			},
 		})
 		return selling

@@ -1,20 +1,18 @@
 import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger'
-import { SellingFindManyData, SellingFindOneData, SellingFindOneResponse, SellingModifyResposne } from '../interfaces'
+import { SellingFindManyData, SellingFindManyResponse, SellingFindOneData, SellingFindOneResponse, SellingModifyResposne } from '../interfaces'
 import { GlobalModifyResponseDto, GlobalResponseDto, PaginationResponseDto } from '@common'
 import { SellingRequiredDto } from './fields.dtos'
 
-export class SellingFindOneDataDto
-	extends PickType(SellingRequiredDto, ['id', 'createdAt', 'clientId', 'paymentCompleted', 'staffId', 'status', 'totalSum'])
-	implements SellingFindOneData {}
+export class SellingFindOneDataDto extends PickType(SellingRequiredDto, ['id', 'createdAt', 'clientId', 'staffId', 'status', 'totalSum']) implements SellingFindOneData {}
 
 export class SellingFindManyDataDto extends PaginationResponseDto implements SellingFindManyData {
 	@ApiProperty({ type: SellingFindOneDataDto, isArray: true })
 	data: SellingFindOneData[]
 }
 
-export class SellingFindManyResponseDto extends GlobalResponseDto implements SellingFindManyResponseDto {
+export class SellingFindManyResponseDto extends GlobalResponseDto implements SellingFindManyResponse {
 	@ApiProperty({ type: SellingFindManyDataDto })
-	data: SellingFindManyData | SellingFindOneData[]
+	data: SellingFindManyData | { data: SellingFindOneData[] }
 }
 
 export class SellingFindOneResponseDto extends GlobalResponseDto implements SellingFindOneResponse {

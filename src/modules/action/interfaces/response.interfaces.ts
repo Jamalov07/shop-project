@@ -6,7 +6,7 @@ export declare interface ActionFindManyData extends PaginationResponse<ActionFin
 export declare interface ActionFindOneData extends Pick<ActionRequired, 'id' | 'name' | 'url' | 'method' | 'description'> {}
 
 export declare interface ActionFindManyResponse extends GlobalResponse {
-	data: ActionFindManyData | ActionFindOneData[]
+	data: ActionFindManyData | { data: ActionFindOneData[] }
 }
 
 export declare interface ActionFindOneResponse extends GlobalResponse {

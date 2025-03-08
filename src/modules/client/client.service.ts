@@ -27,7 +27,14 @@ export class ClientService {
 		})
 		const clientsCount = await this.clientRepository.countFindMany(query)
 
-		const result = query.pagination ? { totalCount: clientsCount, pagesCount: Math.ceil(clientsCount / query.pageSize), pageSize: clients.length, data: clients } : clients
+		const result = query.pagination
+			? {
+					totalCount: clientsCount,
+					pagesCount: Math.ceil(clientsCount / query.pageSize),
+					pageSize: clients.length,
+					data: clients,
+				}
+			: { data: clients }
 
 		return createResponse({ data: result, success: { messages: ['find many success'] } })
 	}
@@ -51,7 +58,13 @@ export class ClientService {
 		const clients = await this.clientRepository.getMany(query)
 		const clientsCount = await this.clientRepository.countGetMany(query)
 
-		const result = query.pagination ? { pagesCount: Math.ceil(clientsCount / query.pageSize), pageSize: clients.length, data: clients } : clients
+		const result = query.pagination
+			? {
+					pagesCount: Math.ceil(clientsCount / query.pageSize),
+					pageSize: clients.length,
+					data: clients,
+				}
+			: { data: clients }
 
 		return createResponse({ data: result, success: { messages: ['get many success'] } })
 	}

@@ -1,5 +1,5 @@
 import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger'
-import { RoleFindManyData, RoleFindOneData, RoleFindOneResponse, RoleModifyResposne } from '../interfaces'
+import { RoleFindManyData, RoleFindManyResponse, RoleFindOneData, RoleFindOneResponse, RoleModifyResposne } from '../interfaces'
 import { GlobalModifyResponseDto, GlobalResponseDto, PaginationResponseDto } from '@common'
 import { RoleRequiredDto } from './fields.dtos'
 
@@ -10,9 +10,9 @@ export class RoleFindManyDataDto extends PaginationResponseDto implements RoleFi
 	data: RoleFindOneData[]
 }
 
-export class RoleFindManyResponseDto extends GlobalResponseDto implements RoleFindManyResponseDto {
+export class RoleFindManyResponseDto extends GlobalResponseDto implements RoleFindManyResponse {
 	@ApiProperty({ type: RoleFindManyDataDto })
-	data: RoleFindManyData | RoleFindOneData[]
+	data: RoleFindManyData | { data: RoleFindOneData[] }
 }
 
 export class RoleFindOneResponseDto extends GlobalResponseDto implements RoleFindOneResponse {

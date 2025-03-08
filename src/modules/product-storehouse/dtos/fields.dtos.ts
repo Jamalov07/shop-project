@@ -32,7 +32,7 @@ export class ProductStorehouseOptionalDto extends PickType(DefaultOptionalFields
 	@ApiPropertyOptional({ type: Number })
 	@IsOptional()
 	@IsNumber()
-	quantity?: number
+	quantity?: number = undefined
 
 	@ApiPropertyOptional({ type: String, example: '00097072-f510-4ded-a18f-976d7fa2e024' })
 	@IsOptional()
