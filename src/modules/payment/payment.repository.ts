@@ -24,9 +24,20 @@ export class PaymentRepository {
 				client: { fullname: query.clientFullName },
 				staffId: query.staffId,
 				createdAt: {
-					gte: query.startDate ? new Date(query.startDate) : undefined,
-					lte: query.endDate ? new Date(query.endDate) : undefined,
+					gte: query.startDate,
+					lte: query.endDate,
 				},
+			},
+			select: {
+				id: true,
+				card: true,
+				cash: true,
+				description: true,
+				other: true,
+				createdAt: true,
+				client: { select: { id: true, createdAt: true, fullname: true, phone: true } },
+				selling: { select: { id: true, createdAt: true, totalSum: true } },
+				staff: { select: { id: true, createdAt: true, fullname: true, phone: true, deletedAt: true, updatedAt: true } },
 			},
 			...paginationOptions,
 		})
@@ -38,6 +49,17 @@ export class PaymentRepository {
 		const payment = await this.prisma.paymentModel.findFirst({
 			where: {
 				id: query.id,
+			},
+			select: {
+				id: true,
+				card: true,
+				cash: true,
+				description: true,
+				other: true,
+				createdAt: true,
+				client: { select: { id: true, createdAt: true, fullname: true, phone: true } },
+				selling: { select: { id: true, createdAt: true, totalSum: true } },
+				staff: { select: { id: true, createdAt: true, fullname: true, phone: true, deletedAt: true, updatedAt: true } },
 			},
 		})
 
@@ -52,8 +74,8 @@ export class PaymentRepository {
 				client: { fullname: query.clientFullName },
 				staffId: query.staffId,
 				createdAt: {
-					gte: query.startDate ? new Date(query.startDate) : undefined,
-					lte: query.endDate ? new Date(query.endDate) : undefined,
+					gte: query.startDate,
+					lte: query.endDate,
 				},
 			},
 		})

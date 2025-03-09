@@ -3,7 +3,7 @@ import { SellingRequired } from './fields.interfaces'
 
 export declare interface SellingFindManyData extends PaginationResponse<SellingFindOneData> {}
 
-export declare interface SellingFindOneData extends Pick<SellingRequired, 'id' | 'createdAt' | 'clientId' | 'staffId' | 'status' | 'totalSum'> {}
+export declare interface SellingFindOneData extends Pick<SellingRequired, 'id' | 'createdAt' | 'totalSum'> {}
 
 export declare interface SellingFindManyResponse extends GlobalResponse {
 	data: SellingFindManyData | { data: SellingFindOneData[] }

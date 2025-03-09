@@ -32,8 +32,8 @@ export class SellingRepository {
 				staffId: query.staffId,
 				status: query.status,
 				createdAt: {
-					gte: query.startDate ? new Date(query.startDate) : undefined,
-					lte: query.endDate ? new Date(query.endDate) : undefined,
+					gte: query.startDate,
+					lte: query.endDate,
 				},
 			},
 			...paginationOptions,
@@ -60,8 +60,8 @@ export class SellingRepository {
 				staffId: query.staffId,
 				status: query.status,
 				createdAt: {
-					gte: query.startDate ? new Date(query.startDate) : undefined,
-					lte: query.endDate ? new Date(query.endDate) : undefined,
+					gte: query.startDate,
+					lte: query.endDate,
 				},
 			},
 		})

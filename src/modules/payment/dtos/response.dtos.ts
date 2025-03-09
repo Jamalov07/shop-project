@@ -1,9 +1,21 @@
 import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger'
-import { Calc, PaymentCalc, PaymentFindManyData, PaymentFindOneData, PaymentFindOneResponse, PaymentModifyResposne } from '../interfaces'
+import { Calc, PaymentCalc, PaymentFindManyData, PaymentFindManyResponse, PaymentFindOneData, PaymentFindOneResponse, PaymentModifyResposne } from '../interfaces'
 import { GlobalModifyResponseDto, GlobalResponseDto, PaginationResponseDto } from '@common'
 import { PaymentRequiredDto } from './fields.dtos'
+import { ClientFindOneData, ClientFindOneDataDto } from '../../client'
+import { SellingFindOneData, SellingFindOneDataDto } from '../../selling'
+import { StaffFindOneData, StaffFindOneDataDto } from '../../staff'
 
-export class PaymentFindOneDataDto extends PickType(PaymentRequiredDto, ['id', 'createdAt', 'card', 'cash', 'clientId', 'description', 'other']) implements PaymentFindOneData {}
+export class PaymentFindOneDataDto extends PickType(PaymentRequiredDto, ['id', 'createdAt', 'card', 'cash', 'description', 'other']) implements PaymentFindOneData {
+	@ApiProperty({ type: ClientFindOneDataDto })
+	client?: ClientFindOneData
+
+	@ApiProperty({ type: SellingFindOneDataDto })
+	selling?: SellingFindOneData
+
+	@ApiProperty({ type: StaffFindOneDataDto })
+	staff?: StaffFindOneData
+}
 
 export class CalcDto implements Calc {
 	@ApiProperty({ type: BigInt })
@@ -32,7 +44,7 @@ export class PaymentFindManyDataDto extends PaginationResponseDto implements Pay
 	calc: PaymentCalc
 }
 
-export class PaymentFindManyResponseDto extends GlobalResponseDto implements PaymentFindManyResponseDto {
+export class PaymentFindManyResponseDto extends GlobalResponseDto implements PaymentFindManyResponse {
 	@ApiProperty({ type: PaymentFindManyDataDto })
 	data: PaymentFindManyData | { data: PaymentFindOneData[] }
 }

@@ -14,6 +14,7 @@ import {
 } from './dtos'
 import { ExcelService } from '../shared'
 import { Response } from 'express'
+import { File } from 'buffer'
 
 @ApiTags('Client')
 // @UseGuards(CheckPermissionGuard)

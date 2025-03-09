@@ -13,6 +13,7 @@ import {
 } from './dtos'
 import { Response } from 'express'
 import { ExcelService } from '../shared'
+import { File } from 'buffer'
 
 @ApiTags('Selling')
 // @UseGuards(CheckPermissionGuard)

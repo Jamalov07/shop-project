@@ -13,7 +13,7 @@ export class ProductStorehouseFindManyRequestDto
 	@IsOptional()
 	@Transform(({ value }) => Number(value))
 	@IsNumber()
-	maxQuantity?: number = Number.MAX_SAFE_INTEGER
+	maxQuantity?: number = 2147483647
 
 	@ApiPropertyOptional({ type: Number })
 	@IsOptional()

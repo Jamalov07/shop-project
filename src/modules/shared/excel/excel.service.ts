@@ -81,8 +81,8 @@ export class ExcelService {
 				client: { fullname: query.clientFullName },
 				staffId: query.staffId,
 				createdAt: {
-					gte: query.startDate ? new Date(query.startDate) : undefined,
-					lte: query.endDate ? new Date(query.endDate) : undefined,
+					gte: query.startDate,
+					lte: query.endDate,
 				},
 			},
 		})
@@ -195,8 +195,8 @@ export class ExcelService {
 				staffId: query.staffId,
 				status: query.status,
 				createdAt: {
-					gte: query.startDate ? new Date(query.startDate) : undefined,
-					lte: query.endDate ? new Date(query.endDate) : undefined,
+					gte: query.startDate,
+					lte: query.endDate,
 				},
 			},
 			include: {

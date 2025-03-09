@@ -1,9 +1,12 @@
 import { GlobalResponse, PaginationResponse } from '@common'
 import { RoleRequired } from './fields.interfaces'
+import { ActionFindOneData } from '../../action/interfaces'
 
 export declare interface RoleFindManyData extends PaginationResponse<RoleFindOneData> {}
 
-export declare interface RoleFindOneData extends Pick<RoleRequired, 'id' | 'name' | 'createdAt'> {}
+export declare interface RoleFindOneData extends Pick<RoleRequired, 'id' | 'name' | 'createdAt'> {
+	actions?: ActionFindOneData[]
+}
 
 export declare interface RoleFindManyResponse extends GlobalResponse {
 	data: RoleFindManyData | { data: RoleFindOneData[] }

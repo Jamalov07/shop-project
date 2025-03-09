@@ -60,10 +60,22 @@ export class RequestOtherFieldsDto implements RequestOtherFields {
 	@ApiPropertyOptional({ description: 'Start date in ISO format (YYYY-MM-DD)' })
 	@IsOptional()
 	@IsDateString()
+	@Transform(({ value }) => {
+		if (!value) return undefined
+		const date = new Date(value)
+		date.setHours(0, 0, 0, 0)
+		return date
+	})
 	startDate?: Date = undefined
 
 	@ApiPropertyOptional({ description: 'End date in ISO format (YYYY-MM-DD)' })
 	@IsOptional()
 	@IsDateString()
+	@Transform(({ value }) => {
+		if (!value) return undefined
+		const date = new Date(value)
+		date.setHours(23, 59, 59, 999)
+		return date
+	})
 	endDate?: Date = undefined
 }

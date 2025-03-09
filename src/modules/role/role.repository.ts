@@ -21,6 +21,7 @@ export class RoleRepository {
 				id: { in: query.ids },
 				name: { contains: query.name, mode: 'insensitive' },
 			},
+			select: { id: true, name: true, createdAt: true, actions: { select: { id: true, name: true, method: true, description: true, url: true } } },
 			...paginationOptions,
 		})
 
@@ -33,6 +34,7 @@ export class RoleRepository {
 				id: query.id,
 				name: { contains: query.name, mode: 'insensitive' },
 			},
+			select: { id: true, name: true, createdAt: true, actions: { select: { id: true, name: true, method: true, description: true, url: true } } },
 		})
 
 		return role

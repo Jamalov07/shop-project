@@ -1,5 +1,8 @@
 import { GlobalResponse, PaginationResponse } from '@common'
 import { PaymentRequired } from './fields.interfaces'
+import { StaffFindOneData } from '../../staff'
+import { ClientFindOneData } from '../../client'
+import { SellingFindOneData } from '../../selling'
 
 export declare interface Calc {
 	cash: bigint
@@ -15,7 +18,11 @@ export declare interface PaymentFindManyData extends PaginationResponse<PaymentF
 	calc: PaymentCalc
 }
 
-export declare interface PaymentFindOneData extends Pick<PaymentRequired, 'id' | 'createdAt' | 'card' | 'cash' | 'clientId' | 'description' | 'other'> {}
+export declare interface PaymentFindOneData extends Pick<PaymentRequired, 'id' | 'createdAt' | 'card' | 'cash' | 'description' | 'other'> {
+	staff?: StaffFindOneData
+	client?: ClientFindOneData
+	selling?: SellingFindOneData
+}
 
 export declare interface PaymentFindManyResponse extends GlobalResponse {
 	data: PaymentFindManyData | { data: PaymentFindOneData[] }
