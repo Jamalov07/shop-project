@@ -1,7 +1,17 @@
 import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger'
-import { PCalc, ProductCalc, ProductFindManyData, ProductFindManyResponse, ProductFindOneData, ProductFindOneResponse, ProductModifyResposne } from '../interfaces'
+import {
+	PCalc,
+	ProductCalc,
+	ProductFindManyData,
+	ProductFindManyResponse,
+	ProductFindOneData,
+	ProductFindOneForSellingResponse,
+	ProductFindOneResponse,
+	ProductModifyResposne,
+} from '../interfaces'
 import { GlobalModifyResponseDto, GlobalResponseDto, PaginationResponseDto } from '@common'
 import { ProductRequiredDto } from './fields.dtos'
+import { ProductStorehouseFindOneData, ProductStorehouseFindOneDataDto } from '../../product-storehouse'
 
 export class ProductFindOneDataDto
 	extends PickType(ProductRequiredDto, ['id', 'name', 'cost', 'price', 'quantity', 'warningThreshold', 'createdAt'])
@@ -49,6 +59,14 @@ export class ProductFindManyResponseDto extends GlobalResponseDto implements Pro
 export class ProductFindOneResponseDto extends GlobalResponseDto implements ProductFindOneResponse {
 	@ApiProperty({ type: ProductFindOneDataDto })
 	data: ProductFindOneData
+}
+export class ProductFindOneForSellingStorehousesDto {
+	@ApiProperty({ type: ProductStorehouseFindOneDataDto })
+	storehouses: ProductStorehouseFindOneData[]
+}
+export class ProductFindOneForSellingResponseDto extends GlobalResponseDto implements ProductFindOneForSellingResponse {
+	@ApiProperty({ type: IntersectionType(ProductFindOneDataDto, ProductFindOneForSellingStorehousesDto) })
+	data: ProductFindOneData & { storehouses: ProductStorehouseFindOneData[] }
 }
 
 export class ProductModifyResponseDto extends IntersectionType(GlobalResponseDto, GlobalModifyResponseDto) implements ProductModifyResposne {}

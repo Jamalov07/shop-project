@@ -45,8 +45,8 @@ export class StaffService {
 		if (!staff) {
 			throw new BadRequestException('staff not found')
 		}
-
-		return createResponse({ data: staff, success: { messages: ['find one success'] } })
+		delete staff.token
+		return createResponse({ data: { ...staff, actionIds: staff.actions.map((a) => a.id), actions: undefined }, success: { messages: ['find one success'] } })
 	}
 
 	async getMany(query: StaffGetManyRequest) {

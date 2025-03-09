@@ -11,6 +11,8 @@ import {
 	ProductFindManyResponseDto,
 	ProductFindOneResponseDto,
 	ProductModifyResponseDto,
+	ProductFindOneForSellingRequestDto,
+	ProductFindOneForSellingResponseDto,
 } from './dtos'
 import { ExcelService } from '../shared'
 import { Response } from 'express'
@@ -48,6 +50,13 @@ export class ProductController {
 	@ApiOkResponse({ type: ProductFindOneResponseDto })
 	async getOne(@Query() query: ProductFindOneRequestDto): Promise<ProductFindOneResponseDto> {
 		return this.productService.findOne(query)
+	}
+
+	@Get('one-for-selling')
+	@ApiOperation({ summary: 'find one product' })
+	@ApiOkResponse({ type: ProductFindOneResponseDto })
+	async getOneForSelling(@Query() query: ProductFindOneForSellingRequestDto): Promise<ProductFindOneForSellingResponseDto> {
+		return this.productService.findOneForSelling(query)
 	}
 
 	@Post('one')

@@ -4,6 +4,7 @@ import {
 	ProductCreateOneRequest,
 	ProductDeleteOneRequest,
 	ProductFindManyRequest,
+	ProductFindOneforSellingRequest,
 	ProductFindOneRequest,
 	ProductGetManyRequest,
 	ProductGetOneRequest,
@@ -64,6 +65,32 @@ export class ProductRepository {
 				storehouses: { select: { quantity: true } },
 			},
 		})
+
+		return product
+	}
+
+	async findOneForSelling(query: ProductFindOneforSellingRequest) {
+		const product = await this.prisma.productModel.findFirst({
+			where: { id: query.id },
+			select: {
+				id: true,
+				cost: true,
+				image: true,
+				name: true,
+				price: true,
+				quantity: true,
+				createdAt: true,
+				warningThreshold: true,
+				storehouses: {
+					select: { id: true, quantity: true, createdAt: true, storehouse: { select: { id: true, name: true, hexColor: true, position: true, createdAt: true } } },
+					where: { quantity: { gte: query.minQuantity } },
+				},
+			},
+		})
+
+		if (!product) return null
+
+		product.storehouses.sort((a, b) => a.storehouse.position - b.storehouse.position)
 
 		return product
 	}

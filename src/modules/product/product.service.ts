@@ -1,7 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { ProductRepository } from './product.repository'
 import { createResponse } from '@common'
-import { ProductGetOneRequest, ProductCreateOneRequest, ProductUpdateOneRequest, ProductGetManyRequest, ProductFindManyRequest, ProductFindOneRequest } from './interfaces'
+import {
+	ProductGetOneRequest,
+	ProductCreateOneRequest,
+	ProductUpdateOneRequest,
+	ProductGetManyRequest,
+	ProductFindManyRequest,
+	ProductFindOneRequest,
+	ProductFindOneforSellingRequest,
+} from './interfaces'
 
 @Injectable()
 export class ProductService {
@@ -65,6 +73,19 @@ export class ProductService {
 
 	async findOne(query: ProductFindOneRequest) {
 		const product = await this.productRepository.findOne(query)
+
+		if (!product) {
+			throw new BadRequestException('product not found')
+		}
+
+		return createResponse({
+			data: { ...product, countInStorehouses: product.storehouses.reduce((a, b) => a + b.quantity, 0) },
+			success: { messages: ['find one success'] },
+		})
+	}
+
+	async findOneForSelling(query: ProductFindOneforSellingRequest) {
+		const product = await this.productRepository.findOneForSelling(query)
 
 		if (!product) {
 			throw new BadRequestException('product not found')

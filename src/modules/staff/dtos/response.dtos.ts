@@ -14,10 +14,13 @@ export class StaffFindManyResponseDto extends GlobalResponseDto implements Staff
 	@ApiProperty({ type: StaffFindManyDataDto })
 	data: StaffFindManyData | { data: StaffFindOneData[] }
 }
-
+export class StaffFindOneActionIdsDto {
+	@ApiProperty({ type: String, isArray: true })
+	actionIds?: string[]
+}
 export class StaffFindOneResponseDto extends GlobalResponseDto implements StaffFindOneResponse {
-	@ApiProperty({ type: StaffFindOneDataDto })
-	data: StaffFindOneData
+	@ApiProperty({ type: IntersectionType(StaffFindOneDataDto, StaffFindOneActionIdsDto) })
+	data: StaffFindOneData & { actionIds?: string[] }
 }
 
 export class StaffModifyResponseDto extends IntersectionType(GlobalResponseDto, GlobalModifyResponseDto) implements StaffModifyResposne {}

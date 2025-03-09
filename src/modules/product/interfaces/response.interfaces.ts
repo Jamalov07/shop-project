@@ -1,5 +1,6 @@
 import { GlobalResponse, PaginationResponse } from '@common'
 import { ProductRequired } from './fields.interfaces'
+import { ProductStorehouseFindOneData } from '../../product-storehouse'
 
 export declare interface PCalc {
 	totalPackages: number
@@ -25,6 +26,10 @@ export declare interface ProductFindManyResponse extends GlobalResponse {
 
 export declare interface ProductFindOneResponse extends GlobalResponse {
 	data: ProductFindOneData
+}
+
+export declare interface ProductFindOneForSellingResponse extends GlobalResponse {
+	data: ProductFindOneData & { storehouses: ProductStorehouseFindOneData[] }
 }
 
 export declare interface ProductModifyResposne extends GlobalResponse {

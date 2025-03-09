@@ -50,6 +50,7 @@ export class StaffRepository implements OnModuleInit {
 				phone: { contains: query.phone, mode: 'insensitive' },
 				fullname: { contains: query.fullname, mode: 'insensitive' },
 			},
+			select: { id: true, createdAt: true, deletedAt: true, token: true, fullname: true, phone: true, updatedAt: true, actions: { select: { id: true } } },
 		})
 
 		return staff

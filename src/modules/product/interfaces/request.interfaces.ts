@@ -4,6 +4,9 @@ import { ProductOptional, ProductRequired } from './fields.interfaces'
 export declare interface ProductFindManyRequest extends Pick<ProductOptional, 'name'>, PaginationRequest, Pick<RequestOtherFields, 'ids'> {}
 
 export declare interface ProductFindOneRequest extends Pick<ProductOptional, 'id' | 'name'> {}
+export declare interface ProductFindOneforSellingRequest extends Pick<ProductRequired, 'id'> {
+	minQuantity: number
+}
 
 export declare interface ProductGetManyRequest extends Pick<ProductOptional, 'name' | 'cost' | 'price' | 'quantity'>, PaginationRequest, Pick<RequestOtherFields, 'ids'> {}
 

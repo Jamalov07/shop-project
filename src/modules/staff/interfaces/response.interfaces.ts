@@ -10,7 +10,7 @@ export declare interface StaffFindManyResponse extends GlobalResponse {
 }
 
 export declare interface StaffFindOneResponse extends GlobalResponse {
-	data: StaffFindOneData
+	data: StaffFindOneData & { actionIds?: string[] }
 }
 
 export declare interface StaffModifyResposne extends GlobalResponse {
