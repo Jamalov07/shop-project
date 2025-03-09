@@ -30,30 +30,34 @@ export class RequestOtherFieldsDto implements RequestOtherFields {
 	method?: DeleteMethodEnum = DeleteMethodEnum.soft
 
 	@ApiProperty({ type: String, isArray: true })
+	@IsOptional()
 	@IsArray()
 	@IsUUID('4', { each: true })
-	@ArrayNotEmpty({ message: 'UUIDs array should not be empty' })
+	// @ArrayNotEmpty({ message: 'UUIDs array should not be empty' })
 	@ArrayUnique({ message: 'UUIDs should be unique' })
 	rolesToConnect?: string[] = []
 
 	@ApiProperty({ type: String, isArray: true })
+	@IsOptional()
 	@IsArray()
 	@IsUUID('4', { each: true })
-	@ArrayNotEmpty({ message: 'UUIDs array should not be empty' })
+	// @ArrayNotEmpty({ message: 'UUIDs array should not be empty' })
 	@ArrayUnique({ message: 'UUIDs should be unique' })
 	rolesToDisconnect?: string[] = []
 
 	@ApiProperty({ type: String, isArray: true })
+	@IsOptional()
 	@IsArray()
 	@IsUUID('4', { each: true })
-	@ArrayNotEmpty({ message: 'UUIDs array should not be empty' })
+	// @ArrayNotEmpty({ message: 'UUIDs array should not be empty' })
 	@ArrayUnique({ message: 'UUIDs should be unique' })
 	actionsToConnect?: string[] = []
 
 	@ApiProperty({ type: String, isArray: true })
+	@IsOptional()
 	@IsArray()
 	@IsUUID('4', { each: true })
-	@ArrayNotEmpty({ message: 'UUIDs array should not be empty' })
+	// @ArrayNotEmpty({ message: 'UUIDs array should not be empty' })
 	@ArrayUnique({ message: 'UUIDs should be unique' })
 	actionsToDisconnect?: string[] = []
 
