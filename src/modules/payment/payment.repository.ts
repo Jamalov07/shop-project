@@ -24,8 +24,8 @@ export class PaymentRepository {
 				client: { fullname: query.clientFullName },
 				staffId: query.staffId,
 				createdAt: {
-					gte: query.startDate,
-					lte: query.endDate,
+					gte: query.startDate ? new Date(new Date(query.startDate).setHours(0, 0, 0, 0)) : undefined,
+					lte: query.endDate ? new Date(new Date(query.endDate).setHours(23, 59, 59, 999)) : undefined,
 				},
 			},
 			select: {
@@ -74,8 +74,8 @@ export class PaymentRepository {
 				client: { fullname: query.clientFullName },
 				staffId: query.staffId,
 				createdAt: {
-					gte: query.startDate,
-					lte: query.endDate,
+					gte: query.startDate ? new Date(new Date(query.startDate).setHours(0, 0, 0, 0)) : undefined,
+					lte: query.endDate ? new Date(new Date(query.endDate).setHours(23, 59, 59, 999)) : undefined,
 				},
 			},
 		})

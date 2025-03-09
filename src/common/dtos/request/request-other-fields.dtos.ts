@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { RequestOtherFields } from '../../interfaces'
-import { ArrayNotEmpty, ArrayUnique, IsArray, IsBoolean, IsDateString, IsEnum, IsOptional, IsString, IsUUID } from 'class-validator'
+import { ArrayNotEmpty, ArrayUnique, IsArray, IsBoolean, IsDateString, IsEnum, IsOptional, IsString, IsUUID, Matches } from 'class-validator'
 import { Transform } from 'class-transformer'
 import { DeleteMethodEnum } from '../../enums'
 
@@ -60,22 +60,10 @@ export class RequestOtherFieldsDto implements RequestOtherFields {
 	@ApiPropertyOptional({ description: 'Start date in ISO format (YYYY-MM-DD)' })
 	@IsOptional()
 	@IsDateString()
-	@Transform(({ value }) => {
-		if (!value) return undefined
-		const date = new Date(value)
-		date.setHours(0, 0, 0, 0)
-		return date
-	})
-	startDate?: Date = undefined
+	startDate?: Date = this.startDate ? new Date(new Date(this.startDate).setHours(0, 0, 0, 0)) : undefined
 
 	@ApiPropertyOptional({ description: 'End date in ISO format (YYYY-MM-DD)' })
 	@IsOptional()
 	@IsDateString()
-	@Transform(({ value }) => {
-		if (!value) return undefined
-		const date = new Date(value)
-		date.setHours(23, 59, 59, 999)
-		return date
-	})
-	endDate?: Date = undefined
+	endDate?: Date = this.endDate ? new Date(new Date(this.endDate).setHours(23, 59, 59, 999)) : undefined
 }
