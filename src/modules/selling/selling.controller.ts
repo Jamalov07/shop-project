@@ -10,6 +10,10 @@ import {
 	SellingFindManyResponseDto,
 	SellingFindOneResponseDto,
 	SellingModifyResponseDto,
+	SellingGetTotalStatsResponseDto,
+	SellingGetTotalStatsRequestDto,
+	SellingGetPeriodStatsRequestDto,
+	SellingGetPeriodStatsResponseDto,
 } from './dtos'
 import { Response } from 'express'
 import { ExcelService } from '../shared'
@@ -33,6 +37,22 @@ export class SellingController {
 	@AuthOptions(false, false)
 	async findMany(@Query() query: SellingFindManyRequestDto): Promise<SellingFindManyResponseDto> {
 		return this.sellingService.findMany(query)
+	}
+
+	@Get('total-stats')
+	@ApiOkResponse({ type: SellingGetTotalStatsResponseDto })
+	@ApiOperation({ summary: 'get total stats' })
+	@AuthOptions(false, false)
+	async getTotalStats(@Query() query: SellingGetTotalStatsRequestDto): Promise<SellingGetTotalStatsResponseDto> {
+		return this.sellingService.getTotalStats(query)
+	}
+
+	@Get('period-stats')
+	@ApiOkResponse({ type: SellingGetPeriodStatsResponseDto })
+	@ApiOperation({ summary: 'get period stats' })
+	@AuthOptions(false, false)
+	async getPeriodStats(@Query() query: SellingGetPeriodStatsRequestDto): Promise<SellingGetPeriodStatsResponseDto> {
+		return this.sellingService.getPeriodStats(query)
 	}
 
 	@Get('excel')

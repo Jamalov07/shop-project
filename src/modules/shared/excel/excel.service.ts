@@ -16,62 +16,65 @@ export class ExcelService {
 	}
 
 	async exportProductsToExcel(response: Response) {
-		// 1. Mahsulotlarni olish
+		// 🔹 1. Mahsulotlarni olish
 		const products = await this.prisma.productModel.findMany()
 
-		// 2. Excel Workbook yaratish
+		// 🔹 2. Excel Workbook yaratish
 		const workbook = new ExcelJS.Workbook()
-		const worksheet = workbook.addWorksheet('Products')
+		const worksheet = workbook.addWorksheet('Mahsulotlar')
 
-		// 3. Ustun nomlarini qo‘shish
+		// 🔹 3. Ustun nomlarini qo‘shish (o‘zbekcha)
 		worksheet.columns = [
-			{ header: 'ID', key: 'id', width: 42 },
-			{ header: 'Name', key: 'name', width: 20 },
-			{ header: 'Cost', key: 'cost', width: 15 },
-			{ header: 'Price', key: 'price', width: 15 },
-			{ header: 'Quantity', key: 'quantity', width: 10 },
-			{ header: 'Warning Threshold', key: 'warningThreshold', width: 18 },
-			{ header: 'Created At', key: 'createdAt', width: 40 },
-			{ header: 'Updated At', key: 'updatedAt', width: 40 },
-			{ header: 'Deleted At', key: 'deletedAt', width: 40 },
+			{ header: 'Mahsulot nomi', key: 'name', width: 40 }, // 🔹 Nom uzunligi kattaroq
+			{ header: 'Narxi (so‘m)', key: 'price', width: 15 },
+			{ header: 'Tannarxi (so‘m)', key: 'cost', width: 15 },
+			{ header: 'Miqdori', key: 'quantity', width: 10 },
+			{ header: 'Ogohlantirish miqdori', key: 'warningThreshold', width: 18 },
+			{ header: 'Yaratilgan sana', key: 'createdAt', width: 20 },
+			{ header: 'Yangilangan sana', key: 'updatedAt', width: 20 },
+			{ header: 'O‘chirilgan sana', key: 'deletedAt', width: 20 },
 		]
 
-		// 4. Ma'lumotlarni qo‘shish
+		// 🔹 4. Headerlarni qalin qilish va qotib qo‘yish
+		worksheet.getRow(1).font = { bold: true }
+		worksheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center' }
+		worksheet.views = [{ state: 'frozen', ySplit: 1 }] // 🔹 Header harakatlanmasdan qotib turadi
+
+		// 🔹 5. Ma'lumotlarni qo‘shish
 		products.forEach((product) => {
 			worksheet.addRow({
-				id: product.id,
 				name: product.name,
-				cost: product.cost.toString(), // BigInt ni stringga o‘girish
 				price: product.price.toString(),
+				cost: product.cost.toString(),
 				quantity: product.quantity,
 				warningThreshold: product.warningThreshold,
-				createdAt: product.createdAt.toISOString(),
-				updatedAt: product.updatedAt.toISOString(),
-				deletedAt: product.deletedAt?.toISOString() || null,
+				createdAt: new Date(product.createdAt).toLocaleDateString('uz-UZ'), // 🔹 Sana formatini o‘zgartirish
+				updatedAt: new Date(product.updatedAt).toLocaleDateString('uz-UZ'),
+				deletedAt: product.deletedAt ? new Date(product.deletedAt).toLocaleDateString('uz-UZ') : 'N/A',
 			})
 		})
 
-		// 5. Fayl nomini yaratish
-		const fileName = `products_${Date.now()}.xlsx`
+		// 🔹 6. Fayl nomini yaratish
+		const fileName = `mahsulotlar_${Date.now()}.xlsx`
 		const uploadDir = path.join(process.cwd(), 'uploads', 'files')
 		const filePath = path.join(uploadDir, fileName)
 
-		// 6. Faylni saqlash
+		// 🔹 7. Faylni saqlash
 		await workbook.xlsx.writeFile(filePath)
 
-		// 7. Foydalanuvchiga yuklab olish uchun jo‘natish
+		// 🔹 8. Foydalanuvchiga yuklab olish uchun jo‘natish
 		response.download(filePath, fileName, (err) => {
 			if (err) {
 				console.log(err)
 				throw new Error('Faylni yuklab olishda xatolik yuz berdi')
 			}
-			// Faylni vaqtincha saqlash, keyin o‘chirish
+			// 🔹 Faylni vaqtincha saqlash, keyin o‘chirish
 			setTimeout(() => fs.unlinkSync(filePath), 5000)
 		})
 	}
 
 	async exportPaymentsToExcel(query: PaymentFindManyRequest, res: Response) {
-		// 🔹 1. Bazadan `PaymentModel` ma'lumotlarini olish
+		// 🔹 1. Bazadan ma'lumotlarni olish
 		const payments = await this.prisma.paymentModel.findMany({
 			include: { staff: true, client: true, selling: true },
 			where: {
@@ -89,45 +92,50 @@ export class ExcelService {
 
 		// 🔹 2. Excel Workbook yaratish
 		const workbook = new ExcelJS.Workbook()
-		const worksheet = workbook.addWorksheet('Payments')
+		const worksheet = workbook.addWorksheet('To‘lovlar')
 
 		// 🔹 3. Sarlavhalarni qo‘shish
 		worksheet.columns = [
-			{ header: 'ID', key: 'id', width: 42 },
-			{ header: 'Cash', key: 'cash', width: 15 },
-			{ header: 'Card', key: 'card', width: 15 },
-			{ header: 'Other', key: 'other', width: 15 },
-			{ header: 'Staff Name', key: 'staffName', width: 30 },
-			{ header: 'Client Name', key: 'clientName', width: 30 },
-			{ header: 'Selling ID', key: 'sellingId', width: 42 },
-			{ header: 'Description', key: 'description', width: 30 },
-			{ header: 'Created At', key: 'createdAt', width: 40 },
+			{ header: 'Mijoz ismi', key: 'clientName', width: 30 },
+			{ header: 'Telefon raqami', key: 'clientPhone', width: 20 },
+			{ header: 'Naqd (so‘m)', key: 'cash', width: 15 },
+			{ header: 'Karta (so‘m)', key: 'card', width: 15 },
+			{ header: 'Boshqa (so‘m)', key: 'other', width: 15 },
+			{ header: 'Xodim ismi', key: 'staffName', width: 30 },
+			{ header: 'Savdo ID', key: 'sellingId', width: 20 },
+			{ header: 'Izoh', key: 'description', width: 30 },
+			{ header: 'Yaratilgan sana', key: 'createdAt', width: 20 },
 		]
 
-		// 🔹 4. Ma'lumotlarni qo‘shish
+		// 🔹 4. Header qalin qilish va qotib qo‘yish
+		worksheet.getRow(1).font = { bold: true }
+		worksheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center' }
+		worksheet.views = [{ state: 'frozen', ySplit: 1 }] // Header qotib turadi
+
+		// 🔹 5. Ma'lumotlarni qo‘shish
 		payments.forEach((payment) => {
 			worksheet.addRow({
-				id: payment.id,
-				cash: payment.cash.toString(), // BigInt ni stringga o‘tkazish
+				clientName: payment.client?.fullname || 'N/A',
+				clientPhone: payment.client?.phone || 'N/A',
+				cash: payment.cash.toString(),
 				card: payment.card.toString(),
 				other: payment.other.toString(),
 				staffName: payment.staff?.fullname || 'N/A',
-				clientName: payment.client?.fullname || 'N/A',
 				sellingId: payment.sellingId || 'N/A',
 				description: payment.description,
-				createdAt: payment.createdAt.toISOString(),
+				createdAt: new Date(payment.createdAt).toLocaleDateString('uz-UZ'), // Sana formatini to‘g‘rilash
 			})
 		})
 
-		// 🔹 5. Fayl nomini yaratish
-		const fileName = `payments_${Date.now()}.xlsx`
+		// 🔹 6. Fayl nomini yaratish
+		const fileName = `tolovlar_${Date.now()}.xlsx`
 		const uploadDir = path.join(process.cwd(), 'uploads', 'files')
 		const filePath = path.join(uploadDir, fileName)
 
-		// 🔹 6. Faylni saqlash
+		// 🔹 7. Faylni saqlash
 		await workbook.xlsx.writeFile(filePath)
 
-		// 🔹 7. Faylni foydalanuvchiga yuborish
+		// 🔹 8. Faylni foydalanuvchiga yuborish
 		res.download(filePath, fileName, (err) => {
 			if (err) {
 				console.error('File download error:', err)

@@ -22,8 +22,8 @@ export class RequestResponseInterceptor implements NestInterceptor {
 						responseTime: responseTime + ` ms`,
 						result: {
 							success: data?.success?.is ? data?.success?.is : data?.error?.is ? false : true,
-							warning: data?.warning?.is,
-							error: data?.error?.is,
+							warning: data?.warning?.is ?? false,
+							error: data?.error?.is ?? false,
 						},
 					}
 					this.logger.debug(colors.magenta({ ...requestInfo, ...responseInfo }))

@@ -1,11 +1,20 @@
 import { PickType, IntersectionType, ApiProperty } from '@nestjs/swagger'
-import { SellingCreateOneRequest, SellingDeleteOneRequest, SellingFindManyRequest, SellingFindOneRequest, SellingUpdateOneRequest } from '../interfaces'
+import {
+	SellingCreateOneRequest,
+	SellingDeleteOneRequest,
+	SellingFindManyRequest,
+	SellingFindOneRequest,
+	SellingGetPeriodStatsRequest,
+	SellingGetTotalStatsRequest,
+	SellingUpdateOneRequest,
+} from '../interfaces'
 import { PaginationRequestDto, RequestOtherFieldsDto } from '@common'
 import { SellingOptionalDto, SellingRequiredDto } from './fields.dtos'
 import { PaymentCreateOneRequest, PaymentCreateOneRequestDto } from '../../payment'
 import { ProductStorehouse, ProductStorehouseDto } from '../../product-storehouse'
-import { ArrayNotEmpty } from 'class-validator'
+import { ArrayNotEmpty, IsEnum, IsNotEmpty, IsOptional } from 'class-validator'
 import { Type } from 'class-transformer'
+import { StatsTypeEnum } from '../enums'
 
 export class SellingFindManyRequestDto
 	extends IntersectionType(PickType(SellingOptionalDto, ['clientId', 'staffId', 'status']), PaginationRequestDto, PickType(RequestOtherFieldsDto, ['endDate', 'startDate', 'ids']))
@@ -31,3 +40,12 @@ export class SellingCreateOneRequestDto extends IntersectionType(PickType(Sellin
 export class SellingUpdateOneRequestDto extends IntersectionType(PickType(SellingOptionalDto, ['status', 'totalSum'])) implements SellingUpdateOneRequest {}
 
 export class SellingDeleteOneRequestDto extends IntersectionType(PickType(SellingRequiredDto, ['id'])) implements SellingDeleteOneRequest {}
+
+export class SellingGetTotalStatsRequestDto implements SellingGetTotalStatsRequest {}
+
+export class SellingGetPeriodStatsRequestDto implements SellingGetPeriodStatsRequest {
+	@ApiProperty({ enum: StatsTypeEnum })
+	@IsOptional()
+	@IsEnum(StatsTypeEnum)
+	type?: StatsTypeEnum = StatsTypeEnum.day
+}

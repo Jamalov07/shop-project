@@ -1,7 +1,16 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { SellingRepository } from './selling.repository'
 import { createResponse } from '@common'
-import { SellingGetOneRequest, SellingCreateOneRequest, SellingUpdateOneRequest, SellingGetManyRequest, SellingFindManyRequest, SellingFindOneRequest } from './interfaces'
+import {
+	SellingGetOneRequest,
+	SellingCreateOneRequest,
+	SellingUpdateOneRequest,
+	SellingGetManyRequest,
+	SellingFindManyRequest,
+	SellingFindOneRequest,
+	SellingGetTotalStatsRequest,
+	SellingGetPeriodStatsRequest,
+} from './interfaces'
 import { PaymentRepository } from '../payment'
 import { ProductStorehouseService } from '../product-storehouse'
 
@@ -66,6 +75,43 @@ export class SellingService {
 		}
 
 		return createResponse({ data: selling, success: { messages: ['get one success'] } })
+	}
+
+	async getTotalStats(query: SellingGetTotalStatsRequest) {
+		const now = new Date()
+
+		const getDateRange = (type: 'daily' | 'weekly' | 'monthly' | 'yearly') => {
+			const start = new Date(now)
+			const end = new Date(now)
+
+			if (type === 'weekly') {
+				start.setDate(now.getDate() - now.getDay())
+				end.setDate(start.getDate() + 6)
+			} else if (type === 'monthly') {
+				start.setDate(1)
+				end.setMonth(start.getMonth() + 1, 0)
+			} else if (type === 'yearly') {
+				start.setMonth(0, 1)
+				end.setMonth(11, 31)
+			}
+
+			return { startDate: start, endDate: end }
+		}
+
+		const [daily, weekly, monthly, yearly] = await Promise.all(
+			(['daily', 'weekly', 'monthly', 'yearly'] as const).map(async (type) => {
+				const { startDate, endDate } = getDateRange(type)
+				return (await this.sellingRepository.getMany({ pagination: false, startDate, endDate })).reduce((a, b) => a + b.totalSum, BigInt(0))
+			}),
+		)
+
+		return createResponse({ data: { daily, weekly, monthly, yearly }, success: { messages: ['get total stats success'] } })
+	}
+
+	async getPeriodStats(query: SellingGetPeriodStatsRequest) {
+		const result = await this.sellingRepository.getPeriodStats(query)
+
+		return createResponse({ data: result, success: { messages: ['get period stats success'] } })
 	}
 
 	async createOne(body: SellingCreateOneRequest) {

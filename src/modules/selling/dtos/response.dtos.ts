@@ -1,5 +1,15 @@
 import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger'
-import { SellingFindManyData, SellingFindManyResponse, SellingFindOneData, SellingFindOneResponse, SellingModifyResposne } from '../interfaces'
+import {
+	SellingFindManyData,
+	SellingFindManyResponse,
+	SellingFindOneData,
+	SellingFindOneResponse,
+	SellingGetPeriodStatsData,
+	SellingGetPeriodStatsResponse,
+	SellingGetTotalStatsData,
+	SellingGetTotalStatsResponse,
+	SellingModifyResposne,
+} from '../interfaces'
 import { GlobalModifyResponseDto, GlobalResponseDto, PaginationResponseDto } from '@common'
 import { SellingRequiredDto } from './fields.dtos'
 
@@ -21,3 +31,34 @@ export class SellingFindOneResponseDto extends GlobalResponseDto implements Sell
 }
 
 export class SellingModifyResponseDto extends IntersectionType(GlobalResponseDto, GlobalModifyResponseDto) implements SellingModifyResposne {}
+
+export class SellingGetTotalStatsDataDto implements SellingGetTotalStatsData {
+	@ApiProperty({ type: BigInt })
+	monthly: bigint
+
+	@ApiProperty({ type: BigInt })
+	daily: bigint
+
+	@ApiProperty({ type: BigInt })
+	weekly: bigint
+
+	@ApiProperty({ type: BigInt })
+	yearly: bigint
+}
+export class SellingGetTotalStatsResponseDto extends GlobalResponseDto implements SellingGetTotalStatsResponse {
+	@ApiProperty({ type: SellingGetTotalStatsDataDto })
+	data: SellingGetTotalStatsData
+}
+
+export class SellingGetPeriodStatsDataDto implements SellingGetPeriodStatsData {
+	@ApiProperty({ type: BigInt })
+	sum: bigint
+
+	@ApiProperty({ type: String })
+	date: string
+}
+
+export class SellingGetPeriodStatsResponseDto extends GlobalResponseDto implements SellingGetPeriodStatsResponse {
+	@ApiProperty({ type: SellingGetPeriodStatsDataDto, isArray: true })
+	data: SellingGetPeriodStatsData[]
+}

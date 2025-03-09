@@ -18,12 +18,11 @@ export class TimezoneInterceptor implements NestInterceptor {
 		if (!obj || typeof obj !== 'object') return obj
 
 		const convert = (date) => (date ? moment.utc(date).tz('Asia/Tashkent').format('YYYY-MM-DD HH:mm:ss') : null)
+		const dateFields = ['createdAt', 'updatedAt', 'deletedAt']
 
-		for (const key in obj) {
-			if (typeof obj[key] === 'string' && key.toLowerCase().includes('date')) {
+		for (const key of dateFields) {
+			if (obj[key]) {
 				obj[key] = convert(obj[key])
-			} else if (typeof obj[key] === 'object') {
-				obj[key] = this.convertTimezone(obj[key])
 			}
 		}
 

@@ -13,6 +13,25 @@ export declare interface SellingFindOneResponse extends GlobalResponse {
 	data: SellingFindOneData
 }
 
+export declare interface SellingGetTotalStatsData {
+	daily: bigint
+	weekly: bigint
+	monthly: bigint
+	yearly: bigint
+}
+export declare interface SellingGetTotalStatsResponse extends GlobalResponse {
+	data: SellingGetTotalStatsData
+}
+
+export declare interface SellingGetPeriodStatsData {
+	date: string
+	sum: bigint
+}
+
+export declare interface SellingGetPeriodStatsResponse extends GlobalResponse {
+	data: SellingGetPeriodStatsData[]
+}
+
 export declare interface SellingModifyResposne extends GlobalResponse {
 	data: null
 }
