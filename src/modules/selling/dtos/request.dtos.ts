@@ -4,6 +4,8 @@ import { PaginationRequestDto, RequestOtherFieldsDto } from '@common'
 import { SellingOptionalDto, SellingRequiredDto } from './fields.dtos'
 import { PaymentCreateOneRequest, PaymentCreateOneRequestDto } from '../../payment'
 import { ProductStorehouse, ProductStorehouseDto } from '../../product-storehouse'
+import { ArrayNotEmpty } from 'class-validator'
+import { Type } from 'class-transformer'
 
 export class SellingFindManyRequestDto
 	extends IntersectionType(PickType(SellingOptionalDto, ['clientId', 'staffId', 'status']), PaginationRequestDto, PickType(RequestOtherFieldsDto, ['endDate', 'startDate', 'ids']))
@@ -12,7 +14,9 @@ export class SellingFindManyRequestDto
 export class SellingFindOneRequestDto extends IntersectionType(PickType(SellingRequiredDto, ['id'])) implements SellingFindOneRequest {}
 
 export class SellingCreateOneRequestDto extends IntersectionType(PickType(SellingRequiredDto, ['clientId', 'totalSum'])) implements SellingCreateOneRequest {
-	@ApiProperty({ type: ProductStorehouseDto })
+	@ApiProperty({ type: ProductStorehouseDto, isArray: true })
+	@ArrayNotEmpty()
+	@Type(() => ProductStorehouseDto)
 	products: ProductStorehouse[]
 
 	@ApiProperty({ type: PickType(PaymentCreateOneRequestDto, ['card', 'cash', 'description', 'other']) })
