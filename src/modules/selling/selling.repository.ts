@@ -173,7 +173,7 @@ export class SellingRepository {
 		let endDate: Date
 		let dateFormat: (date: Date) => string
 
-		startDate = new Date(now.setHours(0 + 5, 0, 0, 0))
+		startDate = new Date(new Date().setHours(0 + 5, 0, 0, 0))
 		endDate = new Date(now.setHours(now.getHours() + 5, 59, 59, 999))
 		dateFormat = (date) => date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
 
