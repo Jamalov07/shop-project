@@ -105,7 +105,22 @@ export class SellingService {
 			}),
 		)
 
-		return createResponse({ data: { daily, weekly, monthly, yearly }, success: { messages: ['get total stats success'] } })
+		const ourDebt = (await this.sellingRepository.getMany({ pagination: false })).reduce((a, b) => {
+			const payment = b.payments.reduce((a, b) => a + b.card + b.cash + b.other, BigInt(0))
+			const debt = payment - b.totalSum
+			return a + debt
+		}, BigInt(0))
+
+		const theirDebt = (await this.sellingRepository.getMany({ pagination: false })).reduce((a, b) => {
+			const payment = b.payments.reduce((a, b) => a + b.card + b.cash + b.other, BigInt(0))
+			const debt = b.totalSum - payment
+			return a + debt
+		}, BigInt(0))
+
+		return createResponse({
+			data: { daily, weekly, monthly, yearly, ourDebt: ourDebt < 0n ? BigInt(0) : ourDebt, theirDebt: theirDebt < 0n ? BigInt(0) : theirDebt },
+			success: { messages: ['get total stats success'] },
+		})
 	}
 
 	async getPeriodStats(query: SellingGetPeriodStatsRequest) {
@@ -125,15 +140,14 @@ export class SellingService {
 				promises.push(this.productStorehouseService.updateOne({ id: product.id }, { quantity: productStorehouse.data.quantity - product.quantity }))
 			}
 		}
-
+		console.log(body.payment)
 		if (body.payment) {
 			promises.push(this.paymentRepository.createOne({ ...body.payment, staffId: body.staffId, clientId: body.clientId, sellingId: selling.id }))
 		}
 
-		await this.sellingRepository.createOne(body)
 		await Promise.all(promises)
 
-		return createResponse({ data: null, success: { messages: ['create success'] } })
+		return createResponse({ data: null, success: { messages: ['create one success'] } })
 	}
 
 	// async createOneWithPayment(body: SellingCreateOneRequest) {
@@ -150,7 +164,7 @@ export class SellingService {
 
 		await this.sellingRepository.updateOne(query, { ...body })
 
-		return createResponse({ data: null, success: { messages: ['update success'] } })
+		return createResponse({ data: null, success: { messages: ['update one success'] } })
 	}
 
 	async deleteOne(query: SellingGetOneRequest) {
@@ -158,6 +172,6 @@ export class SellingService {
 
 		await this.sellingRepository.deleteOne(query)
 
-		return createResponse({ data: null, success: { messages: ['delete success'] } })
+		return createResponse({ data: null, success: { messages: ['delete one success'] } })
 	}
 }

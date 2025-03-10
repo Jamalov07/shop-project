@@ -44,6 +44,12 @@ export class SellingGetTotalStatsDataDto implements SellingGetTotalStatsData {
 
 	@ApiProperty({ type: BigInt })
 	yearly: bigint
+
+	@ApiProperty({ type: BigInt })
+	ourDebt: bigint
+
+	@ApiProperty({ type: BigInt })
+	theirDebt: bigint
 }
 export class SellingGetTotalStatsResponseDto extends GlobalResponseDto implements SellingGetTotalStatsResponse {
 	@ApiProperty({ type: SellingGetTotalStatsDataDto })

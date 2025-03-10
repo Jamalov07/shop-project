@@ -18,6 +18,8 @@ export declare interface SellingGetTotalStatsData {
 	weekly: bigint
 	monthly: bigint
 	yearly: bigint
+	ourDebt: bigint
+	theirDebt: bigint
 }
 export declare interface SellingGetTotalStatsResponse extends GlobalResponse {
 	data: SellingGetTotalStatsData

@@ -20,7 +20,7 @@ export class ClientService {
 	}
 
 	async findMany(query: ClientFindManyRequest) {
-		const clients = (await this.clientRepository.findMany(query)).map((c) => {
+		const clients = (await this.clientRepository.findMany({ ...query, isDeleted: false })).map((c) => {
 			const totalSums = c.sellings.reduce((a, b) => a + b.totalSum, BigInt(0))
 			const payedSums = c.sellings.reduce((a, b) => a + b.payments.reduce((c, d) => c + d.cash + d.card + d.other, BigInt(0)), BigInt(0))
 			return { ...c, debt: totalSums - payedSums, lastSellingDate: c.sellings[0]?.createdAt ?? null }
@@ -82,7 +82,7 @@ export class ClientService {
 	async createOne(body: ClientCreateOneRequest) {
 		await this.clientRepository.createOne({ ...body })
 
-		return createResponse({ data: null, success: { messages: ['create success'] } })
+		return createResponse({ data: null, success: { messages: ['create one success'] } })
 	}
 
 	async updateOne(query: ClientGetOneRequest, body: ClientUpdateOneRequest) {
@@ -90,16 +90,16 @@ export class ClientService {
 
 		await this.clientRepository.updateOne(query, { ...body })
 
-		return createResponse({ data: null, success: { messages: ['update success'] } })
+		return createResponse({ data: null, success: { messages: ['update one success'] } })
 	}
 
 	async deleteOne(query: ClientDeleteOneRequest) {
 		await this.getOne(query)
 		if (query.method === 'hard') {
-			await this.clientRepository.deleteOne(query)
+			// await this.clientRepository.deleteOne(query)
 		} else {
 			await this.clientRepository.updateOne(query, { deletedAt: new Date() })
 		}
-		return createResponse({ data: null, success: { messages: ['delete success'] } })
+		return createResponse({ data: null, success: { messages: ['delete one success'] } })
 	}
 }

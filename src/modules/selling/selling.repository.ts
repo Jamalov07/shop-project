@@ -88,6 +88,7 @@ export class SellingRepository {
 					lte: query.endDate ? new Date(new Date(query.endDate).setHours(23, 59, 59, 999)) : undefined,
 				},
 			},
+			include: { payments: true },
 			...paginationOptions,
 		})
 
@@ -172,11 +173,11 @@ export class SellingRepository {
 		let dateFormat: (date: Date) => string
 
 		startDate = new Date(now.setHours(0 + 5, 0, 0, 0))
-		endDate = new Date(now.setHours(23, 59, 59, 999))
+		endDate = new Date(now.setHours(new Date().getHours() + 5, 59, 59, 999))
 		dateFormat = (date) => date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
 
 		const salesByHour = []
-		for (let hour = 0; hour < 24; hour++) {
+		for (let hour = 0; hour < endDate.getHours() - 4; hour++) {
 			const hourStart = new Date(startDate)
 			hourStart.setHours(hour, 0, 0, 0)
 			const hourEnd = new Date(startDate)
@@ -197,33 +198,100 @@ export class SellingRepository {
 		return salesByHour
 	}
 
+	// private async oldgetDayStats() {
+	// 	const now = new Date(new Date().setHours(new Date().getHours() + 5))
+	// 	let startDate: Date
+	// 	let endDate: Date
+	// 	let dateFormat: (date: Date) => string
+
+	// 	startDate = new Date(now.setHours(0 + 5, 0, 0, 0))
+	// 	endDate = new Date(now.setHours(23, 59, 59, 999))
+	// 	dateFormat = (date) => date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+
+	// 	const salesByHour = []
+	// 	for (let hour = 0; hour < 24; hour++) {
+	// 		const hourStart = new Date(startDate)
+	// 		hourStart.setHours(hour, 0, 0, 0)
+	// 		const hourEnd = new Date(startDate)
+	// 		hourEnd.setHours(hour, 59, 59, 999)
+
+	// 		const sales = await this.prisma.sellingModel.findMany({
+	// 			where: {
+	// 				createdAt: { gte: hourStart, lte: hourEnd },
+	// 			},
+	// 		})
+
+	// 		const totalSum = sales.reduce((sum, sale) => sum + sale.totalSum, BigInt(0))
+	// 		salesByHour.push({
+	// 			date: dateFormat(hourStart),
+	// 			sum: totalSum.toString(),
+	// 		})
+	// 	}
+	// 	return salesByHour
+	// }
+
+	// async oldgetWeekStats() {
+	// 	const now = new Date(new Date().setHours(new Date().getHours() + 5))
+	// 	let startDate: Date
+	// 	let endDate: Date
+	// 	let dateFormat: (date: Date) => string
+
+	// 	const currentDay = now.getDay()
+	// 	startDate = new Date(now)
+	// 	if (currentDay === 0) {
+	// 		startDate.setDate(startDate.getDate() - 6)
+	// 	} else {
+	// 		startDate.setDate(startDate.getDate() - (currentDay - 1))
+	// 	}
+	// 	startDate = new Date(startDate.setHours(0 + 5, 0, 0, 0))
+
+	// 	endDate = new Date(startDate)
+	// 	endDate.setDate(startDate.getDate() + 6)
+	// 	endDate.setHours(23, 59, 59, 999)
+
+	// 	dateFormat = (date) => date.toISOString().split('T')[0]
+
+	// 	const salesByDay = []
+	// 	for (let day = 0; day < 7; day++) {
+	// 		const dayStart = new Date(startDate)
+	// 		dayStart.setDate(startDate.getDate() + day)
+	// 		const dayEnd = new Date(dayStart)
+	// 		dayEnd.setHours(23, 59, 59, 999)
+
+	// 		const sales = await this.prisma.sellingModel.findMany({
+	// 			where: {
+	// 				createdAt: { gte: dayStart, lte: dayEnd },
+	// 			},
+	// 		})
+
+	// 		const totalSum = sales.reduce((sum, sale) => sum + sale.totalSum, BigInt(0))
+	// 		salesByDay.push({
+	// 			date: dateFormat(dayStart),
+	// 			sum: totalSum.toString(),
+	// 		})
+	// 	}
+	// 	return salesByDay
+	// }
+
 	async getWeekStats() {
 		const now = new Date(new Date().setHours(new Date().getHours() + 5))
 		let startDate: Date
 		let endDate: Date
 		let dateFormat: (date: Date) => string
 
-		const currentDay = now.getDay()
-		startDate = new Date(now)
-		if (currentDay === 0) {
-			startDate.setDate(startDate.getDate() - 6)
-		} else {
-			startDate.setDate(startDate.getDate() - (currentDay - 1))
-		}
-		startDate = new Date(startDate.setHours(0 + 5, 0, 0, 0))
+		startDate = new Date(new Date(new Date().setDate(now.getDate() - 6)).setHours(0 + 5, 0, 0, 0))
 
-		endDate = new Date(startDate)
-		endDate.setDate(startDate.getDate() + 6)
-		endDate.setHours(23, 59, 59, 999)
+		endDate = new Date(now)
+		endDate.setHours(23 + 5, 59, 59, 999)
 
 		dateFormat = (date) => date.toISOString().split('T')[0]
 
 		const salesByDay = []
 		for (let day = 0; day < 7; day++) {
-			const dayStart = new Date(startDate)
+			const dayStart = new Date(startDate.setHours(0 + 5, 0, 0, 0))
 			dayStart.setDate(startDate.getDate() + day)
 			const dayEnd = new Date(dayStart)
-			dayEnd.setHours(23, 59, 59, 999)
+			dayEnd.setHours(23 + 5, 59, 59, 999)
 
 			const sales = await this.prisma.sellingModel.findMany({
 				where: {
@@ -240,15 +308,57 @@ export class SellingRepository {
 		return salesByDay
 	}
 
+	// async oldgetWeekStats() {
+	// 	const now = new Date(new Date().setHours(new Date().getHours() + 5))
+	// 	let startDate: Date
+	// 	let endDate: Date
+	// 	let dateFormat: (date: Date) => string
+
+	// 	const currentDay = now.getDay()
+	// 	startDate = new Date(now)
+	// 	if (currentDay === 0) {
+	// 		startDate.setDate(startDate.getDate() - 6)
+	// 	} else {
+	// 		startDate.setDate(startDate.getDate() - (currentDay - 1))
+	// 	}
+	// 	startDate = new Date(startDate.setHours(0 + 5, 0, 0, 0))
+
+	// 	endDate = new Date(startDate)
+	// 	endDate.setDate(startDate.getDate() + 6)
+	// 	endDate.setHours(23, 59, 59, 999)
+
+	// 	dateFormat = (date) => date.toISOString().split('T')[0]
+
+	// 	const salesByDay = []
+	// 	for (let day = 0; day < 7; day++) {
+	// 		const dayStart = new Date(startDate)
+	// 		dayStart.setDate(startDate.getDate() + day)
+	// 		const dayEnd = new Date(dayStart)
+	// 		dayEnd.setHours(23, 59, 59, 999)
+
+	// 		const sales = await this.prisma.sellingModel.findMany({
+	// 			where: {
+	// 				createdAt: { gte: dayStart, lte: dayEnd },
+	// 			},
+	// 		})
+
+	// 		const totalSum = sales.reduce((sum, sale) => sum + sale.totalSum, BigInt(0))
+	// 		salesByDay.push({
+	// 			date: dateFormat(dayStart),
+	// 			sum: totalSum.toString(),
+	// 		})
+	// 	}
+	// 	return salesByDay
+	// }
+
 	async getMonthStats() {
 		const now = new Date(new Date().setHours(new Date().getHours() + 5))
 		let startDate: Date
 		let endDate: Date
 		let dateFormat: (date: Date) => string
 
-		startDate = new Date(now.getFullYear(), now.getMonth(), 1, 0 + 5, 0, 0, 0) 
-		endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999) 
-
+		startDate = new Date(now.getFullYear(), now.getMonth(), 1, 0 + 5, 0, 0, 0)
+		endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 		dateFormat = (date) => date.toISOString().split('T')[0]
 
 		const salesByDay = []
@@ -273,6 +383,37 @@ export class SellingRepository {
 		return salesByDay
 	}
 
+	// async oldgetYearStats() {
+	// 	const now = new Date(new Date().setHours(new Date().getHours() + 5))
+	// 	let startDate: Date
+	// 	let endDate: Date
+	// 	let dateFormat: (date: Date) => string
+
+	// 	startDate = new Date(now.getFullYear(), 0, 1, 0 + 5, 0, 0, 0)
+	// 	endDate = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999)
+
+	// 	dateFormat = (date) => date.toISOString().split('T')[0].slice(0, 7)
+
+	// 	const salesByMonth = []
+	// 	for (let month = 0; month < 12; month++) {
+	// 		const monthStart = new Date(startDate.getFullYear(), month, 1, 0 + 5, 0, 0, 0)
+	// 		const monthEnd = new Date(startDate.getFullYear(), month + 1, 0, 23, 59, 59, 999)
+
+	// 		const sales = await this.prisma.sellingModel.findMany({
+	// 			where: {
+	// 				createdAt: { gte: monthStart, lte: monthEnd },
+	// 			},
+	// 		})
+
+	// 		const totalSum = sales.reduce((sum, sale) => sum + sale.totalSum, BigInt(0))
+	// 		salesByMonth.push({
+	// 			date: dateFormat(monthStart),
+	// 			sum: totalSum.toString(),
+	// 		})
+	// 	}
+	// 	return salesByMonth
+	// }
+
 	async getYearStats() {
 		const now = new Date(new Date().setHours(new Date().getHours() + 5))
 		let startDate: Date
@@ -280,14 +421,14 @@ export class SellingRepository {
 		let dateFormat: (date: Date) => string
 
 		startDate = new Date(now.getFullYear(), 0, 1, 0 + 5, 0, 0, 0)
-		endDate = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999)
+		endDate = new Date(now.getFullYear(), 11, 31, 23+5, 59, 59, 999)
 
 		dateFormat = (date) => date.toISOString().split('T')[0].slice(0, 7)
 
 		const salesByMonth = []
 		for (let month = 0; month < 12; month++) {
 			const monthStart = new Date(startDate.getFullYear(), month, 1, 0 + 5, 0, 0, 0)
-			const monthEnd = new Date(startDate.getFullYear(), month + 1, 0, 23, 59, 59, 999)
+			const monthEnd = new Date(startDate.getFullYear(), month + 1, 0, 23+5, 59, 59, 999)
 
 			const sales = await this.prisma.sellingModel.findMany({
 				where: {
