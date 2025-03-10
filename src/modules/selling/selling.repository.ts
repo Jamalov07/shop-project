@@ -168,12 +168,13 @@ export class SellingRepository {
 
 	private async getDayStats() {
 		const now = new Date(new Date().setHours(new Date().getHours() + 5))
+		console.log('bu now', now)
 		let startDate: Date
 		let endDate: Date
 		let dateFormat: (date: Date) => string
 
 		startDate = new Date(now.setHours(0 + 5, 0, 0, 0))
-		endDate = new Date(now.setHours(new Date().getHours() + 5, 59, 59, 999))
+		endDate = new Date(now.setHours(now.getHours() + 5, 59, 59, 999))
 		dateFormat = (date) => date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
 
 		const salesByHour = []
@@ -421,14 +422,14 @@ export class SellingRepository {
 		let dateFormat: (date: Date) => string
 
 		startDate = new Date(now.getFullYear(), 0, 1, 0 + 5, 0, 0, 0)
-		endDate = new Date(now.getFullYear(), 11, 31, 23+5, 59, 59, 999)
+		endDate = new Date(now.getFullYear(), 11, 31, 23 + 5, 59, 59, 999)
 
 		dateFormat = (date) => date.toISOString().split('T')[0].slice(0, 7)
 
 		const salesByMonth = []
 		for (let month = 0; month < 12; month++) {
 			const monthStart = new Date(startDate.getFullYear(), month, 1, 0 + 5, 0, 0, 0)
-			const monthEnd = new Date(startDate.getFullYear(), month + 1, 0, 23+5, 59, 59, 999)
+			const monthEnd = new Date(startDate.getFullYear(), month + 1, 0, 23 + 5, 59, 59, 999)
 
 			const sales = await this.prisma.sellingModel.findMany({
 				where: {
