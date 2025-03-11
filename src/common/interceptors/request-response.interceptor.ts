@@ -29,7 +29,6 @@ export class RequestResponseInterceptor implements NestInterceptor {
 					this.logger.debug(colors.magenta({ ...requestInfo, ...responseInfo }))
 				},
 				error: (error) => {
-					console.log(error)
 					const responseTime = Date.now() - startTime
 					const responseInfo: any = {
 						endDate: new Date(),

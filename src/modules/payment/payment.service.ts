@@ -18,8 +18,6 @@ export class PaymentService {
 		let pageCard = BigInt(0)
 		let pageOther = BigInt(0)
 		for (const payment of payments) {
-			pageCash += payment.cash
-			pageCard += payment.card
 			pageOther += payment.other
 		}
 
@@ -28,16 +26,14 @@ export class PaymentService {
 		let totalCard = BigInt(0)
 		let totalOther = BigInt(0)
 		for (const payment of fullPayments) {
-			totalCash += payment.cash
-			totalCard += payment.card
 			totalOther += payment.other
 		}
 
 		const result = query.pagination
 			? {
 					calc: {
-						inPage: { card: pageCard, cash: pageCash, other: pageOther },
-						inTotal: { card: totalCard, cash: totalCash, other: totalOther },
+						inPage: { other: pageOther },
+						inTotal: { other: totalOther },
 					},
 					totalCount: paymentsCount,
 					pagesCount: Math.ceil(paymentsCount / query.pageSize),

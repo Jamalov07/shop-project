@@ -16,16 +16,13 @@ export class ExcelService {
 	}
 
 	async exportProductsToExcel(response: Response) {
-		// 🔹 1. Mahsulotlarni olish
 		const products = await this.prisma.productModel.findMany()
 
-		// 🔹 2. Excel Workbook yaratish
 		const workbook = new ExcelJS.Workbook()
 		const worksheet = workbook.addWorksheet('Mahsulotlar')
 
-		// 🔹 3. Ustun nomlarini qo‘shish (o‘zbekcha)
 		worksheet.columns = [
-			{ header: 'Mahsulot nomi', key: 'name', width: 40 }, // 🔹 Nom uzunligi kattaroq
+			{ header: 'Mahsulot nomi', key: 'name', width: 40 },
 			{ header: 'Narxi (so‘m)', key: 'price', width: 15 },
 			{ header: 'Tannarxi (so‘m)', key: 'cost', width: 15 },
 			{ header: 'Miqdori', key: 'quantity', width: 10 },
@@ -35,12 +32,10 @@ export class ExcelService {
 			{ header: 'O‘chirilgan sana', key: 'deletedAt', width: 20 },
 		]
 
-		// 🔹 4. Headerlarni qalin qilish va qotib qo‘yish
 		worksheet.getRow(1).font = { bold: true }
 		worksheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center' }
-		worksheet.views = [{ state: 'frozen', ySplit: 1 }] // 🔹 Header harakatlanmasdan qotib turadi
+		worksheet.views = [{ state: 'frozen', ySplit: 1 }]
 
-		// 🔹 5. Ma'lumotlarni qo‘shish
 		products.forEach((product) => {
 			worksheet.addRow({
 				name: product.name,
@@ -48,33 +43,28 @@ export class ExcelService {
 				cost: product.cost.toString(),
 				quantity: product.quantity,
 				warningThreshold: product.warningThreshold,
-				createdAt: new Date(product.createdAt).toLocaleDateString('uz-UZ'), // 🔹 Sana formatini o‘zgartirish
+				createdAt: new Date(product.createdAt).toLocaleDateString('uz-UZ'),
 				updatedAt: new Date(product.updatedAt).toLocaleDateString('uz-UZ'),
 				deletedAt: product.deletedAt ? new Date(product.deletedAt).toLocaleDateString('uz-UZ') : 'N/A',
 			})
 		})
 
-		// 🔹 6. Fayl nomini yaratish
 		const fileName = `mahsulotlar_${Date.now()}.xlsx`
 		const uploadDir = path.join(process.cwd(), 'uploads', 'files')
 		const filePath = path.join(uploadDir, fileName)
 
-		// 🔹 7. Faylni saqlash
 		await workbook.xlsx.writeFile(filePath)
 
-		// 🔹 8. Foydalanuvchiga yuklab olish uchun jo‘natish
 		response.download(filePath, fileName, (err) => {
 			if (err) {
 				console.log(err)
 				throw new Error('Faylni yuklab olishda xatolik yuz berdi')
 			}
-			// 🔹 Faylni vaqtincha saqlash, keyin o‘chirish
 			setTimeout(() => fs.unlinkSync(filePath), 5000)
 		})
 	}
 
 	async exportPaymentsToExcel(query: PaymentFindManyRequest, res: Response) {
-		// 🔹 1. Bazadan ma'lumotlarni olish
 		const payments = await this.prisma.paymentModel.findMany({
 			include: { staff: true, client: true, selling: true },
 			where: {
@@ -90,16 +80,12 @@ export class ExcelService {
 			},
 		})
 
-		// 🔹 2. Excel Workbook yaratish
 		const workbook = new ExcelJS.Workbook()
 		const worksheet = workbook.addWorksheet('To‘lovlar')
 
-		// 🔹 3. Sarlavhalarni qo‘shish
 		worksheet.columns = [
 			{ header: 'Mijoz ismi', key: 'clientName', width: 30 },
 			{ header: 'Telefon raqami', key: 'clientPhone', width: 20 },
-			{ header: 'Naqd (so‘m)', key: 'cash', width: 15 },
-			{ header: 'Karta (so‘m)', key: 'card', width: 15 },
 			{ header: 'Boshqa (so‘m)', key: 'other', width: 15 },
 			{ header: 'Xodim ismi', key: 'staffName', width: 30 },
 			{ header: 'Savdo ID', key: 'sellingId', width: 20 },
@@ -107,18 +93,14 @@ export class ExcelService {
 			{ header: 'Yaratilgan sana', key: 'createdAt', width: 20 },
 		]
 
-		// 🔹 4. Header qalin qilish va qotib qo‘yish
 		worksheet.getRow(1).font = { bold: true }
 		worksheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center' }
 		worksheet.views = [{ state: 'frozen', ySplit: 1 }] // Header qotib turadi
 
-		// 🔹 5. Ma'lumotlarni qo‘shish
 		payments.forEach((payment) => {
 			worksheet.addRow({
 				clientName: payment.client?.fullname || 'N/A',
 				clientPhone: payment.client?.phone || 'N/A',
-				cash: payment.cash.toString(),
-				card: payment.card.toString(),
 				other: payment.other.toString(),
 				staffName: payment.staff?.fullname || 'N/A',
 				sellingId: payment.sellingId || 'N/A',
@@ -127,35 +109,29 @@ export class ExcelService {
 			})
 		})
 
-		// 🔹 6. Fayl nomini yaratish
 		const fileName = `tolovlar_${Date.now()}.xlsx`
 		const uploadDir = path.join(process.cwd(), 'uploads', 'files')
 		const filePath = path.join(uploadDir, fileName)
 
-		// 🔹 7. Faylni saqlash
 		await workbook.xlsx.writeFile(filePath)
 
-		// 🔹 8. Faylni foydalanuvchiga yuborish
 		res.download(filePath, fileName, (err) => {
 			if (err) {
-				console.error('File download error:', err)
+				console.log(err)
+				throw new Error('Faylni yuklab olishda xatolik yuz berdi')
 			}
-			// Faylni o‘chirib tashlash (agar kerak bo‘lsa)
 			setTimeout(() => fs.unlinkSync(filePath), 5000)
 		})
 	}
 
 	async exportClientsToExcel(res: Response) {
-		// 🔹 1. Bazadan `ClientModel` ma'lumotlarini olish
 		const clients = await this.prisma.clientModel.findMany({
 			include: { payments: true, sellings: true },
 		})
 
-		// 🔹 2. Excel Workbook yaratish
 		const workbook = new ExcelJS.Workbook()
 		const worksheet = workbook.addWorksheet('Clients')
 
-		// 🔹 3. Sarlavhalarni qo‘shish
 		worksheet.columns = [
 			{ header: 'ID', key: 'id', width: 42 },
 			{ header: 'Phone', key: 'phone', width: 15 },
@@ -165,7 +141,6 @@ export class ExcelService {
 			{ header: 'Total Sellings', key: 'totalSellings', width: 20 },
 		]
 
-		// 🔹 4. Ma'lumotlarni qo‘shish
 		clients.forEach((client) => {
 			worksheet.addRow({
 				id: client.id,
@@ -177,20 +152,17 @@ export class ExcelService {
 			})
 		})
 
-		// 🔹 5. Fayl nomini yaratish
 		const fileName = `clients_${Date.now()}.xlsx`
 		const uploadDir = path.join(process.cwd(), 'uploads', 'files')
 		const filePath = path.join(uploadDir, fileName)
 
-		// 🔹 6. Faylni saqlash
 		await workbook.xlsx.writeFile(filePath)
 
-		// 🔹 7. Faylni foydalanuvchiga yuborish
 		res.download(filePath, fileName, (err) => {
 			if (err) {
-				console.error('File download error:', err)
+				console.log(err)
+				throw new Error('Faylni yuklab olishda xatolik yuz berdi')
 			}
-			// Faylni o‘chirib tashlash (agar kerak bo‘lsa)
 			setTimeout(() => fs.unlinkSync(filePath), 5000)
 		})
 	}
@@ -218,7 +190,6 @@ export class ExcelService {
 		const workbook = new ExcelJS.Workbook()
 		const worksheet = workbook.addWorksheet('Sellings')
 
-		// Sarlavha qo‘shish
 		worksheet.columns = [
 			{ header: 'ID', key: 'id', width: 42 },
 			{ header: 'Status', key: 'status', width: 15 },
@@ -228,32 +199,28 @@ export class ExcelService {
 			{ header: 'Created At', key: 'createdAt', width: 40 },
 		]
 
-		// Ma'lumotlarni qo‘shish
 		sellings.forEach((selling) => {
 			worksheet.addRow({
 				id: selling.id,
 				status: selling.status,
 				staffId: selling.staffId,
 				clientId: selling.clientId,
-				totalSum: selling.totalSum.toString(), // BigInt ni stringga o‘tkazamiz
+				totalSum: selling.totalSum.toString(),
 				createdAt: selling.createdAt.toISOString(),
 			})
 		})
 
-		// 🔹 5. Fayl nomini yaratish
 		const fileName = `sellings_${Date.now()}.xlsx`
 		const uploadDir = path.join(process.cwd(), 'uploads', 'files')
 		const filePath = path.join(uploadDir, fileName)
 
-		// 🔹 6. Faylni saqlash
 		await workbook.xlsx.writeFile(filePath)
 
-		// 🔹 7. Faylni foydalanuvchiga yuborish
 		res.download(filePath, fileName, (err) => {
 			if (err) {
-				console.error('File download error:', err)
+				console.log(err)
+				throw new Error('Faylni yuklab olishda xatolik yuz berdi')
 			}
-			// Faylni o‘chirib tashlash (agar kerak bo‘lsa)
 			setTimeout(() => fs.unlinkSync(filePath), 5000)
 		})
 	}

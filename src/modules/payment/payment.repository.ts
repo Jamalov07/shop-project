@@ -30,8 +30,6 @@ export class PaymentRepository {
 			},
 			select: {
 				id: true,
-				card: true,
-				cash: true,
 				description: true,
 				other: true,
 				createdAt: true,
@@ -52,8 +50,6 @@ export class PaymentRepository {
 			},
 			select: {
 				id: true,
-				card: true,
-				cash: true,
 				description: true,
 				other: true,
 				createdAt: true,
@@ -127,8 +123,6 @@ export class PaymentRepository {
 		const payment = await this.prisma.paymentModel.create({
 			data: {
 				description: body.description,
-				card: body.card,
-				cash: body.cash,
 				clientId: body.clientId,
 				other: body.other,
 				staffId: body.staffId,
@@ -155,7 +149,7 @@ export class PaymentRepository {
 	// 	}
 
 	// 	if (notPayedsellings.length) {
-	// 		let totalMoney = body.card + body.cash + body.other
+	// 		let totalMoney = body.other
 
 	// 		for (const selling of notPayedsellings) {
 	// 			if (totalMoney) {

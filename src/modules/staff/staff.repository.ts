@@ -140,7 +140,6 @@ export class StaffRepository implements OnModuleInit {
 	}
 
 	async updateOne(query: StaffGetOneRequest, body: StaffUpdateOneRequest) {
-		console.log(body)
 		const staff = await this.prisma.staffModel.update({
 			where: { id: query.id },
 			data: {

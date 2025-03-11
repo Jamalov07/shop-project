@@ -7,5 +7,3 @@ export const appConfig = registerAs('app', (): AppConfigOptions => {
 		port: process.env.APP_PORT ? parseInt(process.env.APP_PORT) : 3000,
 	}
 })
-
-console.log('app config', appConfig())

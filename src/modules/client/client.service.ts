@@ -22,7 +22,7 @@ export class ClientService {
 	async findMany(query: ClientFindManyRequest) {
 		const clients = (await this.clientRepository.findMany({ ...query, isDeleted: false })).map((c) => {
 			const totalSums = c.sellings.reduce((a, b) => a + b.totalSum, BigInt(0))
-			const payedSums = c.sellings.reduce((a, b) => a + b.payments.reduce((c, d) => c + d.cash + d.card + d.other, BigInt(0)), BigInt(0))
+			const payedSums = c.sellings.reduce((a, b) => a + b.payments.reduce((c, d) => c + d.other, BigInt(0)), BigInt(0))
 			return { ...c, debt: totalSums - payedSums, lastSellingDate: c.sellings[0]?.createdAt ?? null }
 		})
 		const clientsCount = await this.clientRepository.countFindMany(query)
@@ -46,7 +46,7 @@ export class ClientService {
 			throw new BadRequestException('client not found')
 		}
 		const totalSums = client.sellings.reduce((a, b) => a + b.totalSum, BigInt(0))
-		const payedSums = client.sellings.reduce((a, b) => a + b.payments.reduce((c, d) => c + d.cash + d.card + d.other, BigInt(0)), BigInt(0))
+		const payedSums = client.sellings.reduce((a, b) => a + b.payments.reduce((c, d) => c + d.other, BigInt(0)), BigInt(0))
 
 		return createResponse({
 			data: { ...client, debt: totalSums - payedSums, lastSellingDate: client.sellings[0].createdAt ?? null },

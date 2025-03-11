@@ -6,7 +6,7 @@ import { ClientFindOneData, ClientFindOneDataDto } from '../../client'
 import { SellingFindOneData, SellingFindOneDataDto } from '../../selling'
 import { StaffFindOneData, StaffFindOneDataDto } from '../../staff'
 
-export class PaymentFindOneDataDto extends PickType(PaymentRequiredDto, ['id', 'createdAt', 'card', 'cash', 'description', 'other']) implements PaymentFindOneData {
+export class PaymentFindOneDataDto extends PickType(PaymentRequiredDto, ['id', 'createdAt', 'description', 'other']) implements PaymentFindOneData {
 	@ApiProperty({ type: ClientFindOneDataDto })
 	client?: ClientFindOneData
 
@@ -18,12 +18,6 @@ export class PaymentFindOneDataDto extends PickType(PaymentRequiredDto, ['id', '
 }
 
 export class CalcDto implements Calc {
-	@ApiProperty({ type: BigInt })
-	card: bigint
-
-	@ApiProperty({ type: BigInt })
-	cash: bigint
-
 	@ApiProperty({ type: BigInt })
 	other: bigint
 }

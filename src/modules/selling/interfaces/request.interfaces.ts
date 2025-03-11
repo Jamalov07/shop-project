@@ -18,8 +18,8 @@ export declare interface SellingGetManyRequest
 
 export declare interface SellingGetOneRequest extends Pick<SellingOptional, 'id'> {}
 
-export declare interface PaymentWithoutSellingId extends Pick<PaymentCreateOneRequest, 'card' | 'cash' | 'description' | 'other'> {}
-export declare interface SellingCreateOneRequest extends Pick<SellingRequired, 'clientId' | 'totalSum'>, Pick<SellingOptional, 'staffId'> {
+export declare interface PaymentWithoutSellingId extends Pick<PaymentCreateOneRequest, 'description' | 'other'> {}
+export declare interface SellingCreateOneRequest extends Pick<SellingRequired, 'totalSum'>, Pick<SellingOptional, 'clientId' | 'staffId'> {
 	payment?: PaymentWithoutSellingId
 	products: ProductStorehouse[]
 }

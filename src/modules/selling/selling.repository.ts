@@ -168,7 +168,6 @@ export class SellingRepository {
 
 	private async getDayStats() {
 		const now = new Date(new Date().setHours(new Date().getHours() + 5))
-		console.log('bu now', now)
 		let startDate: Date
 		let endDate: Date
 		let dateFormat: (date: Date) => string

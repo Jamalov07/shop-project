@@ -11,14 +11,12 @@ export declare interface PaymentFindManyRequest
 export declare interface PaymentFindOneRequest extends Pick<PaymentRequired, 'id'> {}
 
 export declare interface PaymentGetManyRequest
-	extends Pick<PaymentOptional, 'card' | 'cash' | 'clientId' | 'description' | 'other' | 'staffId' | 'sellingId'>,
+	extends Pick<PaymentOptional, 'clientId' | 'description' | 'other' | 'staffId' | 'sellingId'>,
 		PaginationRequest,
 		Pick<RequestOtherFields, 'ids'> {}
 
-export declare interface PaymentGetOneRequest extends Pick<PaymentOptional, 'id' | 'card' | 'cash' | 'clientId' | 'description' | 'other' | 'sellingId'> {}
+export declare interface PaymentGetOneRequest extends Pick<PaymentOptional, 'id' | 'clientId' | 'description' | 'other' | 'sellingId'> {}
 
-export declare interface PaymentCreateOneRequest
-	extends Pick<PaymentRequired, 'clientId'>,
-		Pick<PaymentOptional, 'sellingId' | 'card' | 'cash' | 'description' | 'other' | 'staffId'> {}
+export declare interface PaymentCreateOneRequest extends Pick<PaymentRequired, 'clientId'>, Pick<PaymentOptional, 'sellingId' | 'description' | 'other' | 'staffId'> {}
 
 export declare interface PaymentUpdateOneRequest extends Pick<PaymentOptional, 'description'> {}

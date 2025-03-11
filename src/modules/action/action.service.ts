@@ -13,7 +13,6 @@ export class ActionService {
 	async findMany(query: ActionFindManyRequest) {
 		const actions = await this.actionRepository.findMany(query)
 		const actionsCount = await this.actionRepository.countFindMany(query)
-		console.log(actions)
 		const result = query.pagination
 			? {
 					totalCount: actionsCount,

@@ -106,13 +106,13 @@ export class SellingService {
 		)
 
 		const ourDebt = (await this.sellingRepository.getMany({ pagination: false })).reduce((a, b) => {
-			const payment = b.payments.reduce((a, b) => a + b.card + b.cash + b.other, BigInt(0))
+			const payment = b.payments.reduce((a, b) => a + b.other, BigInt(0))
 			const debt = payment - b.totalSum
 			return a + debt
 		}, BigInt(0))
 
 		const theirDebt = (await this.sellingRepository.getMany({ pagination: false })).reduce((a, b) => {
-			const payment = b.payments.reduce((a, b) => a + b.card + b.cash + b.other, BigInt(0))
+			const payment = b.payments.reduce((a, b) => a + b.other, BigInt(0))
 			const debt = b.totalSum - payment
 			return a + debt
 		}, BigInt(0))
@@ -140,7 +140,6 @@ export class SellingService {
 				promises.push(this.productStorehouseService.updateOne({ id: product.id }, { quantity: productStorehouse.data.quantity - product.quantity }))
 			}
 		}
-		console.log(body.payment)
 		if (body.payment) {
 			promises.push(this.paymentRepository.createOne({ ...body.payment, staffId: body.staffId, clientId: body.clientId, sellingId: selling.id }))
 		}

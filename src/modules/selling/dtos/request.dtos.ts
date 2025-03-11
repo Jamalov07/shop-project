@@ -23,8 +23,11 @@ export class SellingFindManyRequestDto
 
 export class SellingFindOneRequestDto extends IntersectionType(PickType(SellingRequiredDto, ['id'])) implements SellingFindOneRequest {}
 
-export class PaymentWithoutSellingIdDto extends PickType(PaymentCreateOneRequestDto, ['card', 'cash', 'description', 'other']) implements PaymentWithoutSellingId {}
-export class SellingCreateOneRequestDto extends IntersectionType(PickType(SellingRequiredDto, ['clientId', 'totalSum'])) implements SellingCreateOneRequest {
+export class PaymentWithoutSellingIdDto extends PickType(PaymentCreateOneRequestDto, ['description', 'other']) implements PaymentWithoutSellingId {}
+export class SellingCreateOneRequestDto
+	extends IntersectionType(PickType(SellingRequiredDto, ['totalSum']), PickType(SellingOptionalDto, ['clientId']))
+	implements SellingCreateOneRequest
+{
 	@ApiProperty({ type: ProductStorehouseDto, isArray: true })
 	@ArrayNotEmpty()
 	@Type(() => ProductStorehouseDto)
@@ -38,8 +41,8 @@ export class SellingCreateOneRequestDto extends IntersectionType(PickType(Sellin
 }
 
 // export class SellingCreateOneWithPaymentRequestDto extends IntersectionType(PickType(SellingRequiredDto, ['clientId', 'totalSum'])) implements SellingCreateOneRequest {
-// 	@ApiProperty({ type: PickType(PaymentCreateOneRequestDto, ['card', 'cash', 'description', 'other']) })
-// 	payment?: Pick<PaymentCreateOneRequest, 'card' | 'cash' | 'description' | 'other'>
+// 	@ApiProperty({ type: PickType(PaymentCreateOneRequestDto, [ 'description', 'other']) })
+// 	payment?: Pick<PaymentCreateOneRequest, 'description' | 'other'>
 // }
 
 export class SellingUpdateOneRequestDto extends IntersectionType(PickType(SellingOptionalDto, ['status', 'totalSum'])) implements SellingUpdateOneRequest {}

@@ -29,7 +29,8 @@ async function bootstrap() {
 	SwaggerModule.setup('docs', app, document, {})
 
 	await app.listen(appConfig().port, appConfig().host, () => {
-		console.log('work!')
+		console.log(appConfig())
+		console.log(`works!`)
 	})
 }
 bootstrap()
