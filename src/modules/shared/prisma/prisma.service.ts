@@ -20,7 +20,9 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 				if (!params?.args?.orderBy) {
 					params.args.orderBy = [{ createdAt: 'desc' }]
 				} else {
-					params.args.orderBy.push({ createdAt: 'desc' })
+					if (!['BarcodeModel'].includes(params.model)) {
+						params.args.orderBy.push({ createdAt: 'desc' })
+					}
 				}
 				// if (!params.args.where.deletedAt) {
 				// 	params.args.where.deletedAt = null
