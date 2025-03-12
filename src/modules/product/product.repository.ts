@@ -199,7 +199,7 @@ export class ProductRepository {
 	}
 
 	async getOrCreateBarcode() {
-		let barcode = await this.prisma.barcodeModel.findFirst({ orderBy: { code: 'desc' } })
+		let barcode = await this.prisma.barcodeModel.findFirst({ orderBy: [{ code: 'desc' }] })
 		if (!barcode) {
 			barcode = await this.prisma.barcodeModel.create({})
 			return barcode
