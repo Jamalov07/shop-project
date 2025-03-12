@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional, PickType } from '@nestjs/swagger'
 import { DefaultOptionalFieldsDto, DefaultRequiredFieldsDto, IsIntOrBigInt } from '@common'
 import { ProductOptional, ProductRequired } from '../interfaces'
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator'
+import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
 import { Transform, Type } from 'class-transformer'
 
 export class ProductRequiredDto extends PickType(DefaultRequiredFieldsDto, ['id', 'updatedAt', 'createdAt', 'deletedAt']) implements ProductRequired {
@@ -36,6 +36,11 @@ export class ProductRequiredDto extends PickType(DefaultRequiredFieldsDto, ['id'
 	@Transform(({ value }) => Number(value))
 	@IsNumber()
 	warningThreshold: number
+
+	@ApiProperty({ type: String })
+	@IsNotEmpty()
+	@IsUUID('4')
+	barcodeId: string
 }
 
 export class ProductOptionalDto extends PickType(DefaultOptionalFieldsDto, ['id', 'updatedAt', 'createdAt', 'deletedAt']) implements ProductOptional {

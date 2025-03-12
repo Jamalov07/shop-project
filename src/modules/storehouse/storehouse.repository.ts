@@ -66,8 +66,11 @@ export class StorehouseRepository {
 				products: {
 					select: {
 						id: true,
+
 						quantity: true,
-						product: { select: { id: true, cost: true, createdAt: true, image: true, name: true, price: true, quantity: true, warningThreshold: true } },
+						product: {
+							select: { barcode: { select: { code: true } }, id: true, cost: true, createdAt: true, image: true, name: true, price: true, quantity: true, warningThreshold: true },
+						},
 					},
 				},
 			},
