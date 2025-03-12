@@ -19,6 +19,9 @@ export class ProductFindOneDataDto
 {
 	@ApiProperty({ type: Number })
 	countInStorehouses: number
+
+	@ApiProperty({ example: { code: 500000 } })
+	barcode: { code: number }
 }
 
 export class PCalcDto implements PCalc {

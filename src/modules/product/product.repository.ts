@@ -41,6 +41,7 @@ export class ProductRepository {
 				createdAt: true,
 				warningThreshold: true,
 				storehouses: { select: { quantity: true } },
+				barcode: { select: { code: true } },
 			},
 		})
 
@@ -63,6 +64,7 @@ export class ProductRepository {
 				createdAt: true,
 				warningThreshold: true,
 				storehouses: { select: { quantity: true } },
+				barcode: { select: { code: true } },
 			},
 		})
 
@@ -71,7 +73,7 @@ export class ProductRepository {
 
 	async findOneForSelling(query: ProductFindOneforSellingRequest) {
 		const product = await this.prisma.productModel.findFirst({
-			where: { id: query.id },
+			where: { id: query.id, barcode: { code: query.code } },
 			select: {
 				id: true,
 				cost: true,
@@ -81,6 +83,7 @@ export class ProductRepository {
 				quantity: true,
 				createdAt: true,
 				warningThreshold: true,
+				barcode: { select: { code: true } },
 				storehouses: {
 					select: { id: true, quantity: true, createdAt: true, storehouse: { select: { id: true, name: true, hexColor: true, position: true, createdAt: true } } },
 					where: { quantity: { gte: query.minQuantity } },
@@ -155,6 +158,8 @@ export class ProductRepository {
 	}
 
 	async createOne(body: ProductCreateOneRequest) {
+		const barcode = await this.getOrCreateBarcode()
+
 		const product = await this.prisma.productModel.create({
 			data: {
 				name: body.name,
@@ -163,6 +168,7 @@ export class ProductRepository {
 				price: body.price,
 				quantity: body.quantity,
 				image: body.image,
+				barcodeId: barcode.id,
 			},
 		})
 		return product
@@ -190,6 +196,17 @@ export class ProductRepository {
 		})
 
 		return product
+	}
+
+	async getOrCreateBarcode() {
+		let barcode = await this.prisma.barcodeModel.findFirst({ orderBy: { code: 'desc' } })
+		if (!barcode) {
+			barcode = await this.prisma.barcodeModel.create({})
+			return barcode
+		} else {
+			barcode = await this.prisma.barcodeModel.create({ data: { code: barcode.code + 1 } })
+			return barcode
+		}
 	}
 
 	async onModuleInit() {

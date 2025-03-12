@@ -18,6 +18,7 @@ export declare interface ProductFindManyData extends PaginationResponse<ProductF
 
 export declare interface ProductFindOneData extends Pick<ProductRequired, 'id' | 'name' | 'cost' | 'price' | 'quantity' | 'warningThreshold' | 'createdAt' | 'image'> {
 	countInStorehouses?: number
+	barcode: { code: number }
 }
 
 export declare interface ProductFindManyResponse extends GlobalResponse {
