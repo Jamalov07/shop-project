@@ -30,7 +30,7 @@ export class SellingService {
 		const sellings = (await this.sellingRepository.findMany(query)).map((s) => {
 			return {
 				...s,
-				debt: s.totalSum - s.products.reduce((a, b) => a + BigInt(b.quantity) * BigInt(b.productStorehouse.product.quantity) * b.productStorehouse.product.price, BigInt(0)),
+				debt: s.totalSum - s.payments.reduce((a, b) => a + b.other, BigInt(0)),
 			}
 		})
 		const sellingsCount = await this.sellingRepository.countFindMany(query)
@@ -57,9 +57,7 @@ export class SellingService {
 		return createResponse({
 			data: {
 				...selling,
-				debt:
-					selling.totalSum -
-					selling.products.reduce((a, b) => a + BigInt(b.quantity) * BigInt(b.productStorehouse.product.quantity) * b.productStorehouse.product.price, BigInt(0)),
+				debt: selling.totalSum - selling.payments.reduce((a, b) => a + b.other, BigInt(0)),
 			},
 			success: { messages: ['find one success'] },
 		})
@@ -155,6 +153,8 @@ export class SellingService {
 		}
 		if (body.payment) {
 			promises.push(this.paymentRepository.createOne({ ...body.payment, staffId: body.staffId, clientId: body.clientId, sellingId: selling.id }))
+		} else if (!body.clientId) {
+			promises.push(this.paymentRepository.createOne({ description: 'unknown person payment', other: body.totalSum, staffId: body.staffId, sellingId: selling.id }))
 		}
 
 		await Promise.all(promises)

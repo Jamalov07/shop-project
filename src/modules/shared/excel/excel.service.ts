@@ -70,7 +70,7 @@ export class ExcelService {
 			where: {
 				id: { in: query.ids },
 				description: { contains: query.description, mode: 'insensitive' },
-				clientId: query.clientId,
+				clientId: query.clientId ? { in: [query.clientId] } : { not: null },
 				client: { fullname: query.clientFullName },
 				staffId: query.staffId,
 				createdAt: {

@@ -28,7 +28,7 @@ export class PaymentRepository {
 			where: {
 				id: { in: query.ids },
 				description: { contains: query.description, mode: 'insensitive' },
-				clientId: query.clientId,
+				clientId: query.clientId ? { in: [query.clientId] } : { not: null },
 				client: { fullname: query.clientFullName },
 				staffId: query.staffId,
 				createdAt: {
@@ -74,7 +74,7 @@ export class PaymentRepository {
 			where: {
 				id: { in: query.ids },
 				description: { contains: query.description, mode: 'insensitive' },
-				clientId: query.clientId,
+				clientId: query.clientId ? { in: [query.clientId] } : { not: null },
 				client: { fullname: query.clientFullName },
 				staffId: query.staffId,
 				createdAt: {
@@ -97,7 +97,7 @@ export class PaymentRepository {
 			where: {
 				id: { in: query.ids },
 				description: query.description,
-				clientId: query.clientId,
+				clientId: query.clientId ? { in: [query.clientId] } : { not: null },
 				staffId: query.staffId,
 			},
 			...paginationOptions,
@@ -119,7 +119,7 @@ export class PaymentRepository {
 			where: {
 				id: { in: query.ids },
 				description: query.description,
-				clientId: query.clientId,
+				clientId: query.clientId ? { in: [query.clientId] } : { not: null },
 				staffId: query.staffId,
 			},
 		})
