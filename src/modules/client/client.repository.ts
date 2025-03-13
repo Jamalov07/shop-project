@@ -44,7 +44,7 @@ export class ClientRepository {
 				updatedAt: true,
 				deletedAt: true,
 				sellings: {
-					select: { totalSum: true, createdAt: true, payments: { select: { other: true } } },
+					select: { totalSum: true, createdAt: true, payments: { select: { other: true, card: true, cash: true } } },
 					orderBy: [{ createdAt: 'desc' }],
 				},
 			},
@@ -70,7 +70,7 @@ export class ClientRepository {
 				updatedAt: true,
 				deletedAt: true,
 				sellings: {
-					select: { totalSum: true, createdAt: true, payments: { select: { other: true } } },
+					select: { totalSum: true, createdAt: true, payments: { select: { other: true, card: true, cash: true } } },
 					orderBy: [{ createdAt: 'desc' }],
 				},
 			},

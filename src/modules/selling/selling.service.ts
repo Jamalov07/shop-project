@@ -30,7 +30,7 @@ export class SellingService {
 		const sellings = (await this.sellingRepository.findMany(query)).map((s) => {
 			return {
 				...s,
-				debt: s.totalSum - s.payments.reduce((a, b) => a + b.other, BigInt(0)),
+				debt: s.totalSum - s.payments.reduce((a, b) => a + b.other + b.card + b.cash, BigInt(0)),
 			}
 		})
 		const sellingsCount = await this.sellingRepository.countFindMany(query)
@@ -57,7 +57,7 @@ export class SellingService {
 		return createResponse({
 			data: {
 				...selling,
-				debt: selling.totalSum - selling.payments.reduce((a, b) => a + b.other, BigInt(0)),
+				debt: selling.totalSum - selling.payments.reduce((a, b) => a + b.other + b.card + b.cash, BigInt(0)),
 			},
 			success: { messages: ['find one success'] },
 		})
@@ -117,13 +117,13 @@ export class SellingService {
 		)
 
 		const ourDebt = (await this.sellingRepository.getMany({ pagination: false })).reduce((a, b) => {
-			const payment = b.payments.reduce((a, b) => a + b.other, BigInt(0))
+			const payment = b.payments.reduce((a, b) => a + b.other + b.card + b.cash, BigInt(0))
 			const debt = payment - b.totalSum
 			return a + debt
 		}, BigInt(0))
 
 		const theirDebt = (await this.sellingRepository.getMany({ pagination: false })).reduce((a, b) => {
-			const payment = b.payments.reduce((a, b) => a + b.other, BigInt(0))
+			const payment = b.payments.reduce((a, b) => a + b.other + b.card + b.cash, BigInt(0))
 			const debt = b.totalSum - payment
 			return a + debt
 		}, BigInt(0))

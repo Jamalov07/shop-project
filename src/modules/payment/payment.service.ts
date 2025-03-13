@@ -27,6 +27,8 @@ export class PaymentService {
 		let pageOther = BigInt(0)
 		for (const payment of payments) {
 			pageOther += payment.other
+			pageCard += payment.card
+			pageCash += payment.cash
 		}
 
 		const fullPayments = await this.paymentRepository.findMany({ pagination: false })
@@ -35,13 +37,15 @@ export class PaymentService {
 		let totalOther = BigInt(0)
 		for (const payment of fullPayments) {
 			totalOther += payment.other
+			totalCash += payment.cash
+			totalCard += payment.card
 		}
 
 		const result = query.pagination
 			? {
 					calc: {
-						inPage: { other: pageOther },
-						inTotal: { other: totalOther },
+						inPage: { other: pageOther, cash: pageCash, card: pageCard },
+						inTotal: { other: totalOther, cash: totalCash, card: totalCard },
 					},
 					totalCount: paymentsCount,
 					pagesCount: Math.ceil(paymentsCount / query.pageSize),

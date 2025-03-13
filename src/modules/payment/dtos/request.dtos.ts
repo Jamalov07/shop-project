@@ -18,7 +18,7 @@ export class PaymentFindManyRequestDto
 export class PaymentFindOneRequestDto extends IntersectionType(PickType(PaymentRequiredDto, ['id'])) implements PaymentFindOneRequest {}
 
 export class PaymentCreateOneRequestDto
-	extends IntersectionType(PickType(PaymentRequiredDto, ['clientId']), PickType(PaymentOptionalDto, ['description', 'other', 'sellingId']))
+	extends IntersectionType(PickType(PaymentRequiredDto, ['clientId']), PickType(PaymentOptionalDto, ['description', 'other', 'card', 'cash', 'sellingId']))
 	implements PaymentCreateOneRequest {}
 
 export class PaymentUpdateOneRequestDto extends IntersectionType(PickType(PaymentOptionalDto, ['description'])) implements PaymentUpdateOneRequest {}

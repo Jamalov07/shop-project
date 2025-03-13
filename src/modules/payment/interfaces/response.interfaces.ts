@@ -6,6 +6,8 @@ import { SellingFindOneData } from '../../selling'
 
 export declare interface Calc {
 	other: bigint
+	card: bigint
+	cash: bigint
 }
 export declare interface PaymentCalc {
 	inPage: Calc
@@ -16,7 +18,7 @@ export declare interface PaymentFindManyData extends PaginationResponse<PaymentF
 	calc: PaymentCalc
 }
 
-export declare interface PaymentFindOneData extends Pick<PaymentRequired, 'id' | 'createdAt' | 'description' | 'other'> {
+export declare interface PaymentFindOneData extends Pick<PaymentRequired, 'id' | 'createdAt' | 'description' | 'other' | 'card' | 'cash'> {
 	staff?: StaffFindOneData
 	client?: ClientFindOneData
 	selling?: SellingFindOneData

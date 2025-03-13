@@ -44,7 +44,7 @@ export class SellingRepository {
 				status: true,
 				totalSum: true,
 				staff: { select: { id: true, createdAt: true, phone: true, fullname: true, deletedAt: true } },
-				payments: { select: { id: true, createdAt: true, description: true, other: true } },
+				payments: { select: { id: true, createdAt: true, description: true, other: true, card: true, cash: true } },
 				products: {
 					select: {
 						quantity: true,
@@ -78,7 +78,7 @@ export class SellingRepository {
 				status: true,
 				totalSum: true,
 				staff: { select: { id: true, createdAt: true, phone: true, fullname: true, deletedAt: true } },
-				payments: { select: { id: true, createdAt: true, description: true, other: true } },
+				payments: { select: { id: true, createdAt: true, description: true, other: true, card: true, cash: true } },
 				products: {
 					select: {
 						quantity: true,

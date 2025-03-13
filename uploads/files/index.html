@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      canvas {
+        border: 1px solid gray;
+        background: dimgray;
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: -1;
+      }
+
+      header {
+        text-align: center;
+        font-family: Verdana;
+        font-size: 30px;
+        padding-top: 2%;
+      }
+
+      a {
+        margin: 20px;
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      body {
+        margin: 0;
+        overflow: hidden; /* Hide scrollbars */
+      }
+
+      div {
+        position: absolute;
+        z-index: 0;
+        left: 12px;
+        top: 10px;
+      }
+    </style>
+    <title>Sun Animation</title>
+  </head>
+  <body>
+    <canvas></canvas>
+    <script>
+      var colorDict = {
+        grayRGB: [],
+        sunset2Sea: [
+          '#D73E02',
+          '#F35C03',
+          'yellow',
+          '#AEDFF2',
+          '#04B2D9',
+          '#0669BF',
+        ],
+        boat: {
+          boat: '#8C3718',
+          sail: '#F2D0A7',
+        },
+        sunGradient: [`rgb(255, 255, 0)`, 'rgb(255, 100, 0)'],
+        cloud: ['#FBDDB5', '#F35C03'],
+      }
+
+      function RandomRange(start, end) {
+        // random number between start and end
+        var value = Math.random() * (end - start) + start
+        return value
+      }
+
+      function RandomIntRange(start, end) {
+        // random int including start and end
+        var value = Math.floor(RandomRange(start, end + 1))
+        return value
+      }
+
+      function RandomElementInArray(arr) {
+        // random element
+        return arr[RandomIntRange(0, arr.length - 1)]
+      }
+
+      function drawArrayObjects(arr) {
+        // calls the .draw() method on all array objects
+        for (var i = 0; i < arr.length; i++) {
+          arr[i].draw()
+        }
+      }
+
+      function linspace(start, end, steps) {
+        // linear steps
+        var stepSize = (end - start) / (steps - 1)
+        var arr = []
+        for (var i = 0; i < steps; i++) {
+          arr[i] = start + i * stepSize
+        }
+        return arr
+      }
+
+      // =============================================================================
+      //  Classes / Objects / Drawn things
+      // =============================================================================
+
+      // Will draw a mountain at x,y with height (h) and width (w) using  across the screen
+      function Mountain(x, y, h, w, grayLevel, drawReflection = false) {
+        this.x = x
+        this.height = h
+        this.width = w
+        this.grayLevel = grayLevel
+        this.y = y
+        this.drawReflection = drawReflection // boolean
+
+        this.draw = function () {
+          c.beginPath()
+          c.fillStyle = `rgba(${this.grayLevel}, ${this.grayLevel}, ${this.grayLevel}, ${1})`
+          c.moveTo(this.x, this.y - this.height)
+          c.lineTo(this.x + this.width, this.y)
+          c.lineTo(this.x - this.width, this.y)
+          c.fill()
+
+          if (this.drawReflection) {
+            c.beginPath()
+            c.fillStyle = `rgba(${this.grayLevel}, ${this.grayLevel}, ${this.grayLevel + 50}, ${0.7} )`
+            c.moveTo(this.x, this.y + this.height)
+            c.lineTo(this.x + this.width, this.y)
+            c.lineTo(this.x - this.width, this.y)
+            c.fill()
+          }
+        }
+      }
+
+      // Will draw a boat at x,y with height (h) with different base and sail colors
+      function Boat(x, y, h, vx, boatColor, sailColor) {
+        this.x = x
+        this.y = y
+        this.height = h
+        this.constHeight = 270
+        this.reflectionAlpha = '44' // hex
+        this.vx = vx
+        // boat measurments
+        this.boatColor = boatColor
+        this.bottomScale = this.height / this.constHeight
+        this.boatDepth = 70 * this.bottomScale
+        this.sailYOffset = 10 * this.bottomScale
+        this.longLength = 150 * this.bottomScale
+        this.shortLength = 100 * this.bottomScale
+        // sail measuements
+        this.sailColor = sailColor
+        this.sailScale = this.height / this.constHeight
+        this.sailHeight = 200 * this.sailScale
+        this.sailLength = 100 * this.sailScale
+
+        this.update = function (pixels) {
+          this.x += pixels
+
+          if (this.x > innerWidth) {
+            this.x = 0
+          }
+          if (this.x < 0) {
+            this.x = innerWidth
+          }
+
+          if (pixels < 0 && this.sailLength > 0) {
+            this.sailLength = -this.sailLength
+          }
+        }
+
+        this.draw = function () {
+          this.update(this.vx)
+          // sail
+          c.beginPath()
+          c.fillStyle = this.sailColor
+          c.moveTo(this.x, this.y - this.sailYOffset - this.boatDepth)
+          c.lineTo(
+            this.x,
+            this.y - this.sailHeight - this.sailYOffset - this.boatDepth,
+          )
+          c.lineTo(
+            this.x + this.sailLength,
+            this.y - this.sailYOffset - this.boatDepth,
+          )
+          c.fill()
+
+          // sail reflection
+          c.beginPath()
+          c.fillStyle = this.sailColor + this.reflectionAlpha
+          c.moveTo(this.x, this.y + this.sailYOffset + this.boatDepth)
+          c.lineTo(
+            this.x,
+            this.y + this.sailHeight + this.sailYOffset + this.boatDepth,
+          )
+          c.lineTo(
+            this.x + this.sailLength,
+            this.y + this.sailYOffset + this.boatDepth,
+          )
+          c.fill()
+
+          // boat
+          c.beginPath()
+          c.fillStyle = this.boatColor
+          c.moveTo(this.x, this.y - this.boatDepth)
+          c.lineTo(this.x + this.longLength, this.y - this.boatDepth)
+          c.lineTo(this.x + this.shortLength, this.y)
+          c.lineTo(this.x - this.shortLength, this.y)
+          c.lineTo(this.x - this.longLength, this.y - this.boatDepth)
+          c.fill()
+
+          // boat reflection
+          c.beginPath()
+          c.fillStyle = this.boatColor + this.reflectionAlpha
+          c.moveTo(this.x, this.y + this.boatDepth)
+          c.lineTo(this.x + this.longLength, this.y + this.boatDepth)
+          c.lineTo(this.x + this.shortLength, this.y)
+          c.lineTo(this.x - this.shortLength, this.y)
+          c.lineTo(this.x - this.longLength, this.y + this.boatDepth)
+          c.fill()
+        }
+      }
+
+      function LightRay(x, y, vx, vy, radius, color, decayFactor) {
+        this.x = x
+        this.y = y
+        this.vx = vx
+        this.vy = vy
+        this.linewidth = radius
+        this.color = color
+        this.initalAlpha = 1
+        this.decayFactor = decayFactor // 0.004
+
+        this.update = function () {
+          // update velocity
+          this.x += this.vx
+          this.y += this.vy
+          this.initalAlpha -= this.decayFactor
+        }
+
+        this.draw = function () {
+          this.update()
+
+          // c.shadowBlur = 20;
+          c.beginPath()
+          c.moveTo(this.x, this.y)
+          c.lineTo(
+            this.x + this.vx * innerWidth * 0.05,
+            this.y + this.vy * innerWidth * 0.05,
+          )
+          c.lineCap = 'round'
+          // c.shadowColor = 'white';
+          c.strokeStyle = `rgba(255, ${this.color}, 0, ${this.initalAlpha})`
+          c.lineWidth = this.linewidth
+          c.stroke()
+          // c.shadowBlur = 0;
+        }
+      }
+
+      // Will draw 2 or 3 birds following the mouse around the screen
+      function InteractiveBirdFlock(x, y, wingSpan, flapVelocity) {
+        this.x = x
+        this.y = y
+        // wing lengths
+        this.wingSpan = wingSpan
+        this.elbowTipRatio = 1 / 3
+        this.elbowLength = this.wingSpan * this.elbowTipRatio
+        this.tipLength = this.wingSpan - this.elbowLength
+        // flapping properties
+        this.flapVelocity = flapVelocity
+        this.offset = {
+          x: this.wingSpan,
+          y: this.wingSpan,
+        }
+        this.wingPositionIndex = 0
+        this.wing = {
+          // angle
+          elbow: [
+            (Math.PI / 180) * 45,
+            (-Math.PI / 180) * 20,
+            (-Math.PI / 180) * 45,
+          ],
+          tip: [
+            (Math.PI / 180) * 45,
+            (Math.PI / 180) * 30,
+            (-Math.PI / 180) * 45,
+          ],
+          steps: Math.round(100 / this.flapVelocity),
+        }
+        this.wingList = {
+          elbow: [].concat(
+            linspace(this.wing.elbow[0], this.wing.elbow[1], this.wing.steps),
+            linspace(this.wing.elbow[1], this.wing.elbow[2], this.wing.steps),
+            linspace(this.wing.elbow[2], this.wing.elbow[0], this.wing.steps),
+          ),
+          tip: [].concat(
+            linspace(this.wing.tip[0], this.wing.tip[1], this.wing.steps),
+            linspace(this.wing.tip[1], this.wing.tip[2], this.wing.steps),
+            linspace(this.wing.tip[2], this.wing.tip[0], this.wing.steps),
+          ),
+        }
+
+        this.update = function (mouse) {
+          this.x = mouse.x
+          this.y = mouse.y
+        }
+
+        this.drawBird = function (x, y) {
+          y = y - this.wingSpan / 3
+          // dynamic
+          var elbowX =
+            this.elbowLength *
+            Math.cos(this.wingList.elbow[this.wingPositionIndex])
+          var elbowY =
+            this.elbowLength *
+            Math.sin(this.wingList.elbow[this.wingPositionIndex])
+
+          var tipX =
+            this.tipLength *
+              Math.cos(this.wingList.tip[this.wingPositionIndex]) +
+            elbowX
+          var tipY =
+            this.tipLength *
+              Math.sin(this.wingList.tip[this.wingPositionIndex]) +
+            elbowY
+
+          this.wingPositionIndex =
+            (this.wingPositionIndex + 1) % this.wingList.elbow.length
+
+          c.beginPath()
+          c.moveTo(x, y)
+          c.lineTo(x + elbowX, y + elbowY)
+          c.lineTo(x + tipX, y + tipY)
+          c.strokeStyle = 'black'
+          c.stroke()
+
+          c.beginPath()
+          c.moveTo(x, y)
+          c.lineTo(x - elbowX, y + elbowY)
+          c.lineTo(x - tipX, y + tipY)
+          c.strokeStyle = 'black'
+          c.stroke()
+        }
+
+        this.draw = function (mouse) {
+          this.update(mouse)
+          this.drawBird(this.x, this.y)
+          this.drawBird(this.x + this.offset.x, this.y + this.offset.y)
+        }
+      }
+
+      // Will draw a group of clouds
+      function Cloud(x, y, h, vx, cloudColor) {
+        this.x = x
+        this.y = y
+        this.height = h
+        this.vx = vx
+        this.cloudColor = cloudColor
+
+        this.update = function () {
+          // TODO: will be updated with some velocity
+          this.x = this.x
+          this.y = this.y
+        }
+
+        this.drawCloud = function (x, y) {
+          c.beginPath()
+          c.arc(x, y, this.height, -Math.PI, 0, false)
+          c.fillStyle = this.cloudColor
+          c.fill()
+        }
+
+        this.draw = function () {
+          this.update()
+
+          this.drawCloud(
+            this.x + (this.height * 1) / 2,
+            this.y - this.height / 4,
+          )
+          this.drawCloud(this.x + this.height, this.y + this.height / 4)
+          this.drawCloud(this.x, this.y)
+        }
+      }
+    </script>
+    <script>
+      // Set canvas H and W
+      var canvas = document.querySelector('canvas')
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+      var c = canvas.getContext('2d')
+
+      // initialize canvas elements
+      var lightRayArray = []
+      var mountainArray = []
+      var waterLevel = 0.6
+      var boatArray = []
+      var cloudArray = []
+
+      var mouse = {
+        x: undefined,
+        y: undefined,
+      }
+
+      // event listeners
+      window.addEventListener('resize', function (event) {
+        //console.log(event)
+        lightRayArray = []
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+        drawLightRays(100)
+        drawSunset2Sea()
+        drawMountains()
+        drawClouds()
+        drawBoats()
+      })
+
+      window.addEventListener('mousemove', function (event) {
+        mouse.x = event.x
+        mouse.y = event.y
+      })
+
+      function drawBoats() {
+        nBoat = 4
+        boatArray = []
+        for (var i = 0; i < nBoat; i++) {
+          var boatYCoordinate = RandomRange(
+            innerHeight * waterLevel,
+            innerHeight,
+          )
+          var boatHeight =
+            RandomRange(70, 70) * Math.pow(boatYCoordinate / innerHeight, 2)
+          var vx = RandomRange(0.2, 1) * Math.pow(-1, RandomIntRange(0, 1))
+          boatArray.push(
+            new Boat(
+              innerWidth / 2,
+              boatYCoordinate,
+              boatHeight,
+              vx,
+              colorDict.boat.boat,
+              colorDict.boat.sail,
+            ),
+          )
+        }
+      }
+      drawBoats()
+
+      function drawSun() {
+        this.draw = function () {
+          c.beginPath()
+          if (innerWidth > innerHeight) {
+            var sunRadius = innerHeight * 0.2
+          } else {
+            var sunRadius = innerWidth * 0.2
+          }
+          c.shadowBlur = 15
+          c.shadowColor = 'white'
+          c.arc(0, 0, sunRadius, 0, Math.PI * 2, false)
+          var grd = c.createLinearGradient(
+            0,
+            0,
+            innerWidth * 0.1,
+            innerHeight * 0.1,
+          )
+          grd.addColorStop(0, colorDict.sunGradient[0])
+          grd.addColorStop(1, colorDict.sunGradient[1])
+          c.fillStyle = grd
+          c.fill()
+          c.shadowBlur = 0
+        }
+      }
+      var theSun = new drawSun()
+
+      function drawMountains() {
+        var nMountain = 100
+        mountainArray = []
+        for (var i = 0; i < nMountain; i++) {
+          var mountainBaseX = RandomRange(0, innerWidth)
+          var mountainBaseY = innerHeight * waterLevel
+          var mountainHeight = RandomRange(
+            innerHeight * 0.07,
+            innerHeight * 0.25,
+          )
+          var mountainWidth = RandomRange(
+            innerHeight * 0.07,
+            innerHeight * 0.25,
+          )
+          var grayLevel = RandomIntRange(0, 100)
+          mountainArray.push(
+            new Mountain(
+              mountainBaseX,
+              mountainBaseY,
+              mountainHeight,
+              mountainWidth,
+              grayLevel,
+              true,
+            ),
+          )
+        }
+      }
+      drawMountains()
+
+      function drawLightRays(nCircles) {
+        lightRayArray = []
+        for (var i = 0; i < nCircles; i++) {
+          var rayWidth = RandomRange(1, 6)
+          var vx = RandomRange(0, 1)
+          var vy = RandomRange(0, 1)
+          var decayFactor = RandomRange(0.002, 0.005)
+          var color = RandomIntRange(100, 255)
+          lightRayArray.push(
+            new LightRay(
+              rayWidth,
+              rayWidth,
+              vx,
+              vy,
+              rayWidth,
+              color,
+              decayFactor,
+            ),
+          )
+        }
+      }
+      var nLightRays = 100
+      drawLightRays(nLightRays)
+
+      function drawSunset2Sea() {
+        // create sunset 2 sea color gradient
+        gradient = c.createLinearGradient(0, 0, 0, innerHeight)
+        var colorStops = [0, 0.2, 0.5, waterLevel, 0.8, 1]
+        for (var i = 0; i < colorStops.length; i++) {
+          gradient.addColorStop(colorStops[i], colorDict.sunset2Sea[i])
+        }
+        c.fillStyle = gradient
+        c.fillRect(0, 0, innerWidth, innerHeight)
+      }
+      drawSunset2Sea()
+
+      // TODO: adding components of birds and clouds
+      var birdFlock = new InteractiveBirdFlock(400, 400, 30, 1)
+
+      // TODO: adding components of birds and clouds
+      function drawClouds() {
+        cloudArray = []
+        var cloudHeight = 50
+        var cloudYCoordinate = innerHeight / 4
+        var cloudColorGradient = c.createLinearGradient(
+          0,
+          (cloudYCoordinate * 2) / 3,
+          0,
+          cloudYCoordinate + cloudHeight,
+        )
+        cloudColorGradient.addColorStop(0, colorDict.cloud[0])
+        cloudColorGradient.addColorStop(1, colorDict.cloud[1])
+        cloudArray.push(
+          new Cloud(
+            (innerWidth * 2) / 3,
+            innerHeight / 4,
+            cloudHeight,
+            0,
+            cloudColorGradient,
+          ),
+        )
+        cloudArray.push(
+          new Cloud(
+            innerWidth * 0.85,
+            innerHeight / 5,
+            cloudHeight,
+            0,
+            cloudColorGradient,
+          ),
+        )
+      }
+      drawClouds()
+
+      // initalize counter for sun rays
+      var counter = 0
+      var minWait = 400
+      var maxWait = 1000
+      var resetCounter = minWait
+      // start animating
+
+      function animate() {
+        requestAnimationFrame(animate)
+
+        // regenerate light rays
+        counter++
+        if (counter > resetCounter) {
+          resetCounter = RandomIntRange(minWait, maxWait)
+          drawLightRays(nLightRays)
+          counter = 0
+        }
+
+        // draw elements
+        drawSunset2Sea()
+        drawArrayObjects(lightRayArray)
+        theSun.draw()
+        drawArrayObjects(mountainArray)
+        drawArrayObjects(boatArray)
+        drawArrayObjects(cloudArray)
+        birdFlock.draw(mouse)
+      }
+      animate()
+    </script>
+  </body>
+</html>

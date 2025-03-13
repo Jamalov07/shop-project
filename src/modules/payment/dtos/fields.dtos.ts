@@ -24,6 +24,16 @@ export class PaymentRequiredDto extends PickType(DefaultRequiredFieldsDto, ['id'
 	@IsIntOrBigInt()
 	other: bigint = BigInt(0)
 
+	@ApiProperty({ type: BigInt })
+	@IsNotEmpty()
+	@IsIntOrBigInt()
+	cash: bigint = BigInt(0)
+
+	@ApiProperty({ type: BigInt })
+	@IsNotEmpty()
+	@IsIntOrBigInt()
+	card: bigint = BigInt(0)
+
 	@ApiProperty({ type: String })
 	@IsNotEmpty()
 	@IsUUID('4')
@@ -55,4 +65,14 @@ export class PaymentOptionalDto extends PickType(DefaultOptionalFieldsDto, ['id'
 	@IsOptional()
 	@IsIntOrBigInt()
 	other?: bigint
+
+	@ApiPropertyOptional({ type: BigInt })
+	@IsOptional()
+	@IsIntOrBigInt()
+	card?: bigint
+
+	@ApiPropertyOptional({ type: BigInt })
+	@IsOptional()
+	@IsIntOrBigInt()
+	cash?: bigint
 }

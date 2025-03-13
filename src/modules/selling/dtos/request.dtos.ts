@@ -23,7 +23,7 @@ export class SellingFindManyRequestDto
 
 export class SellingFindOneRequestDto extends IntersectionType(PickType(SellingRequiredDto, ['id'])) implements SellingFindOneRequest {}
 
-export class PaymentWithoutSellingIdDto extends PickType(PaymentCreateOneRequestDto, ['description', 'other']) implements PaymentWithoutSellingId {}
+export class PaymentWithoutSellingIdDto extends PickType(PaymentCreateOneRequestDto, ['description', 'other',"card","cash"]) implements PaymentWithoutSellingId {}
 export class SellingCreateOneRequestDto
 	extends IntersectionType(PickType(SellingRequiredDto, ['totalSum']), PickType(SellingOptionalDto, ['clientId']))
 	implements SellingCreateOneRequest

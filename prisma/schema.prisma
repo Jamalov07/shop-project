@@ -164,6 +164,8 @@ model ProductToStorehouseModel {
 model PaymentModel {
   id           String    @map("id")           @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
   other        BigInt    @map("other")        @db.BigInt       @default(0)
+  card         BigInt    @map("card")         @db.BigInt       @default(0)
+  cash         BigInt    @map("cash")         @db.BigInt       @default(0)
   staffId      String    @map("staff_id")     @db.Uuid  
   sellingId    String?   @map("selling_id")   @db.Uuid  
   clientId     String?   @map("client_id")    @db.Uuid  
