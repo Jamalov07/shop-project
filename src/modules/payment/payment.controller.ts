@@ -64,4 +64,11 @@ export class PaymentController {
 	async updateOne(@Query() query: PaymentFindOneRequestDto, @Body() body: PaymentUpdateOneRequestDto): Promise<PaymentModifyResponseDto> {
 		return this.paymentService.updateOne(query, body)
 	}
+
+	@Delete('one')
+	@ApiOperation({ summary: 'delete one payment' })
+	@ApiOkResponse({ type: PaymentModifyResponseDto })
+	async deleteOne(@Query() query: PaymentFindOneRequestDto): Promise<PaymentModifyResponseDto> {
+		return this.paymentService.deleteOne(query)
+	}
 }

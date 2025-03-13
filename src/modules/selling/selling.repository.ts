@@ -38,6 +38,29 @@ export class SellingRepository {
 					lte: query.endDate ? new Date(new Date(query.endDate).setHours(23, 59, 59, 999)) : undefined,
 				},
 			},
+			select: {
+				id: true,
+				createdAt: true,
+				status: true,
+				totalSum: true,
+				staff: { select: { id: true, createdAt: true, phone: true, fullname: true, deletedAt: true } },
+				payments: { select: { id: true, createdAt: true, description: true, other: true } },
+				products: {
+					select: {
+						quantity: true,
+						productStorehouse: {
+							select: {
+								id: true,
+								createdAt: true,
+								quantity: true,
+								storehouse: { select: { id: true, createdAt: true, hexColor: true, name: true, position: true } },
+								product: { select: { id: true, barcode: true, cost: true, createdAt: true, image: true, price: true, name: true, quantity: true, warningThreshold: true } },
+							},
+						},
+					},
+				},
+				client: { select: { id: true, createdAt: true, fullname: true, phone: true, deletedAt: true, updatedAt: true } },
+			},
 			...paginationOptions,
 		})
 
@@ -48,6 +71,29 @@ export class SellingRepository {
 		const selling = await this.prisma.sellingModel.findFirst({
 			where: {
 				id: query.id,
+			},
+			select: {
+				id: true,
+				createdAt: true,
+				status: true,
+				totalSum: true,
+				staff: { select: { id: true, createdAt: true, phone: true, fullname: true, deletedAt: true } },
+				payments: { select: { id: true, createdAt: true, description: true, other: true } },
+				products: {
+					select: {
+						quantity: true,
+						productStorehouse: {
+							select: {
+								id: true,
+								createdAt: true,
+								quantity: true,
+								storehouse: { select: { id: true, createdAt: true, hexColor: true, name: true, position: true } },
+								product: { select: { id: true, barcode: true, cost: true, createdAt: true, image: true, price: true, name: true, quantity: true, warningThreshold: true } },
+							},
+						},
+					},
+				},
+				client: { select: { id: true, createdAt: true, fullname: true, phone: true, deletedAt: true, updatedAt: true } },
 			},
 		})
 

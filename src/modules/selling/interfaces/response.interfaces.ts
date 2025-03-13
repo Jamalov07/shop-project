@@ -1,9 +1,28 @@
 import { GlobalResponse, PaginationResponse } from '@common'
 import { SellingRequired } from './fields.interfaces'
+import { ClientFindOneData } from '../../client'
+import { PaymentFindOneData } from '../../payment'
+import { StaffFindOneData } from '../../staff'
+import { SellingProductModel } from '@prisma/client'
+import { StorehouseFindOneData } from '../../storehouse'
+import { ProductFindOneData } from '../../product'
 
 export declare interface SellingFindManyData extends PaginationResponse<SellingFindOneData> {}
 
-export declare interface SellingFindOneData extends Pick<SellingRequired, 'id' | 'createdAt' | 'totalSum'> {}
+export declare interface SellingProductProductStorehouse {
+	storehouse: StorehouseFindOneData
+	product: ProductFindOneData
+}
+export declare interface SellingProduct extends Pick<SellingProductModel, 'quantity'> {
+	productStorehouse: SellingProductProductStorehouse
+}
+export declare interface SellingFindOneData extends Pick<SellingRequired, 'id' | 'createdAt' | 'totalSum'> {
+	client?: ClientFindOneData
+	payments?: PaymentFindOneData[]
+	staff?: StaffFindOneData
+	products?: SellingProduct[]
+	debt?: bigint
+}
 
 export declare interface SellingFindManyResponse extends GlobalResponse {
 	data: SellingFindManyData | { data: SellingFindOneData[] }

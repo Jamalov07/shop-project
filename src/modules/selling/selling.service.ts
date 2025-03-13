@@ -27,7 +27,12 @@ export class SellingService {
 	}
 
 	async findMany(query: SellingFindManyRequest) {
-		const sellings = await this.sellingRepository.findMany(query)
+		const sellings = (await this.sellingRepository.findMany(query)).map((s) => {
+			return {
+				...s,
+				debt: s.totalSum - s.products.reduce((a, b) => a + BigInt(b.quantity) * BigInt(b.productStorehouse.product.quantity) * b.productStorehouse.product.price, BigInt(0)),
+			}
+		})
 		const sellingsCount = await this.sellingRepository.countFindMany(query)
 
 		const result = query.pagination
@@ -49,7 +54,15 @@ export class SellingService {
 			throw new BadRequestException('selling not found')
 		}
 
-		return createResponse({ data: selling, success: { messages: ['find one success'] } })
+		return createResponse({
+			data: {
+				...selling,
+				debt:
+					selling.totalSum -
+					selling.products.reduce((a, b) => a + BigInt(b.quantity) * BigInt(b.productStorehouse.product.quantity) * b.productStorehouse.product.price, BigInt(0)),
+			},
+			success: { messages: ['find one success'] },
+		})
 	}
 
 	async getMany(query: SellingGetManyRequest) {

@@ -1,7 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { PaymentRepository } from './payment.repository'
 import { createResponse } from '@common'
-import { PaymentGetOneRequest, PaymentCreateOneRequest, PaymentUpdateOneRequest, PaymentGetManyRequest, PaymentFindManyRequest, PaymentFindOneRequest } from './interfaces'
+import {
+	PaymentGetOneRequest,
+	PaymentCreateOneRequest,
+	PaymentUpdateOneRequest,
+	PaymentGetManyRequest,
+	PaymentFindManyRequest,
+	PaymentFindOneRequest,
+	PaymentDeleteOneRequest,
+} from './interfaces'
 
 @Injectable()
 export class PaymentService {
@@ -96,5 +104,13 @@ export class PaymentService {
 		await this.paymentRepository.updateOne(query, { ...body })
 
 		return createResponse({ data: null, success: { messages: ['update success'] } })
+	}
+
+	async deleteOne(query: PaymentDeleteOneRequest) {
+		await this.getOne(query)
+
+		await this.paymentRepository.deleteOne(query)
+
+		return createResponse({ data: null, success: { messages: ['delete one success'] } })
 	}
 }

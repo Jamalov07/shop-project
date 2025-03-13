@@ -1,6 +1,14 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../shared'
-import { PaymentCreateOneRequest, PaymentFindManyRequest, PaymentFindOneRequest, PaymentGetManyRequest, PaymentGetOneRequest, PaymentUpdateOneRequest } from './interfaces'
+import {
+	PaymentCreateOneRequest,
+	PaymentDeleteOneRequest,
+	PaymentFindManyRequest,
+	PaymentFindOneRequest,
+	PaymentGetManyRequest,
+	PaymentGetOneRequest,
+	PaymentUpdateOneRequest,
+} from './interfaces'
 import { PaymentController } from './payment.controller'
 
 @Injectable()
@@ -181,6 +189,14 @@ export class PaymentRepository {
 			data: {
 				description: body.description,
 			},
+		})
+
+		return payment
+	}
+
+	async deleteOne(query: PaymentDeleteOneRequest) {
+		const payment = await this.prisma.paymentModel.delete({
+			where: { id: query.id },
 		})
 
 		return payment

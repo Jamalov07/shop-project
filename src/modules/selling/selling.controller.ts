@@ -92,7 +92,7 @@ export class SellingController {
 	}
 
 	@Delete('one')
-	@ApiOperation({ summary: 'update one selling' })
+	@ApiOperation({ summary: 'delete one selling' })
 	@ApiOkResponse({ type: SellingModifyResponseDto })
 	async deleteOne(@Query() query: SellingFindOneRequestDto): Promise<SellingModifyResponseDto> {
 		return this.sellingService.deleteOne(query)

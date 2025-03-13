@@ -9,11 +9,48 @@ import {
 	SellingGetTotalStatsData,
 	SellingGetTotalStatsResponse,
 	SellingModifyResposne,
+	SellingProduct,
+	SellingProductProductStorehouse,
 } from '../interfaces'
 import { GlobalModifyResponseDto, GlobalResponseDto, PaginationResponseDto } from '@common'
 import { SellingRequiredDto } from './fields.dtos'
+import { PaymentFindOneData, PaymentFindOneDataDto } from '../../payment'
+import { ClientFindOneData, ClientFindOneDataDto } from '../../client'
+import { StaffFindOneData, StaffFindOneDataDto } from '../../staff'
+import { ProductFindOneData, ProductFindOneDataDto } from '../../product'
+import { StorehouseFindOneData, StorehouseFindOneDataDto } from '../../storehouse'
 
-export class SellingFindOneDataDto extends PickType(SellingRequiredDto, ['id', 'createdAt', 'totalSum']) implements SellingFindOneData {}
+export class SellingProductProductStorehouseDto implements SellingProductProductStorehouse {
+	@ApiProperty({ type: ProductFindOneDataDto })
+	product: ProductFindOneData
+
+	@ApiProperty({ type: StorehouseFindOneDataDto })
+	storehouse: StorehouseFindOneData
+}
+export class SellingProductDto implements SellingProduct {
+	@ApiProperty({ type: SellingProductProductStorehouseDto })
+	productStorehouse: SellingProductProductStorehouse
+
+	@ApiProperty({ type: Number })
+	quantity: number
+}
+
+export class SellingFindOneDataDto extends PickType(SellingRequiredDto, ['id', 'createdAt', 'totalSum']) implements SellingFindOneData {
+	@ApiProperty({ type: PaymentFindOneDataDto, isArray: true })
+	payments?: PaymentFindOneData[]
+
+	@ApiProperty({ type: ClientFindOneDataDto })
+	client?: ClientFindOneData
+
+	@ApiProperty({ type: StaffFindOneDataDto })
+	staff?: StaffFindOneData
+
+	@ApiProperty({ type: SellingProductDto, isArray: true })
+	products?: SellingProduct[]
+
+	@ApiProperty({ type: BigInt })
+	debt?: bigint
+}
 
 export class SellingFindManyDataDto extends PaginationResponseDto implements SellingFindManyData {
 	@ApiProperty({ type: SellingFindOneDataDto, isArray: true })

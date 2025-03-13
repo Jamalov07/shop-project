@@ -20,3 +20,5 @@ export declare interface PaymentGetOneRequest extends Pick<PaymentOptional, 'id'
 export declare interface PaymentCreateOneRequest extends Pick<PaymentRequired, 'clientId'>, Pick<PaymentOptional, 'sellingId' | 'description' | 'other' | 'staffId'> {}
 
 export declare interface PaymentUpdateOneRequest extends Pick<PaymentOptional, 'description'> {}
+
+export declare interface PaymentDeleteOneRequest extends Pick<PaymentOptional, 'id'> {}
