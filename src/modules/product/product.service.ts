@@ -85,7 +85,7 @@ export class ProductService {
 	}
 
 	async findOneForSelling(query: ProductFindOneforSellingRequest) {
-		if (!query.code || !query.id) {
+		if (!query.code && !query.id) {
 			throw new BadRequestException('provide id or code')
 		}
 
