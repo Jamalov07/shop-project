@@ -195,22 +195,26 @@ export class ExcelService {
 		const worksheet = workbook.addWorksheet('Sellings')
 
 		worksheet.columns = [
-			{ header: 'ID', key: 'id', width: 42 },
-			{ header: 'Status', key: 'status', width: 15 },
-			{ header: 'Staff ID', key: 'staffId', width: 42 },
-			{ header: 'Client ID', key: 'clientId', width: 42 },
-			{ header: 'Total Sum', key: 'totalSum', width: 20 },
-			{ header: 'Created At', key: 'createdAt', width: 40 },
+			{ header: 'Mijoz ismi', key: 'clientName', width: 20 },
+			{ header: 'Telefon raqami', key: 'clientPhone', width: 20 },
+			{ header: `Jami narx (so'm)`, key: 'totalSum', width: 20 },
+			{ header: 'Qarzi', key: 'debt', width: 20 },
+			{ header: 'Holati', key: 'status', width: 15 },
+			{ header: 'Xodim ismi', key: 'staffName', width: 20 },
+			{ header: 'Telefon raqami', key: 'staffPhone', width: 20 },
+			{ header: 'Yaratilgan sana', key: 'createdAt', width: 20 },
 		]
 
 		sellings.forEach((selling) => {
 			worksheet.addRow({
-				id: selling.id,
 				status: selling.status,
-				staffId: selling.staffId,
-				clientId: selling.clientId,
 				totalSum: selling.totalSum.toString(),
 				createdAt: selling.createdAt.toISOString(),
+				clientName: selling.client?.fullname,
+				clientPhone: selling.client?.phone,
+				staffPhone: selling.staff?.phone,
+				staffName: selling.staff?.fullname,
+				debt: selling.totalSum - selling.payments.reduce((a, b) => a + b.other + b.card + b.cash, BigInt(0)),
 			})
 		})
 
