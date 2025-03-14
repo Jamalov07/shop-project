@@ -223,7 +223,7 @@ export class SellingRepository {
 		const salesByHour = []
 		for (let hour = 0; hour <= startDay.getHours(); hour++) {
 			const hourStart = convertUTCtoLocal(new Date(extractedNow.year, extractedNow.month, extractedNow.day, startDay.getHours(), 0, 0, 0))
-			const hourEnd = convertUTCtoLocal(new Date(extractedNow.year, extractedNow.month, extractedNow.day, startDay.getHours(), 59, 59, 999))
+			const hourEnd = convertUTCtoLocal(new Date(extractedNow.year, extractedNow.month, extractedNow.day, hour, 59, 59, 999))
 
 			const sales = await this.prisma.sellingModel.findMany({
 				where: { createdAt: { gte: hourStart, lte: hourEnd } },
