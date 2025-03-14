@@ -214,7 +214,7 @@ export class ExcelService {
 				clientPhone: selling.client?.phone,
 				staffPhone: selling.staff?.phone,
 				staffName: selling.staff?.fullname,
-				debt: selling.totalSum - selling.payments.reduce((a, b) => a + b.other + b.card + b.cash, BigInt(0)),
+				debt: (selling.totalSum - selling.payments.reduce((a, b) => a + b.other + b.card + b.cash, BigInt(0))).toString(),
 			})
 		})
 
