@@ -221,17 +221,17 @@ export class SellingRepository {
 		const endDay = convertUTCtoLocal(new Date(extractedNow.year, extractedNow.month, extractedNow.day, 23, 59, 59, 999))
 
 		const salesByHour = []
-		for (let hour = 0; hour <= startDay.getHours(); hour++) {
-			const hourStart = convertUTCtoLocal(new Date(extractedNow.year, extractedNow.month, extractedNow.day, startDay.getHours(), 0, 0, 0))
+		for (let hour = 0; hour <= now.getHours(); hour++) {
+			const hourStart = convertUTCtoLocal(new Date(extractedNow.year, extractedNow.month, extractedNow.day, hour, 0, 0, 0))
 			const hourEnd = convertUTCtoLocal(new Date(extractedNow.year, extractedNow.month, extractedNow.day, hour, 59, 59, 999))
-
 			const sales = await this.prisma.sellingModel.findMany({
 				where: { createdAt: { gte: hourStart, lte: hourEnd } },
 			})
 
 			const totalSum = sales.reduce((sum, sale) => sum + sale.totalSum, BigInt(0))
+			const start = extractDateParts(hourStart)
 			salesByHour.push({
-				date: hourStart.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
+				date: `${String(start.hour).padStart(2, '0')}:${String(start.minute).padStart(2, '0')}`,
 				sum: totalSum.toString(),
 			})
 		}
