@@ -17,11 +17,11 @@ export class TimezoneInterceptor implements NestInterceptor {
 	private convertTimezone(obj: any) {
 		if (!obj || typeof obj !== 'object') return obj
 
-		const convert = (date) => (date ? moment(date).format('YYYY-MM-DD HH:mm:ss') : null)
+		const convert = (date) => (date ? date.toLocaleString() : null)
 		const dateFields = ['createdAt', 'updatedAt', 'deletedAt']
 
 		for (const key of dateFields) {
-			if (obj[key]) {
+			if (obj[key] &&obj[key]) {
 				obj[key] = convert(obj[key])
 			}
 		}
