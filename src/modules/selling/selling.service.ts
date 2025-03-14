@@ -90,6 +90,7 @@ export class SellingService {
 
 	async getTotalStats(query: SellingGetTotalStatsRequest) {
 		const now = new Date()
+		console.log('hozirgi vaqt', now)
 
 		const getDateRange = (type: 'daily' | 'weekly' | 'monthly' | 'yearly') => {
 			const start = new Date(now)
