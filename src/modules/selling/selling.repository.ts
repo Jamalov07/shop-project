@@ -13,6 +13,7 @@ import {
 import { SellingController } from './selling.controller'
 import { SellingStatusEnum } from '@prisma/client'
 import * as moment from 'moment-timezone'
+import { convertUTCtoLocal, extractDateParts } from '../../common'
 
 @Injectable()
 export class SellingRepository {
@@ -213,31 +214,24 @@ export class SellingRepository {
 	}
 
 	private async getDayStats() {
-		const now = new Date(new Date().setHours(new Date().getHours() + 5))
-		let startDate: Date
-		let endDate: Date
-		let dateFormat: (date: Date) => string
+		const now = convertUTCtoLocal(new Date())
+		const extractedNow = extractDateParts(now)
 
-		startDate = new Date(new Date().setHours(0 + 5, 0, 0, 0))
-		endDate = new Date(now.setHours(now.getHours() + 5, 59, 59, 999))
-		dateFormat = (date) => date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+		const startDay = convertUTCtoLocal(new Date(extractedNow.year, extractedNow.month, extractedNow.day, 0, 0, 0, 0))
+		const endDay = convertUTCtoLocal(new Date(extractedNow.year, extractedNow.month, extractedNow.day, 23, 59, 59, 999))
 
 		const salesByHour = []
-		for (let hour = 0; hour < endDate.getHours() - 4; hour++) {
-			const hourStart = new Date(startDate)
-			hourStart.setHours(hour, 0, 0, 0)
-			const hourEnd = new Date(startDate)
-			hourEnd.setHours(hour, 59, 59, 999)
+		for (let hour = 0; hour <= startDay.getHours(); hour++) {
+			const hourStart = convertUTCtoLocal(new Date(extractedNow.year, extractedNow.month, extractedNow.day, startDay.getHours(), 0, 0, 0))
+			const hourEnd = convertUTCtoLocal(new Date(extractedNow.year, extractedNow.month, extractedNow.day, startDay.getHours(), 59, 59, 999))
 
 			const sales = await this.prisma.sellingModel.findMany({
-				where: {
-					createdAt: { gte: hourStart, lte: hourEnd },
-				},
+				where: { createdAt: { gte: hourStart, lte: hourEnd } },
 			})
 
 			const totalSum = sales.reduce((sum, sale) => sum + sale.totalSum, BigInt(0))
 			salesByHour.push({
-				date: dateFormat(hourStart),
+				date: hourStart.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
 				sum: totalSum.toString(),
 			})
 		}
