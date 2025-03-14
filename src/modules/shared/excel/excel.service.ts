@@ -150,7 +150,7 @@ export class ExcelService {
 				id: client.id,
 				phone: client.phone,
 				fullname: client.fullname,
-				createdAt: client.createdAt.toISOString(),
+				createdAt: client.createdAt.toLocaleString(),
 				totalPayments: client.payments.length,
 				totalSellings: client.sellings.length,
 			})
@@ -209,7 +209,7 @@ export class ExcelService {
 			worksheet.addRow({
 				status: selling.status,
 				totalSum: selling.totalSum.toString(),
-				createdAt: selling.createdAt.toISOString(),
+				createdAt: selling.createdAt.toLocaleString(),
 				clientName: selling.client?.fullname,
 				clientPhone: selling.client?.phone,
 				staffPhone: selling.staff?.phone,

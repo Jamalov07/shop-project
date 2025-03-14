@@ -1,6 +1,6 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common'
 import { map } from 'rxjs/operators'
-import * as moment from 'moment-timezone'
+import * as moment from 'moment'
 
 @Injectable()
 export class TimezoneInterceptor implements NestInterceptor {
@@ -17,7 +17,7 @@ export class TimezoneInterceptor implements NestInterceptor {
 	private convertTimezone(obj: any) {
 		if (!obj || typeof obj !== 'object') return obj
 
-		const convert = (date) => (date ? moment.utc(date).tz('Asia/Tashkent').format('YYYY-MM-DD HH:mm:ss') : null)
+		const convert = (date) => (date ? moment(date).format('YYYY-MM-DD HH:mm:ss') : null)
 		const dateFields = ['createdAt', 'updatedAt', 'deletedAt']
 
 		for (const key of dateFields) {
