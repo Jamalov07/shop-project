@@ -17,7 +17,7 @@ async function bootstrap() {
 
 	app.useGlobalGuards(app.get(AuthGuard))
 	app.useGlobalInterceptors(new BigIntInterceptor())
-	app.useGlobalInterceptors(new TimezoneInterceptor())
+	// app.useGlobalInterceptors(new TimezoneInterceptor())
 	app.useGlobalInterceptors(new RequestResponseInterceptor())
 
 	app.useGlobalFilters(new AllExceptionFilter())
