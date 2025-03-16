@@ -85,7 +85,7 @@ export class ProductStorehouseService {
 		for (const product of body.products) {
 			const productStorehouse = await this.getOne({ storehouseId: body.fromStorehouseId, productId: product.id })
 			if (!productStorehouse || productStorehouse.data.quantity < product.quantity) {
-				throw new BadRequestException('product quantity not enough for selling in this storehouse')
+				throw new BadRequestException('product quantity not enough for transfer in this storehouse')
 			}
 		}
 

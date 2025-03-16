@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Query, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ProductStorehouseService } from './product-storehouse.service'
 import {
@@ -7,6 +7,7 @@ import {
 	ProductStorehouseFindManyRequestDto,
 	ProductStorehouseFindManyResponseDto,
 	ProductStorehouseModifyResponseDto,
+	ProductStorehouseTransferManyRequestDto,
 } from './dtos'
 
 @ApiTags('ProductStorehouse')
@@ -31,6 +32,13 @@ export class ProductStorehouseController {
 	@ApiOkResponse({ type: ProductStorehouseModifyResponseDto })
 	async createOne(@Body() body: ProductStorehouseCreateOneRequestDto): Promise<ProductStorehouseModifyResponseDto> {
 		return this.productStorehouseService.createOne(body)
+	}
+
+	@Patch('transfer-product/many')
+	@ApiOperation({ summary: 'transfer many product to another storehouse' })
+	@ApiOkResponse({ type: ProductStorehouseModifyResponseDto })
+	async transferManyProductToAnotherStorehouse(@Body() body: ProductStorehouseTransferManyRequestDto): Promise<ProductStorehouseModifyResponseDto> {
+		return this.productStorehouseService.transferManyProductToAnotherStorehouse(body)
 	}
 
 	@Delete('one')

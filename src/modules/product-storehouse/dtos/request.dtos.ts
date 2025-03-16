@@ -41,6 +41,6 @@ export class ProductStorehouseTransferManyRequestDto implements ProductStorehous
 	@IsUUID('4')
 	toStorehouseId: string
 
-	@ApiProperty({ type: ProductStorehouseDto })
+	@ApiProperty({ type: ProductStorehouseDto, isArray: true })
 	products: ProductStorehouse[]
 }
