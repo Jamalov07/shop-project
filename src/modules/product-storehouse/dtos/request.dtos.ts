@@ -2,8 +2,8 @@ import { ApiProperty, ApiPropertyOptional, IntersectionType, PickType } from '@n
 import { ProductStorehouseOptionalDto, ProductStorehouseRequiredDto } from './fields.dtos'
 import { ProductStorehouse, ProductStorehouseCreateOneRequest, ProductStorehouseFindManyRequest, ProductStorehouseTransferManyRequest } from '../interfaces'
 import { PaginationRequestDto } from '../../../common'
-import { IsNotEmpty, IsNumber, IsOptional, IsUUID } from 'class-validator'
-import { Transform } from 'class-transformer'
+import { ArrayNotEmpty, IsArray, IsNotEmpty, IsNumber, IsOptional, IsUUID, ValidateNested } from 'class-validator'
+import { Transform, Type } from 'class-transformer'
 
 export class ProductStorehouseFindManyRequestDto
 	extends IntersectionType(PickType(ProductStorehouseOptionalDto, ['productId', 'storehouseId', 'quantity']), PaginationRequestDto)
@@ -42,5 +42,10 @@ export class ProductStorehouseTransferManyRequestDto implements ProductStorehous
 	toStorehouseId: string
 
 	@ApiProperty({ type: ProductStorehouseDto, isArray: true })
+	@IsArray()
+	@ArrayNotEmpty()
+	@IsNotEmpty()
+	@ValidateNested({ each: true })
+	@Type(() => ProductStorehouseDto)
 	products: ProductStorehouse[]
 }
