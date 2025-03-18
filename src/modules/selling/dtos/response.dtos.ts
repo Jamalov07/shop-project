@@ -1,5 +1,6 @@
 import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger'
 import {
+	SellingCreateOneResponse,
 	SellingFindManyData,
 	SellingFindManyResponse,
 	SellingFindOneData,
@@ -104,4 +105,9 @@ export class SellingGetPeriodStatsDataDto implements SellingGetPeriodStatsData {
 export class SellingGetPeriodStatsResponseDto extends GlobalResponseDto implements SellingGetPeriodStatsResponse {
 	@ApiProperty({ type: SellingGetPeriodStatsDataDto, isArray: true })
 	data: SellingGetPeriodStatsData[]
+}
+
+export class SellingCreateOneResponseDto extends GlobalResponseDto implements SellingCreateOneResponse {
+	@ApiProperty({ type: SellingFindOneDataDto })
+	data: SellingFindOneData
 }

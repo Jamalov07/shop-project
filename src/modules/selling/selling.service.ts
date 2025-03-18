@@ -79,7 +79,7 @@ export class SellingService {
 	}
 
 	async getOne(query: SellingGetOneRequest) {
-		const selling = await this.sellingRepository.getOne(query)
+		const selling = await this.sellingRepository.findOne(query)
 
 		if (!selling) {
 			throw new BadRequestException('selling not found')
@@ -159,8 +159,9 @@ export class SellingService {
 		}
 
 		await Promise.all(promises)
+		const sellingResult = await this.getOne({ id: selling.id })
 
-		return createResponse({ data: null, success: { messages: ['create one success'] } })
+		return createResponse({ data: sellingResult.data, success: { messages: ['create one success'] } })
 	}
 
 	// async createOneWithPayment(body: SellingCreateOneRequest) {

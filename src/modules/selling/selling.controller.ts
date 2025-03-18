@@ -14,6 +14,7 @@ import {
 	SellingGetTotalStatsRequestDto,
 	SellingGetPeriodStatsRequestDto,
 	SellingGetPeriodStatsResponseDto,
+	SellingCreateOneResponseDto,
 } from './dtos'
 import { Response } from 'express'
 import { ExcelService } from '../shared'
@@ -72,8 +73,8 @@ export class SellingController {
 	@Post('one')
 	@AuthOptions(true, true)
 	@ApiOperation({ summary: 'add one selling' })
-	@ApiOkResponse({ type: SellingModifyResponseDto })
-	async createOne(@Body() body: SellingCreateOneRequestDto, @Req() req: CRequest): Promise<SellingModifyResponseDto> {
+	@ApiOkResponse({ type: SellingCreateOneResponseDto })
+	async createOne(@Body() body: SellingCreateOneRequestDto, @Req() req: CRequest): Promise<SellingCreateOneResponseDto> {
 		return this.sellingService.createOne({ ...body, staffId: req.staff.id })
 	}
 

@@ -56,3 +56,7 @@ export declare interface SellingGetPeriodStatsResponse extends GlobalResponse {
 export declare interface SellingModifyResposne extends GlobalResponse {
 	data: null
 }
+
+export declare interface SellingCreateOneResponse extends GlobalResponse {
+	data: SellingFindOneData
+}
