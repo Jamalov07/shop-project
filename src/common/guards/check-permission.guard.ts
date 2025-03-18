@@ -32,7 +32,7 @@ export class CheckPermissionGuard implements CanActivate {
 		const action = await this.prisma.actionModel.findFirst({ where: { ...payload } })
 
 		if (!action) {
-			throw new NotFoundException(`Cannot ${methodType.toUpperCase()} /${fullRoute}`)
+			throw new NotFoundException(`Cannot_ ${methodType.toUpperCase()} /${fullRoute}`)
 		}
 		const staff = await this.prisma.staffModel.findFirst({
 			select: { actions: { select: { name: true, method: true, url: true } } },

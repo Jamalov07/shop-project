@@ -149,6 +149,8 @@ export class ProductStorehouseRepository {
 			)
 		}
 
+		await Promise.all(promises)
+
 		return body.toStorehouseId
 	}
 
